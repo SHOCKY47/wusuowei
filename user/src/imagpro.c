@@ -1,5 +1,3 @@
-
-
 #include "imagpro.h"
 // #include <stdlib.h>
 

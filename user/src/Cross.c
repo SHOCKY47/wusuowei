@@ -1,20 +1,12 @@
-/*
- * Cross.c
- *
- *  Created on: 10 Jan 2022
- *      Author: kare
- */
 #include "Cross.h"
 
 // 十字的处理可以寻远线也可以将远线拉到车头
-#pragma section all "cpu1_dsram"
 
 uint16 Border_Lost_Count   = 0;
 uint16 Border_Refind_Count = 0;
 
-#pragma section all restore
 /*---------------------------------以下画线部分放在cpu0的pram中-----------------------------------------------------------*/
-#pragma section all "cpu0_psram"
+
 void DrawRemoteLine(TRACK_BORDER_INFO *p_Border)
 {
     int16 int16_numL = p_Border->m_i16LRemotePointCnt;
@@ -31,9 +23,6 @@ void DrawRemoteLine(TRACK_BORDER_INFO *p_Border)
     }
 }
 
-#pragma section all restore
-
-#pragma section all "cpu1_psram"
 /*---------------------------------处理部分放在cpu1的pram中-----------------------------------------------------------*/
 
 void Check_Cross(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type)
@@ -442,5 +431,3 @@ void LeftThreeCornerCross(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRA
 // void LeftTwoCornerCross(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type)
 // {
 // }
-
-#pragma section all restore

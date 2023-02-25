@@ -1,22 +1,17 @@
-/*
- * CameraParams.h
- *
- *  Created on: 7 Dec 2021
- *      Author: kare
- */
-
 #ifndef _CAMERAPARAMS_H_
 #define _CAMERAPARAMS_H_
+
 #include "zf_common_headfile.h"
+#include "headfile.h"
 #include "imgStruct.h"
 
-/*ÏñËØÃ¿Ã×*/
+/*ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½*/
 extern const float32 PixelperMeter;
 
-/*ÄæÍ¸ÊÓ¾ØÕó*/
+/*ï¿½ï¿½Í¸ï¿½Ó¾ï¿½ï¿½ï¿½*/
 extern const float32 INV_PERS[3][3];
 
-/*ÄæÍ¸ÊÓ´ò±í±ä»»*/
+/*ï¿½ï¿½Í¸ï¿½Ó´ï¿½ï¿½ï¿½ä»»*/
 extern uint8 Inv_x[22560];
 extern uint8 Inv_y[22560];
 

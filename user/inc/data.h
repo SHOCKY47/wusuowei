@@ -1,19 +1,14 @@
-/*
- * data.h
- *
- *  Created on: 13 Nov 2021
- *      Author: kare
- */
-
 #ifndef CODE_DATA_H_
 #define CODE_DATA_H_
 
 #include "zf_common_headfile.h"
+#include "headfile.h"
 #include "imgStruct.h"
 
 /*-----------------------��������------------------------------------*/
 #define RIGHT 1
-#define LEFT 2
+#define LEFT  2
+#define Pi    3.1415926
 
 extern TRACK_BORDER_INFO g_Border;  /*ȫ��ͼ����ȡ�Ĵ󲿷���Ϣ������������ṹ������*/
 extern TRACK_TYPE_INFO g_TrackType; /*��������*/

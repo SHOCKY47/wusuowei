@@ -3,6 +3,7 @@
 #define _IMGSTRUCT_H_
 
 #include "zf_common_headfile.h"
+#include "headfile.h"
 
 #define IMGH MT9V03X_H
 #define IMGW MT9V03X_W

@@ -26,7 +26,7 @@
  * 版本信息          查看 libraries/doc 文件夹内 version 文件 版本说明
  * 开发环境          IAR 8.32.4 or MDK 5.37
  * 适用平台          MM32F327X_G9P
- * 店铺链接          https://seekfree.taobao.com/
+ * 店铺链接          https://seekfree.taobao.com/ b.ol
  *
  * 修改记录
  * 日期              作者                备注
@@ -34,6 +34,7 @@
  ********************************************************************************************************************/
 
 #include "zf_common_headfile.h"
+#include "headfile.h"
 
 int main(void)
 {
@@ -94,5 +95,5 @@ int main(void)
     while (1) {
         gpio_toggle_level(LED1);
         system_delay_ms(1000);
-    }
+        }
 }

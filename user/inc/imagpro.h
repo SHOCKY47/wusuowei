@@ -1,8 +1,8 @@
-
 #ifndef _IMAGPRO_H_
 #define _IMAGPRO_H_
 
 #include "zf_common_headfile.h"
+#include "headfile.h"
 #include "imgStruct.h"
 
 #define IMGW    MT9V03X_W
@@ -10,7 +10,7 @@
 #define B_WHITE 254
 #define B_BLACK 1
 
-/*-----------------------±äÁ¿¶¨Òå------------------------------------*/
+/*-----------------------ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½------------------------------------*/
 
 extern uint8 outimage[MT9V03X_H][MT9V03X_W];
 extern uint8 outimage1[MT9V03X_H][MT9V03X_W];
@@ -20,9 +20,9 @@ extern float32 CenterY;
 extern float32 SpeedThres;
 extern float32 SpeedDistance;
 
-extern const float32 RoadWith;   // ÈüµÀ¿í¶È
-extern const float32 SampleDist; // ²ÉÑù¼ä¾à
-extern const int16 InterPoint;   // ¼ä¸ôµãÊý
+extern const float32 RoadWith;   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+extern const float32 SampleDist; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+extern const int16 InterPoint;   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 extern const int16 BinaryBlock;
 extern const int16 Threclip;
 extern const int16 PointsBlurKernel;
@@ -53,22 +53,22 @@ typedef enum {
     RIGHTLINE_REAR_LEFT,
     RIGHTLINE_FRONT_LEFT
 } RightLine_GrowDirection;
-// Î´ÕÒµ½±ßÏß±êÖ¾
+// Î´ï¿½Òµï¿½ï¿½ï¿½ï¿½ß±ï¿½Ö¾
 #define FIND_NO 0
 
-// ÕÒµ½±ßÏß±êÖ¾
+// ï¿½Òµï¿½ï¿½ï¿½ï¿½ß±ï¿½Ö¾
 #define FIND_YES 1
 
-// ÎÞÐè²¹Ïß±êÖ¾Î»
+// ï¿½ï¿½ï¿½è²¹ï¿½ß±ï¿½Ö¾Î»
 #define LINE_NO 0
 
-// Î´ÕÒµ½ÐèÒª²¹Ïß±êÖ¾
+// Î´ï¿½Òµï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ß±ï¿½Ö¾
 #define LINE_LOSTADD 1
 
-// Î¥·´µ¥µ÷ÐÔÐèÒª²¹Ïß±êÖ¾
+// Î¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ß±ï¿½Ö¾
 #define LINE_VIOLATEADD 2
 
-/*Ñ¡ÔñËÑÏß·½·¨,0Îª°ËÁÚÓò,1Îª×îÓÅÁÐÐÐ±éÀú*/
+/*Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ß·ï¿½ï¿½ï¿½,0Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,1Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½*/
 #define SeachBorderMethod 0
 
 #define TYPE_FALSE        0
