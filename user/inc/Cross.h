@@ -3,7 +3,7 @@
  *
  *  Created on: 10 Jan 2022
  *      Author: kare
- *      ����ʮ�ִ���
+ *      赛道十字处理
  */
 
 #ifndef _CROSS_H_
@@ -25,60 +25,60 @@ void Check_Cross(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_I
 
 void FindRemoteLine(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border);
 
-/*���ݱ��߽Ƕȱ仯������Զ�˽ǵ�*/
+/*根据边线角度变化率搜索远端角点*/
 void FindRemoteCorner(TRACK_BORDER_INFO *p_Border);
 
-/*����ʮ�ּ��?
- * �ж�����
- * 1. ������?���?
- * 2. �ҵ���������L�͹յ�
+/*中入十字检查
+ * 判断条件
+ * 1. 近端线全丢
+ * 2. 找到左上右上L型拐点
  */
 void Check_MIDCross(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type);
 
-/*���յ���б��ʮ��
- * �ж�����
- * 1. �����ȫ��?
- * 2. �ұ�L�͹յ�
+/*三拐点右斜入十字
+ * 判断条件
+ * 1. 左边线全丢
+ * 2. 右边L型拐点
  *
- * ��������
- * 1. �ҵ�����L�͹յ�
- * 2. �ҵ�����L�͹յ�
+ * 成立条件
+ * 1. 找到右上L型拐点
+ * 2. 找到左上L型拐点
  */
 void RightThreeCornerCross(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type);
 
-/*���յ���б��ʮ��
- * �ж�����
- * 1. �ұ���?���?
- * 2. ���L�͹յ�
+/*三拐点左斜入十字
+ * 判断条件
+ * 1. 右边线全丢
+ * 2. 左边L型拐点
  *
- * ��������
- * 1. �ҵ�����L�͹յ�
- * 2. �ҵ�����L�͹յ�
+ * 成立条件
+ * 1. 找到左上L型拐点
+ * 2. 找到右上L型拐点
  */
 void LeftThreeCornerCross(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type);
 
-/*���յ���б��ʮ��
- * ����б��ʮ����P��������ͬ��������б��ʮ�ֺ����ұ�����б��ʮ�ּ����־λ��������ʮ�ֺ���Ҫ������Ƿ�Ϊ��P�ֲ�ˢ�������־λ����������������Ԫ��Ҳˢ����־λ��?
- * �ж�����
- * 1. �����ȫ��?
- * 2. �ұ�L�͹յ�
+/*二拐点右斜入十字
+ * 两点斜入十字与P字特征相同，在两点斜入十字后，置右边两点斜入十字记忆标志位，后遇到十字后需要检查检查是否为出P字并刷掉记忆标志位，或遇到其他特殊元素也刷掉标志位。
+ * 判断条件
+ * 1. 左边线全丢
+ * 2. 右边L型拐点
  *
- * ��������
- * 1. �ҵ�����L�͹յ�
+ * 成立条件
+ * 1. 找到右上L型拐点
  */
 
 void SideCrossFindRemoteLine(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border);
 
 // void RightTwoCornerCross(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type);
 
-// /*���յ���б��ʮ��
-//  * ����б��ʮ����P��������ͬ��������б��ʮ�ֺ����ұ�����б��ʮ�ּ����־λ��������ʮ�ֺ���Ҫ������Ƿ�Ϊ��P�ֲ�ˢ�������־λ����������������Ԫ��Ҳˢ����־λ��?
-//  * �ж�����
-//  * 1. �ұ���?���?
-//  * 2. ���L�͹յ�
-//  *
-//  * ��������
-//  * 1. �ҵ�����L�͹յ�
+/*二拐点左斜入十字
+ * 两点斜入十字与P字特征相同，在两点斜入十字后，置右边两点斜入十字记忆标志位，后遇到十字后需要检查检查是否为出P字并刷掉记忆标志位，或遇到其他特殊元素也刷掉标志位。
+ * 判断条件
+ * 1. 右边线全丢
+ * 2. 左边L型拐点
+ *
+ * 成立条件
+ * 1. 找到左上L型拐点
 //  */
 // void LeftTwoCornerCross(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type);
 

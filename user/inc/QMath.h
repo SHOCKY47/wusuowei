@@ -10,57 +10,55 @@
 
 #include "zf_common_headfile.h"
 
-/*¿ªÆ½·½*/
+/*å¼€å¹³æ–¹*/
 float32 FSqrt(float32 x);
 
-/*Ö¸Êı¼ÆËã*/
+/*æŒ‡æ•°è®¡ç®—*/
 float32 FExp(float32 x);
 
-
-/*·´ÕıÇĞ£¬ÓÃÓÚÌİ¶È·½Ïò¼ÆËã*/
+/*åæ­£åˆ‡ï¼Œç”¨äºæ¢¯åº¦æ–¹å‘è®¡ç®—*/
 uint8 Atan2(float32 y, float32 x);
 
-/*¿ìËÙÅÅĞò*/
+/*å¿«é€Ÿæ’åº*/
 void Quicksort(float32 array[], uint8 maxlen, uint8 begin, uint8 end);
 
-/*ÊıÖµ½»»»*/
+/*æ•°å€¼äº¤æ¢*/
 void Swap(float32 *a, float32 *b);
 
-/*µã½»»»*/
+/*ç‚¹äº¤æ¢*/
 void SwapPoint(FLOAT_POINT_INFO *a, FLOAT_POINT_INFO *b);
 
-/*Ö¸Êı¼ÆËã*/
+/*æŒ‡æ•°è®¡ç®—*/
 float32 QPow(float32 base, int8 exp);
 
-/*¾ø¶ÔÖµ*/
+/*ç»å¯¹å€¼*/
 uint16 Kabs(int16 num);
 
-/*¸¡µãÊı¾ø¶ÔÖµº¯Êı*/
+/*æµ®ç‚¹æ•°ç»å¯¹å€¼å‡½æ•°*/
 float32 Fabs(float32 num);
 
-/*·¶Î§ÏŞÖÆ*/
+/*èŒƒå›´é™åˆ¶*/
 int16 clip(int16 x, int16 low, int16 high);
 
-/*¸¡µã·¶Î§ÏŞÖÆ*/
+/*æµ®ç‚¹èŒƒå›´é™åˆ¶*/
 float32 fclip(float32 x, float32 low, float32 high);
 
-/*±éÀúÑ°ÕÒÊı×é×î´óÖµ*/
+/*éå†å¯»æ‰¾æ•°ç»„æœ€å¤§å€¼*/
 float32 fFindABSMax(float32 *f, int16 len);
 
-/*Èıµã¼ÆËãÇúÂÊ*/
+/*ä¸‰ç‚¹è®¡ç®—æ›²ç‡*/
 float32 ThreePointsCurvature(INT_POINT_INFO t_P1, INT_POINT_INFO t_P2, INT_POINT_INFO t_P3);
 float32 process_curvity(int16 x1, int16 y1, int16 x2, int16 y2, int16 x3, int16 y3);
 float64 Fprocess_curvity(float32 x1, float32 y1, float32 x2, float32 y2, float32 x3, float32 y3);
 
-/*ÏßĞÔ»Ø¹é*/
-void Regression(INT_POINT_INFO* Point, float64 *Slope, float64 *Intersect, int16 startLine, int16 endLine);
-void FRegression(FLOAT_POINT_INFO* Point, float64 *Slope, float64 *Intersect, int16 startLine, int16 endLine);
+/*çº¿æ€§å›å½’*/
+void Regression(INT_POINT_INFO *Point, float64 *Slope, float64 *Intersect, int16 startLine, int16 endLine);
+void FRegression(FLOAT_POINT_INFO *Point, float64 *Slope, float64 *Intersect, int16 startLine, int16 endLine);
 
-/*ÈüµÀ·½²î¾ø¶ÔÖµ¼ÆËã*/
-void Variance(INT_POINT_INFO* Point, float64 Slope, float64 Intersect, float64 *Variance, int16 startLine, int16 endLine);
-void FVariance(FLOAT_POINT_INFO* Point, float64 Slope, float64 Intersect, float64 *Variance, int16 startLine, int16 endLine);
+/*èµ›é“æ–¹å·®ç»å¯¹å€¼è®¡ç®—*/
+void Variance(INT_POINT_INFO *Point, float64 Slope, float64 Intersect, float64 *Variance, int16 startLine, int16 endLine);
+void FVariance(FLOAT_POINT_INFO *Point, float64 Slope, float64 Intersect, float64 *Variance, int16 startLine, int16 endLine);
 
-void LinearRegression(INT_POINT_INFO* Point, int16 startLine1, int16 endLine1, int16 startLine2, int16 endLine2);
-
+void LinearRegression(INT_POINT_INFO *Point, int16 startLine1, int16 endLine1, int16 startLine2, int16 endLine2);
 
 #endif /* CODE_QMATH_H_ */

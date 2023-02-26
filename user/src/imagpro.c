@@ -25,6 +25,10 @@ const int16 PointsBlurKernel = 7;
 /*非极大值抑制核大小*/
 const int16 NMSKernel = 7;
 
+const int16 normal_speed;
+const int16 now_speed;
+const float32 Avg_speed;
+
 /*纯跟踪起点*/
 float32 CenterX;
 float32 CenterY;
@@ -61,6 +65,10 @@ const int8 arr_frontrightdir[4][2] =
         {1, 1},
         {1, -1},
         {-1, -1}};
+
+#define GrayScale 256
+int pixelCount[GrayScale] = {0}; // 每个灰度值所占像素个数
+float pixelPro[GrayScale] = {0}; // 每个灰度值所占总像素比例
 
 /*----------------------------调试代码----------------------------*/
 /*画原边线*/
@@ -188,10 +196,6 @@ void adaptiveThreshold_1(uint8 (*InImg)[MT9V03X_W], uint8 (*OutImg)[MT9V03X_W], 
 
 //     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> D success.");
 // }
-
-#define GrayScale 256
-int pixelCount[GrayScale] = {0}; // 每个灰度值所占像素个数
-float pixelPro[GrayScale] = {0}; // 每个灰度值所占总像素比例
 
 // void ImageBinary(uint8 (*InImg)[IMGW], uint8 (*OutImg)[IMGW], uint16 width, uint16 height)
 // {
@@ -352,7 +356,7 @@ float pixelPro[GrayScale] = {0}; // 每个灰度值所占总像素比例
 
 void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type)
 {
-    timer_start(TIM_2);
+    // timer_start(TIM_2);
     // 初始化左右边线种子
     INT_POINT_INFO t_SeedL = {-1, -1};
     INT_POINT_INFO t_SeedR = {-1, -1};
@@ -456,9 +460,9 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
     /*初始化右边界数组个数*/
     p_Border->m_i16RPointCnt = IMGH;
     RightLine_SeedGrow_Adaptive(image_read_buffer, t_SeedR, p_Border->m_RPnt, p_Border->m_RPntGrowDirection, BinaryBlock, Threclip, &p_Border->m_i16RPointCnt);
-    timer_stop(TIM_2);
-    SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
-    timer_clear(TIM_2);
+    // timer_stop(TIM_2);
+    // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
+    // timer_clear(TIM_2);
     /*边线数组重新压栈*/
     BorderLineReCoor(p_Border->m_LPnt, p_Border->m_i16LPointCnt, p_Border->m_LeftLineCoor);
     BorderLineReCoor(p_Border->m_RPnt, p_Border->m_i16RPointCnt, p_Border->m_RightLineCoor);
@@ -1199,4 +1203,328 @@ void FindCorner(TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type)
         if (!(p_Border->m_RPntRS[clip(p_Border->RL_CornerPos + 50, 0, p_Border->m_i16RPointCntRS - 1)].m_i16x > p_Border->m_RPntRS[p_Border->RL_CornerPos].m_i16x)) p_Border->RL_CornerPos = -1;
     }
     // }
+}
+
+/*获取预瞄距离*/
+void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type)
+{
+    SpeedThres    = normal_speed * 0.85;
+    SpeedDistance = Avg_speed < SpeedThres ? Avg_speed : (now_speed > 130 ? (float32)normal_speed : now_speed); // 速度控制
+
+    if (SpeedDistance >= 150)
+        SpeedDistance += 25;
+    else if (SpeedDistance >= 140)
+        SpeedDistance += 25;
+
+    /*-------------------------------------------------------------左边线----------------------------------------------------------------------------------*/
+
+    // 十字
+    if (p_Type->m_u8CrossFlag != CROSS_NONE) {
+        if (p_Type->m_u8CrossFlag == CROSS_FAR) {
+            if (p_Border->LL_CornerPos != -1) {
+                p_Error->m_f32LeftBorderAimingMin = fclip(0.1, 0., (p_Border->LL_CornerPos - 9) * SampleDist);
+                p_Error->m_f32LeftBorderAimingMax = fclip(0.2, 0., (p_Border->LL_CornerPos - 7) * SampleDist);
+            }
+            p_Error->m_u8TackingType = TRACKINGBOTH;
+        }
+
+        else if (p_Type->m_u8CrossFlag == CROSS_NEAR) {
+            if (p_Border->LL_CornerPosRemote != -1) {
+                p_Error->m_f32LeftBorderAimingMin = fclip(0.6, (p_Border->LL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
+                p_Error->m_f32LeftBorderAimingMax = fclip(0.7, (p_Border->LL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
+            }
+            p_Error->m_u8TackingType = TRACKINGBOTH;
+        }
+    }
+
+    // 右斜入十字
+    else if (p_Type->m_u8RightSideCrossFlag != CROSS_NONE) {
+        if (p_Type->m_u8RightSideCrossFlag == CROSS_FAR) {
+            if (p_Border->LL_CornerPos != -1) {
+                p_Error->m_f32LeftBorderAimingMin = fclip(0.1, 0., (p_Border->LL_CornerPos - 9) * SampleDist);
+                p_Error->m_f32LeftBorderAimingMax = fclip(0.2, 0., (p_Border->LL_CornerPos - 7) * SampleDist);
+            }
+            p_Error->m_u8TackingType = TRACKINGRIGHT;
+        }
+
+        else if (p_Type->m_u8RightSideCrossFlag == CROSS_NEAR) {
+            if (p_Border->LL_CornerPosRemote != -1) {
+                p_Error->m_f32LeftBorderAimingMin = fclip(0.6, (p_Border->LL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
+                p_Error->m_f32LeftBorderAimingMax = fclip(0.7, (p_Border->LL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
+            }
+            p_Error->m_u8TackingType = TRACKINGBOTH;
+        }
+    }
+
+    // 左斜入十字
+    else if (p_Type->m_u8LeftSideCrossFlag != CROSS_NONE) {
+        if (p_Type->m_u8LeftSideCrossFlag == CROSS_FAR) {
+            if (p_Border->LL_CornerPos != -1) {
+                p_Error->m_f32LeftBorderAimingMin = fclip(0.1, 0., (p_Border->LL_CornerPos - 9) * SampleDist);
+                p_Error->m_f32LeftBorderAimingMax = fclip(0.2, 0., (p_Border->LL_CornerPos - 7) * SampleDist);
+            }
+            p_Error->m_u8TackingType = TRACKINGLEFT;
+        }
+
+        else if (p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR) {
+            if (p_Border->LL_CornerPosRemote != -1) {
+                p_Error->m_f32LeftBorderAimingMin = fclip(0.6, (p_Border->LL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
+                p_Error->m_f32LeftBorderAimingMax = fclip(0.7, (p_Border->LL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
+            }
+            p_Error->m_u8TackingType = TRACKINGBOTH;
+        }
+    }
+    // 无特殊元素弯道
+    else if (p_Type->m_u8ShortLeftLineStraightFlag == 0) {
+        //        p_Error ->m_f32LeftBorderAimingMin = 0.2;
+        p_Error->m_f32LeftBorderAimingMin = fclip(((int16)(now_speed / 5.0 + 0.5)) * 5, 90, 130) * 0.004 - 0.24;
+        p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
+
+        p_Error->m_u8TackingType = TRACKINGBOTH;
+    }
+
+    // 无特殊元素直道
+    else {
+        p_Error->m_f32LeftBorderAimingMin = fclip(((int16)(now_speed / 5.0 + 0.5)) * 5, 130, 145) * 0.004 - 0.22;
+        p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
+        p_Error->m_u8TackingType          = TRACKINGBOTH;
+    }
+
+    /*-------------------------------------------------------------右边线----------------------------------------------------------------------------------*/
+
+    // 十字
+    if (p_Type->m_u8CrossFlag != CROSS_NONE) {
+        if (p_Type->m_u8CrossFlag == CROSS_FAR) {
+            if (p_Border->RL_CornerPos != -1) {
+                p_Error->m_f32RightBorderAimingMin = fclip(0.1, 0., (p_Border->RL_CornerPos - 9) * SampleDist);
+                p_Error->m_f32RightBorderAimingMax = fclip(0.2, 0., (p_Border->RL_CornerPos - 7) * SampleDist);
+            }
+        }
+
+        else if (p_Type->m_u8CrossFlag == CROSS_NEAR) {
+            if (p_Border->RL_CornerPosRemote != -1) {
+                p_Error->m_f32RightBorderAimingMin = fclip(0.6, (p_Border->RL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
+                p_Error->m_f32RightBorderAimingMax = fclip(0.7, (p_Border->RL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
+            }
+        }
+    }
+
+    // 右斜入十字
+    else if (p_Type->m_u8RightSideCrossFlag != CROSS_NONE) {
+        if (p_Type->m_u8RightSideCrossFlag == CROSS_FAR) {
+            if (p_Border->RL_CornerPos != -1) {
+                p_Error->m_f32RightBorderAimingMin = fclip(0.1, 0., (p_Border->RL_CornerPos - 9) * SampleDist);
+                p_Error->m_f32RightBorderAimingMax = fclip(0.2, 0., (p_Border->RL_CornerPos - 7) * SampleDist);
+            }
+        }
+
+        else if (p_Type->m_u8RightSideCrossFlag == CROSS_NEAR) {
+            if (p_Border->RL_CornerPosRemote != -1) {
+                p_Error->m_f32RightBorderAimingMin = fclip(0.6, (p_Border->RL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
+                p_Error->m_f32RightBorderAimingMax = fclip(0.7, (p_Border->RL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
+            }
+        }
+    }
+
+    // 左斜入十字
+    else if (p_Type->m_u8LeftSideCrossFlag != CROSS_NONE) {
+        if (p_Type->m_u8LeftSideCrossFlag == CROSS_FAR) {
+            if (p_Border->RL_CornerPos != -1) {
+                p_Error->m_f32RightBorderAimingMin = fclip(0.1, 0., (p_Border->RL_CornerPos - 9) * SampleDist);
+                p_Error->m_f32RightBorderAimingMax = fclip(0.2, 0., (p_Border->RL_CornerPos - 7) * SampleDist);
+            }
+        }
+
+        else if (p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR) {
+            if (p_Border->RL_CornerPosRemote != -1) {
+                p_Error->m_f32RightBorderAimingMin = fclip(0.6, (p_Border->RL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
+                p_Error->m_f32RightBorderAimingMax = fclip(0.7, (p_Border->RL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
+            }
+        }
+    }
+    // 非特殊元素弯道
+    else if (p_Type->m_u8ShortRightLineStraightFlag == 0) {
+        //        p_Error ->m_f32RightBorderAimingMin = 0.2;
+        p_Error->m_f32RightBorderAimingMin = fclip(((int16)(now_speed / 5.0 + 0.5)) * 5, 90, 130) * 0.004 - 0.24;
+        p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
+    }
+    // 非特殊元素直道
+    else {
+        p_Error->m_f32RightBorderAimingMin = fclip(((int16)(now_speed / 5.0 + 0.5)) * 5, 130, 145) * 0.004 - 0.22;
+        p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
+    }
+}
+
+/*纯跟踪计算曲率*/
+
+void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type)
+{
+    int16 int16_i    = clip((int16)(p_Error->m_f32LeftBorderAimingMin / SampleDist), 0, p_Border->m_i16LCnterCntRS - 1);
+    int16 int16_iEnd = clip((int16)(p_Error->m_f32LeftBorderAimingMax / SampleDist), 0, p_Border->m_i16LCnterCntRS - 1);
+    float32 dx, dy, VerticalDist, HoriError, Kappa, Kappatotal;
+    float32 gain;
+    int16 norm = 0;
+    if ((p_Error->m_u8TackingType == TRACKINGBOTH || p_Error->m_u8TackingType == TRACKINGLEFT) && p_Type->m_u8CrossFlag != CROSS_NEAR && p_Type->m_u8RightSideCrossFlag != CROSS_NEAR && p_Type->m_u8LeftSideCrossFlag != CROSS_NEAR /* && p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != GARAGE_RIGHT_TURN && p_Type->m_u8GarageFlag != GARAGE_LEFT_TURN && !(p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/) {
+        while (int16_i++ < int16_iEnd) {
+            if (p_Border->m_LCPntRS[int16_i].m_i16y != 0) {
+                dx = p_Border->m_LCPntRS[int16_i].m_i16x - CenterX;
+                dy = Fabs(p_Border->m_LCPntRS[int16_i].m_i16y - CenterY);
+
+                VerticalDist = dy / PixelperMeter + 0.243;
+                HoriError    = dx / PixelperMeter;
+
+                Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
+
+                if (Fabs(Kappa) > 1) {
+                    if (dx == 0 || Avg_speed == 0) gain = 0;
+                    //                    else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
+                } else {
+                    gain = 0;
+                }
+
+                Kappa += gain;
+
+                norm += 1;
+                Kappatotal += Kappa;
+            }
+        }
+
+        if (norm != 0) {
+            p_Error->m_f32LeftBorderKappa = Kappatotal / norm;
+            p_Error->m_u8LeftCenterValid  = 1;
+
+            if (p_Type->m_u8CrossFlag == CROSS_FAR && p_Border->LL_CornerPos == -1) p_Error->m_u8LeftCenterValid = 0;
+
+            // if( (p_Type ->m_u8GarageFlag == GARAGE_RIGHT_PASS || p_Type ->m_u8GarageFlag == GARAGE_RIGHT_IN) && p_Border -> m_i16LPointCntRS < 60) p_Error -> m_u8LeftCenterValid = 0;
+
+        } else {
+            p_Error->m_u8LeftCenterValid = 0;
+        }
+    }
+
+    else if (p_Type->m_u8CrossFlag == CROSS_NEAR || p_Type->m_u8RightSideCrossFlag == CROSS_NEAR || p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR /*|| p_Type->m_u8LeftPRoadFlag == PROAD_END || p_Type->m_u8GarageFlag == GARAGE_LEFT_TURN || (p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageDirection == Garage_Out_RIGHT && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/) {
+        int16_i    = clip((int16)(p_Error->m_f32LeftBorderAimingMin / SampleDist), 0, p_Border->m_i16LCnterCntRSRemote - 1);
+        int16_iEnd = clip((int16)(p_Error->m_f32LeftBorderAimingMax / SampleDist), 0, p_Border->m_i16LCnterCntRSRemote - 1);
+
+        while (int16_i++ < int16_iEnd) {
+            if (p_Border->m_LCPntRSRemote[int16_i].m_i16y != 0) {
+                dx = p_Border->m_LCPntRSRemote[int16_i].m_i16x - CenterX;
+                dy = Fabs(p_Border->m_LCPntRSRemote[int16_i].m_i16y - CenterY);
+
+                VerticalDist = dy / PixelperMeter + 0.243;
+                HoriError    = dx / PixelperMeter;
+
+                Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
+
+                if (Fabs(Kappa) > 1) {
+                    if (dx == 0 || Avg_speed == 0) gain = 0;
+                    //                    else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
+                } else {
+                    gain = 0;
+                }
+
+                Kappa += gain;
+
+                norm += 1;
+                Kappatotal += Kappa;
+            }
+        }
+
+        if (norm != 0) {
+            p_Error->m_f32LeftBorderKappa = Kappatotal / norm;
+            p_Error->m_u8LeftCenterValid  = 1;
+            // if (p_Border->LL_CornerPosRemote == -1 && p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != OUT_GARAGE) p_Error->m_u8LeftCenterValid = 0;
+        } else {
+            p_Error->m_u8LeftCenterValid = 0;
+        }
+    }
+
+    else {
+        p_Error->m_f32LeftBorderKappa = 0;
+        p_Error->m_u8LeftCenterValid  = 0;
+    }
+
+    int16_i    = clip((int16)(p_Error->m_f32RightBorderAimingMin / SampleDist), 0, p_Border->m_i16RCnterCntRS - 1);
+    int16_iEnd = clip((int16)(p_Error->m_f32RightBorderAimingMax / SampleDist), 0, p_Border->m_i16RCnterCntRS - 1);
+    norm = Kappatotal = 0;
+
+    if ((p_Error->m_u8TackingType == TRACKINGBOTH || p_Error->m_u8TackingType == TRACKINGRIGHT) && p_Type->m_u8CrossFlag != CROSS_NEAR && p_Type->m_u8RightSideCrossFlag != CROSS_NEAR && p_Type->m_u8LeftSideCrossFlag != CROSS_NEAR /*&& p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != GARAGE_RIGHT_TURN && p_Type->m_u8GarageFlag != GARAGE_LEFT_TURN && !(p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/) {
+        while (int16_i++ < int16_iEnd) {
+            if (p_Border->m_RCPntRS[int16_i].m_i16y != 0) {
+                dx = p_Border->m_RCPntRS[int16_i].m_i16x - CenterX;
+                dy = Fabs(p_Border->m_RCPntRS[int16_i].m_i16y - CenterY);
+
+                VerticalDist = dy / PixelperMeter + 0.243;
+                HoriError    = dx / PixelperMeter;
+
+                Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
+
+                if (Fabs(Kappa) > 1) {
+                    if (dx == 0 || Avg_speed == 0) gain = 0;
+                    //                    else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
+                } else {
+                    gain = 0;
+                }
+
+                Kappa += gain;
+
+                norm += 1;
+                Kappatotal += Kappa;
+            }
+        }
+
+        if (norm != 0) {
+            p_Error->m_f32RightBorderKappa = Kappatotal / norm;
+            p_Error->m_u8RightCenterValid  = 1;
+
+            if (p_Type->m_u8CrossFlag == CROSS_FAR && p_Border->RL_CornerPos == -1) p_Error->m_u8RightCenterValid = 0;
+
+            // if( (p_Type ->m_u8GarageFlag == GARAGE_LEFT_PASS || p_Type ->m_u8GarageFlag == GARAGE_LEFT_IN )&& p_Border ->m_i16RPointCntRS < 60) p_Error -> m_u8RightCenterValid = 0;
+
+        } else {
+            p_Error->m_u8RightCenterValid = 0;
+        }
+    }
+
+    else if (p_Type->m_u8CrossFlag == CROSS_NEAR || p_Type->m_u8RightSideCrossFlag == CROSS_NEAR || p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR /* || p_Type->m_u8RightPRoadFlag == PROAD_END || p_Type->m_u8GarageFlag == GARAGE_RIGHT_TURN || (p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageDirection == Garage_Out_LEFT && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/) {
+        int16_i    = clip((int16)(p_Error->m_f32RightBorderAimingMin / SampleDist), 0, p_Border->m_i16RCnterCntRSRemote - 1);
+        int16_iEnd = clip((int16)(p_Error->m_f32RightBorderAimingMax / SampleDist), 0, p_Border->m_i16RCnterCntRSRemote - 1);
+
+        while (int16_i++ < int16_iEnd) {
+            if (p_Border->m_RCPntRSRemote[int16_i].m_i16y != 0) {
+                dx = p_Border->m_RCPntRSRemote[int16_i].m_i16x - CenterX;
+                dy = Fabs(p_Border->m_RCPntRSRemote[int16_i].m_i16y - CenterY);
+
+                VerticalDist = dy / PixelperMeter + 0.243;
+                HoriError    = dx / PixelperMeter;
+
+                Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
+
+                if (Fabs(Kappa) > 1) {
+                    if (dx == 0 || Avg_speed == 0) gain = 0;
+                    //                     else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
+                } else {
+                    gain = 0;
+                }
+
+                Kappa += gain;
+
+                norm += 1;
+                Kappatotal += Kappa;
+            }
+        }
+
+        if (norm != 0) {
+            p_Error->m_f32RightBorderKappa = Kappatotal / norm;
+            p_Error->m_u8RightCenterValid  = 1;
+            // if (p_Border->RL_CornerPosRemote == -1 && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != OUT_GARAGE) p_Error->m_u8RightCenterValid = 0;
+        } else {
+            p_Error->m_u8RightCenterValid = 0;
+        }
+    }
+
+    else {
+        p_Error->m_f32RightBorderKappa = 0;
+        p_Error->m_u8RightCenterValid  = 0;
+    }
 }

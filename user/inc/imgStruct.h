@@ -4,6 +4,34 @@
 
 #include "zf_common_headfile.h"
 
+typedef enum {
+    TRACKINGBOTH,
+    TRACKINGLEFT,
+    TRACKINGRIGHT
+} TRACKINGTYPE;
+
+typedef enum {
+    LEFTLINE_FRONT = 1,
+    LEFTLINE_RIGHT,
+    LEFTLINE_REAR,
+    LEFTLINE_LEFT,
+    LEFTLINE_FRONT_LEFT,
+    LEFTLINE_FRONT_RIGHT,
+    LEFTLINE_REAR_RIGHT,
+    LEFTLINE_REAR_LEFT
+} LeftLine_GrowDirection;
+
+typedef enum {
+    RIGHTLINE_FRONT = 1,
+    RIGHTLINE_RIGHT,
+    RIGHTLINE_REAR,
+    RIGHTLINE_LEFT,
+    RIGHTLINE_FRONT_RIGHT,
+    RIGHTLINE_REAR_RIGHT,
+    RIGHTLINE_REAR_LEFT,
+    RIGHTLINE_FRONT_LEFT
+} RightLine_GrowDirection;
+
 #define IMGH MT9V03X_H
 #define IMGW MT9V03X_W
 
@@ -302,5 +330,52 @@ typedef struct track_type_info_ {
     //        // 1 处于斑马线
 
 } TRACK_TYPE_INFO;
+
+typedef struct line_error_info_ {
+    uint8 m_u8TackingType;
+    /*偏差计算起始行*/
+    int16 m_int16StartPnt;
+
+    /*偏差计算结尾行*/
+    int16 m_int16EndPnt;
+
+    float32 m_f32LeftCenterError;
+    float32 m_f32LeftCenterErrorLast;
+
+    uint8 m_u8LeftCenterValid;
+    // 0 左中线丢线
+    // 1 左中线误差有效
+
+    // 曲率偏差，速度决策
+    //        float64 LeftCurve;
+    //        float64 RightCurve;
+    float64 Curve;
+
+    float32 m_f32RightCenterError;
+    float32 m_f32RightCenterErrorLast;
+
+    uint8 m_u8RightCenterValid;
+
+    /*远端偏差计算起始行*/
+    int16 m_int16StartPntRemote;
+
+    /*远端偏差计算结尾行*/
+    int16 m_int16EndPntRemote;
+
+    float32 m_f32LeftCenterErrorRemote;
+    float32 m_f32RightCenterErrorRemote;
+
+    float32 m_f32LeftBorderAimingMin;
+    float32 m_f32LeftBorderAimingMax;
+
+    float32 m_f32LeftBorderKappa;
+
+    float32 m_f32RightBorderAimingMin;
+    float32 m_f32RightBorderAimingMax;
+    float32 m_f32RightBorderKappa;
+
+    float32 m_f32RampError;
+    uint8 m_u8RampErrorValid;
+} LINE_ERROR_INFO;
 
 #endif /* CODE_IMGSTRUCT_H_ */

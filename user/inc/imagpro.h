@@ -10,7 +10,7 @@
 #define B_WHITE 254
 #define B_BLACK 1
 
-/*-----------------------±äÁ¿¶¨Òå------------------------------------*/
+/*-----------------------å˜é‡å®šä¹‰------------------------------------*/
 
 extern uint8 outimage[MT9V03X_H][MT9V03X_W];
 extern uint8 outimage1[MT9V03X_H][MT9V03X_W];
@@ -20,9 +20,9 @@ extern float32 CenterY;
 extern float32 SpeedThres;
 extern float32 SpeedDistance;
 
-extern const float32 RoadWith;   // ÈüµÀ¿í¶È
-extern const float32 SampleDist; // ²ÉÑù¼ä¾à
-extern const int16 InterPoint;   // ¼ä¸ôµãÊı
+extern const float32 RoadWith;   // èµ›é“å®½åº¦
+extern const float32 SampleDist; // é‡‡æ ·é—´è·
+extern const int16 InterPoint;   // é—´éš”ç‚¹æ•°
 extern const int16 BinaryBlock;
 extern const int16 Threclip;
 extern const int16 PointsBlurKernel;
@@ -32,43 +32,22 @@ extern const int8 arr_frontleftdir[4][2];
 extern const int8 arr_frontrightdir[4][2];
 extern int16 clp;
 
-typedef enum {
-    LEFTLINE_FRONT = 1,
-    LEFTLINE_RIGHT,
-    LEFTLINE_REAR,
-    LEFTLINE_LEFT,
-    LEFTLINE_FRONT_LEFT,
-    LEFTLINE_FRONT_RIGHT,
-    LEFTLINE_REAR_RIGHT,
-    LEFTLINE_REAR_LEFT
-} LeftLine_GrowDirection;
-
-typedef enum {
-    RIGHTLINE_FRONT = 1,
-    RIGHTLINE_RIGHT,
-    RIGHTLINE_REAR,
-    RIGHTLINE_LEFT,
-    RIGHTLINE_FRONT_RIGHT,
-    RIGHTLINE_REAR_RIGHT,
-    RIGHTLINE_REAR_LEFT,
-    RIGHTLINE_FRONT_LEFT
-} RightLine_GrowDirection;
-// Î´ÕÒµ½±ßÏß±êÖ¾
+// æœªæ‰¾åˆ°è¾¹çº¿æ ‡å¿—
 #define FIND_NO 0
 
-// ÕÒµ½±ßÏß±êÖ¾
+// æ‰¾åˆ°è¾¹çº¿æ ‡å¿—
 #define FIND_YES 1
 
-// ÎŞĞè²¹Ïß±êÖ¾Î»
+// æ— éœ€è¡¥çº¿æ ‡å¿—ä½
 #define LINE_NO 0
 
-// Î´ÕÒµ½ĞèÒª²¹Ïß±êÖ¾
+// æœªæ‰¾åˆ°éœ€è¦è¡¥çº¿æ ‡å¿—
 #define LINE_LOSTADD 1
 
-// Î¥·´µ¥µ÷ĞÔĞèÒª²¹Ïß±êÖ¾
+// è¿åå•è°ƒæ€§éœ€è¦è¡¥çº¿æ ‡å¿—
 #define LINE_VIOLATEADD 2
 
-/*Ñ¡ÔñËÑÏß·½·¨,0Îª°ËÁÚÓò,1Îª×îÓÅÁĞĞĞ±éÀú*/
+/*é€‰æ‹©æœçº¿æ–¹æ³•,0ä¸ºå…«é‚»åŸŸ,1ä¸ºæœ€ä¼˜åˆ—è¡Œéå†*/
 #define SeachBorderMethod 0
 
 #define TYPE_FALSE        0
@@ -91,6 +70,12 @@ typedef enum {
 
 #define MIDSTRAIGHTNUMBOUND   1.2 / SampleDist
 
+/****ä¸´æ—¶å®šä¹‰***/
+
+extern const int16 normal_speed;
+extern const int16 now_speed;
+extern const float32 Avg_speed;
+
 // void adaptiveThreshold_1(uint8 (*InImg)[MT9V03X_W], uint8 (*OutImg)[MT9V03X_W], int width, int height, int block, uint8_t clip_value);
 //  void adaptiveThreshold_2(uint8 (*InImg)[IMGW], uint8 (*OutImg)[IMGW], int block, uint8_t clip_value);
 // void ImageBinary(uint8 (*InImg)[IMGW], uint8 (*OutImg)[IMGW], uint16 width, uint16 height);
@@ -109,5 +94,7 @@ void LeftBorderTrackingCenter(FLOAT_POINT_INFO LeftPoint[], FLOAT_POINT_INFO Cen
 void RightBorderTrackingCenter(FLOAT_POINT_INFO LeftPoint[], FLOAT_POINT_INFO CenterPoint[], int16 PointNum, int16 InterPoint, float32 dist);
 unsigned char *out_float(double value, unsigned char decimal_digit, unsigned char *output_length);
 void FindCorner(TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type);
+void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type);
+void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type);
 
 #endif /* CODE_IMAGEPRO_H_ */
