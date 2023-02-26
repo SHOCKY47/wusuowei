@@ -1,14 +1,8 @@
-/*
- * QMath.h
- *
- *  Created on: 15 Nov 2021
- *      Author: kare
- */
-
 #ifndef _QMATH_H_
 #define _QMATH_H_
 
 #include "zf_common_headfile.h"
+#include "headfile.h"
 
 /*开平方*/
 float32 FSqrt(float32 x);

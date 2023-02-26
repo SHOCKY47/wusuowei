@@ -1,14 +1,8 @@
-/*
- * Cross.h
- *
- *  Created on: 10 Jan 2022
- *      Author: kare
- *      赛道十字处理
- */
-
 #ifndef _CROSS_H_
 #define _CROSS_H_
+
 #include "zf_common_headfile.h"
+#include "headfile.h"
 #include "imgStruct.h"
 // #define CROSS_NONE 0
 // #define CROSS_FAR 1

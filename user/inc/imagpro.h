@@ -1,8 +1,8 @@
-
 #ifndef _IMAGPRO_H_
 #define _IMAGPRO_H_
 
 #include "zf_common_headfile.h"
+#include "headfile.h"
 #include "imgStruct.h"
 
 #define IMGW    MT9V03X_W

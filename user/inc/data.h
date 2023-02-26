@@ -1,19 +1,14 @@
-/*
- * data.h
- *
- *  Created on: 13 Nov 2021
- *      Author: kare
- */
-
 #ifndef CODE_DATA_H_
 #define CODE_DATA_H_
 
 #include "zf_common_headfile.h"
+#include "headfile.h"
 #include "imgStruct.h"
 
 /*-----------------------变量声明------------------------------------*/
 #define RIGHT 1
 #define LEFT  2
+#define Pi    3.1415926
 
 extern TRACK_BORDER_INFO g_Border;  /*全局图像提取的大部分信息都保存在这个结构体里面*/
 extern TRACK_TYPE_INFO g_TrackType; /*赛道类型*/

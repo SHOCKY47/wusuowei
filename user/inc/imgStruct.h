@@ -3,6 +3,7 @@
 #define _IMGSTRUCT_H_
 
 #include "zf_common_headfile.h"
+#include "headfile.h"
 
 typedef enum {
     TRACKINGBOTH,
