@@ -17,7 +17,7 @@ const int16 SAR_thres = 50;
 /*自适应二值化核大小*/
 const int16 BinaryBlock = 7;
 /*阈值补偿*/
-const int16 Threclip = 5;
+const int16 Threclip = 8;
 /*边线滤波核大小*/
 const int16 PointsBlurKernel = 7;
 /*非极大值抑制核大小*/
@@ -34,7 +34,8 @@ float32 CenterY;
 /*目前的速度,决定部分元素的纯跟踪预瞄点*/
 float32 SpeedThres;
 float32 SpeedDistance;
-// uint8 outimage[MT9V03X_H][MT9V03X_W];
+uint8 outimage[MT9V03X_H / 2][MT9V03X_W / 2];
+uint8 inv_image[MT9V03X_H][MT9V03X_W];
 // uint8 outimage1[MT9V03X_H][MT9V03X_W];
 
 /* 前进方向定义：
@@ -107,7 +108,7 @@ void DrawBoarderInvp(TRACK_BORDER_INFO *p_Border)
     int16_step = -1;
     while (++int16_step < int16_numR) {
         if (p_Border->m_RPntRS[int16_step].m_i16y > 3 && p_Border->m_RPntRS[int16_step].m_i16x > 3 && p_Border->m_RPntRS[int16_step].m_i16y < 115 && p_Border->m_RPntRS[int16_step].m_i16x < 183) {
-            ips200_draw_point((uint16)p_Border->m_RPntRS[int16_step].m_i16x, (uint16)p_Border->m_RPntRS[int16_step].m_i16y, RGB565_BLUE);
+            ips200_draw_point((uint16)p_Border->m_RPntRS[int16_step].m_i16x, (uint16)p_Border->m_RPntRS[int16_step].m_i16y, RGB565_GREEN);
         }
     }
 }
@@ -157,203 +158,31 @@ void adaptiveThreshold_1(uint8 (*InImg)[MT9V03X_W], uint8 (*OutImg)[MT9V03X_W], 
     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n count=%d.", count);
 }
 // 池化变阈值二值化
-// uint8 Through_Img[IMGH][IMGW];
-// void adaptiveThreshold_2(uint8 (*InImg)[IMGW], uint8 (*OutImg)[IMGW], int block, uint8_t clip_value)
-// {
-//     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> A success.");
-//     int half_block = block / 2;
-//     /*2x2最小池化(赛道边界是黑色，最小池化可以较好保留赛道边界)*/
-//     uint8 min_value;
-//     // 先遍历y后遍历x比较cache-friendly
+//  uint8 Through_Img[IMGH][IMGW];
+void adaptiveThreshold_2(void)
+{
+    // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> A success.");
+    // int half_block = block / 2;
+    /*2x2最小池化(赛道边界是黑色，最小池化可以较好保留赛道边界)*/
+    int16 min_value;
+    // 先遍历y后遍历x比较cache-friendly
 
-//     for (uint8 i = 1; i < IMGH; i += 2) {
-//         for (uint8 j = 1; j < IMGW; j += 2) {
-//             min_value = 254;
-//             if (InImg[i][j] < min_value) min_value = InImg[i][j];
-//             if (InImg[i - 1][j] < min_value) min_value = InImg[i - 1][j];
-//             if (InImg[i][j - 1] < min_value) min_value = InImg[i][j - 1];
-//             if (InImg[i - 1][j - 1] < min_value) min_value = InImg[i - 1][j - 1];
-//             Through_Img[i / 2][j / 2] = min_value;
-//         }
-//     }
-
-//     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> B success.");
-//     for (int y = half_block; y < IMGH / 2 - half_block; y++) {
-//         for (int x = half_block; x < IMGW / 2 - half_block; x++) {
-//             int thres = 0;
-//             for (int dy = -half_block; dy <= half_block; dy++) {
-//                 for (int dx = -half_block; dx <= half_block; dx++) {
-//                     thres += Through_Img[y + dy + 1][x + dx];
-//                     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> C success.");
-//                 }
-//             }
-//             thres            = thres / (block * block) - clip_value; // 求得平均阈值在减去经验变量
-//             OutImg[y + 1][x] = Through_Img[y + 1][x] > thres ? 254 : 1;
-//         }
-//     }
-
-//     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> D success.");
-// }
-
-// void ImageBinary(uint8 (*InImg)[IMGW], uint8 (*OutImg)[IMGW], uint16 width, uint16 height)
-// {
-
-//     int i, j;
-
-//     int Sumpix      = width * height; // 总像素点
-//     uint8 threshold = 0;
-//     uint8 *data     = InImg; // 指向像素数据的指针
-
-//     // 统计灰度级中每个像素在整幅图像中的个数
-//     for (i = 0; i < height; i++) {
-//         for (j = 0; j < width; j++) {
-//             pixelCount[(int)data[i * width + j]]++; // 将像素值作为计数数组的下标
-//             //   pixelCount[(int)image[i][j]]++;    若不用指针用这个
-//         }
-//     }
-//     float u = 0;
-//     for (i = 0; i < GrayScale; i++) {
-//         pixelPro[i] = (float)pixelCount[i] / Sumpix; // 计算每个像素在整幅图像中的比例
-//         u += i * pixelPro[i];                        // 总平均灰度
-//     }
-
-//     float maxVariance = 0.0;      // 最大类间方差
-//     float w0 = 0, avgValue = 0;   // w0 前景比例 ，avgValue 前景平均灰度
-//     for (int i = 0; i < 256; i++) // 每一次循环都是一次完整类间方差计算 (两个for叠加为1个)
-//     {
-//         w0 += pixelPro[i]; // 假设当前灰度i为阈值, 0~i 灰度像素所占整幅图像的比例即前景比例
-//         avgValue += i * pixelPro[i];
-
-//         float variance = powf((avgValue / w0 - u), 2) * w0 / (1 - w0); // 类间方差
-//         if (variance > maxVariance) {
-//             maxVariance = variance;
-//             threshold   = i;
-//         }
-//     }
-
-//     memset(OutImg, 0, sizeof(OutImg[0][0]) * IMGH * IMGW);
-
-//     int16 int16_i, int16_j;
-//     int16_i = -1;
-//     while (++int16_i < IMGH) {
-//         int16_j = IMGW;
-//         while (--int16_j >= IMGW / 2) {
-//             if (InImg[int16_i][int16_j] > threshold) {
-//                 OutImg[int16_i][int16_j] = B_WHITE;
-//             } else {
-//                 OutImg[int16_i][int16_j] = B_BLACK;
-//             }
-
-//             if (InImg[int16_i][int16_j - IMGW / 2] > threshold) {
-//                 OutImg[int16_i][int16_j - IMGW / 2] = B_WHITE;
-//             } else {
-//                 OutImg[int16_i][int16_j - IMGW / 2] = B_BLACK;
-//             }
-//         }
-//     }
-// }
-// int16 Change_Lpoint_hang;
-// int16 Change_Lpoint_lie;
-// /*搜寻跳变点（左）*/
-// void Change_Lpoint(uint8 (*InImg)[IMGW], uint8 block, uint8 (*OutImg)[IMGW], uint8_t clip_value)
-// {
-//     uint8 Change_flag  = 0;
-//     uint8 QZ           = IMGH * 2 / 3;
-//     int16 half_block   = block / 2;
-//     int16 point        = 0;
-//     int16 Change_point = 0;
-//     int16 int16_i = QZ + half_block, int16_j = 94;
-
-//     while (--int16_i > half_block) {
-//         while (--int16_j > half_block) {
-
-//             int16 thres = 0;
-//             for (int8 dy = -half_block; dy <= half_block; dy++) // 一边二值化一边找点
-//             {
-//                 for (int8 dx = -half_block; dx <= half_block; dx++) {
-//                     thres += InImg[int16_i + dy + 1][int16_j + dx];
-//                 }
-//             }
-//             thres = thres / (block * block) - clip_value; // 求得平均阈值在减去经验变量
-//                                                           // 根据阈值判断是否扫到黑点
-//             if (InImg[int16_i][int16_j - 1] < thres) {
-//                 point++;
-//                 Change_Lpoint_hang = int16_i;
-//                 Change_Lpoint_lie  = int16_j;
-
-//                 break;
-//             } else {
-//                 point = 0;
-//             }
-//         }
-//         // 扫到种子后跳出循环
-//         if (point == 3) break;
-//     }
-// }
-
-/* 左手迷宫巡线 */
-// void findline_lefthand_adaptive(uint8 (*InImg)[IMGW], uint8 block_size, uint8 clip_value, TRACK_BORDER_INFO *p_Border, uint8 *num)
-//  {
-//      //    assert(img && img->data);
-//      //    assert(num && *num >= 0);
-//      //    assert(block_size > 1 && block_size % 2 == 1);
-//      int16 half = block_size / 2;
-//      int16 step = 0, dir = 0, turn = 0;
-//      int16 x;
-//      int16 y;
-//      x = Change_Lpoint_lie;
-//      SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> x=%d.", x);
-//      y = Change_Lpoint_hang;
-//      SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> y=%d.", y);
-//      while (step < *num && half < x && x < IMGW - half - 1 && half < y && y < IMGH - half - 1 && turn < 4) {
-//          int local_thres = 0;
-//          /*一边二值化一边搜线*/
-//          for (int16 dy = -half; dy <= half; dy++) {
-//              for (int16 dx = -half; dx <= half; dx++) {
-//                  local_thres += InImg[y + dy][x + dx];
-//              }
-//          }
-//          local_thres /= block_size * block_size;
-//          local_thres -= clip_value; // 减经验值，防止灰度差距过小判为黑
-
-//         int16 current_value = InImg[y][x];
-//         int16 front_value   = InImg[y + dir_front[dir][1]][x + dir_front[dir][0]];
-//         SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> front_value =%d.", front_value);
-//         int frontleft_value = InImg[y + dir_frontleft[dir][1]][x + dir_frontleft[dir][0]];
-//         SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> frontleft_value=%d.", frontleft_value);
-//         if (front_value < local_thres) // 前方为黑，则转右
-//         {
-//             dir = (dir + 1) % 4;
-//             turn++;
-//         } else if (frontleft_value < local_thres) // 前方白，左前黑则前进
-//         {
-//             x += dir_front[dir][0];
-//             y += dir_front[dir][1];
-//             p_Border->m_LPnt[step].m_i16x = x;
-//             SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> x=%d.", p_Border->m_LPnt[step].m_i16x);
-//             p_Border->m_LPnt[step].m_i16y = y;
-//             SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> x=%d.", p_Border->m_LPnt[step].m_i16y);
-//             step++;
-//             turn = 0;
-//         } else // 前方白，左前白则转向且到左前点
-//         {
-//             x += dir_frontleft[dir][0];
-//             y += dir_frontleft[dir][1];
-//             dir                           = (dir + 3) % 4;
-//             p_Border->m_LPnt[step].m_i16x = x;
-//             SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> x=%d.", p_Border->m_LPnt[step].m_i16x);
-//             p_Border->m_LPnt[step].m_i16y = y;
-//             SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> x=%d.", p_Border->m_LPnt[step].m_i16y);
-//             step++;
-//             turn = 0;
-//         }
-//         SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> TURN=%d", turn);
-//     }
-//     *num = step; // 边线数组总大小
-// }
+    for (int16 i = 1; i < IMGH; i += 2) {
+        for (int16 j = 1; j < IMGW; j += 2) {
+            min_value = 254;
+            if (mt9v03x_image[i][j] < min_value) min_value = mt9v03x_image[i][j];
+            if (mt9v03x_image[i - 1][j] < min_value) min_value = mt9v03x_image[i - 1][j];
+            if (mt9v03x_image[i][j - 1] < min_value) min_value = mt9v03x_image[i][j - 1];
+            if (mt9v03x_image[i - 1][j - 1] < min_value) min_value = mt9v03x_image[i - 1][j - 1];
+            outimage[i / 2][j / 2] = min_value;
+        }
+    }
+}
 
 void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type)
 {
+
+    // adaptiveThreshold_2(image_read_buffer, outimage[MT9V03X_H / 2][MT9V03X_W / 2]);
     // timer_start(TIM_2);
     // 初始化左右边线种子
     INT_POINT_INFO t_SeedL = {-1, -1};
@@ -407,7 +236,7 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
                 t_SeedL.m_i16y            = int16_y;
                 // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> x=%d.", t_SeedL.m_i16x);
                 // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> y=%d.", t_SeedL.m_i16y);
-
+                // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> y=%d.", 1);
                 break;
             }
         }
@@ -415,7 +244,7 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
         // 扫到种子后跳出循环
         if (p_Border->u8_FindLeftSeed == 1) break;
     }
-    LeftLine_SeedGrow_Adaptive(image_read_buffer, t_SeedL, p_Border->m_LPnt, p_Border->m_LPntGrowDirection, BinaryBlock, Threclip, &p_Border->m_i16LPointCnt);
+    LeftLine_SeedGrow_Adaptive(mt9v03x_image, t_SeedL, p_Border->m_LPnt, p_Border->m_LPntGrowDirection, BinaryBlock, Threclip, &p_Border->m_i16LPointCnt);
 
     int16_y                    = IMGH - 5;
     p_Border->u8_FindRightSeed = 0;
@@ -457,7 +286,7 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
 
     /*初始化右边界数组个数*/
     p_Border->m_i16RPointCnt = IMGH;
-    RightLine_SeedGrow_Adaptive(image_read_buffer, t_SeedR, p_Border->m_RPnt, p_Border->m_RPntGrowDirection, BinaryBlock, Threclip, &p_Border->m_i16RPointCnt);
+    RightLine_SeedGrow_Adaptive(mt9v03x_image, t_SeedR, p_Border->m_RPnt, p_Border->m_RPntGrowDirection, BinaryBlock, Threclip, &p_Border->m_i16RPointCnt);
     // timer_stop(TIM_2);
     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
     // timer_clear(TIM_2);
@@ -490,21 +319,21 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
     uint8 m_u8RightEndLine = p_Border->m_i16RPointCnt > 60 ? 60 : p_Border->m_i16RPointCnt;
 
     /*计算边线斜率*/
-    Regression(p_Border->m_LPnt, &p_Border->m_f64LeftSlope, &p_Border->m_f64LeftIntersect, m_u8StartLine, m_u8LeftEndLine);
-    Regression(p_Border->m_RPnt, &p_Border->m_f64RightSlope, &p_Border->m_f64RightIntersect, m_u8StartLine, m_u8RightEndLine);
+    // Regression(p_Border->m_LPnt, &p_Border->m_f64LeftSlope, &p_Border->m_f64LeftIntersect, m_u8StartLine, m_u8LeftEndLine);
+    // Regression(p_Border->m_RPnt, &p_Border->m_f64RightSlope, &p_Border->m_f64RightIntersect, m_u8StartLine, m_u8RightEndLine);
 
     /*计算边线方差*/
-    Variance(p_Border->m_LPnt, p_Border->m_f64LeftSlope, p_Border->m_f64LeftIntersect, &p_Border->m_f64LeftVariance, m_u8StartLine, m_u8LeftEndLine);
-    Variance(p_Border->m_RPnt, p_Border->m_f64RightSlope, p_Border->m_f64RightIntersect, &p_Border->m_f64RightVariance, m_u8StartLine, m_u8RightEndLine);
+    // Variance(p_Border->m_LPnt, p_Border->m_f64LeftSlope, p_Border->m_f64LeftIntersect, &p_Border->m_f64LeftVariance, m_u8StartLine, m_u8LeftEndLine);
+    // Variance(p_Border->m_RPnt, p_Border->m_f64RightSlope, p_Border->m_f64RightIntersect, &p_Border->m_f64RightVariance, m_u8StartLine, m_u8RightEndLine);
 
     /*计算边线角度变化率*/
-    Border_Local_Angle(p_Border->m_LPntRS, p_Border->LdAngle, p_Border->m_i16LPointCntRS, InterPoint);
-    Border_Local_Angle(p_Border->m_RPntRS, p_Border->RdAngle, p_Border->m_i16RPointCntRS, InterPoint);
+    // Border_Local_Angle(p_Border->m_LPntRS, p_Border->LdAngle, p_Border->m_i16LPointCntRS, InterPoint);
+    // Border_Local_Angle(p_Border->m_RPntRS, p_Border->RdAngle, p_Border->m_i16RPointCntRS, InterPoint);
 
     /*角度非极大值抑制*/
     //    Angle_NMS(p_Border, NMSKernel);
-    Angle_NMS(p_Border->LdAngle, p_Border->LdAngleNMS, p_Border->m_i16LPointCntRS, NMSKernel);
-    Angle_NMS(p_Border->RdAngle, p_Border->RdAngleNMS, p_Border->m_i16RPointCntRS, NMSKernel);
+    // Angle_NMS(p_Border->LdAngle, p_Border->LdAngleNMS, p_Border->m_i16LPointCntRS, NMSKernel);
+    // Angle_NMS(p_Border->RdAngle, p_Border->RdAngleNMS, p_Border->m_i16RPointCntRS, NMSKernel);
 
     /*边线跟踪中线*/
     LeftBorderTrackingCenter(p_Border->m_LPntRS, p_Border->m_LCPnt, p_Border->m_i16LPointCntRS, InterPoint, (RoadWith * PixelperMeter / 2));
@@ -816,7 +645,7 @@ void Points_Blur(INT_POINT_INFO PointIN[], FLOAT_POINT_INFO PointOUT[], int16 Po
         PointOUT[int16_i].m_i16y /= (2 * int16_half + 2) * (int16_half + 1) / 2;
         // unsigned char length;
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> bx=%s.", out_float(PointOUT[int16_i].m_i16x, 4, &length));
-        // unsigned char length;
+        // // unsigned char length;
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> djx=%s.", out_float(PointOUT[int16_i].m_i16x, 4, &length));
         // fprintf("bxx=%f", &PointOUT[int16_i].m_i16x);
         // fprintf("bxy=%f", &PointOUT[int16_i].m_i16y);
@@ -1526,3 +1355,41 @@ void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TY
         p_Error->m_u8RightCenterValid  = 0;
     }
 }
+
+/*全图逆透视打表变化*/
+void Full_Inverse_Perspective(void)
+{
+    uint8 i;
+    uint8 j;
+
+    // int num=113;
+    // memset(InImg, 0, sizeof(OutImg[0]) * PointNum);
+
+    for (i = 0; i < IMGH; i++) {
+
+        for (j = 0; j < IMGW; j++) {
+            inv_image[i][j] = mt9v03x_image[Inv_y[i * IMGW + j]][Inv_x[i * IMGW + j]];
+        }
+    }
+}
+
+// void adaptiveThreshold_1(uint8 (*InImg)[MT9V03X_W], uint8 (*OutImg)[MT9V03X_W], int width, int height, int block, uint8_t clip_value)
+// {
+//     int count = 0;
+//     // assert(block % 2 == 1); // block必须为奇数
+//     int half_block = block / 2;
+//     for (int y = half_block; y < height - half_block; y++) {
+//         for (int x = half_block; x < width - half_block; x++) {
+//             int thres = 0;
+//             for (int dy = -half_block; dy <= half_block; dy++) {
+//                 for (int dx = -half_block; dx <= half_block; dx++) {
+//                     thres += InImg[y + dy + 1][x + dx];
+//                     count++;
+//                 }
+//             }
+//             thres        = thres / (block * block) - clip_value; // 求得平均阈值在减去经验变量
+//             OutImg[y][x] = InImg[y][x] > thres ? 254 : 1;
+//         }
+//     }
+//     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n count=%d.", count);
+// }

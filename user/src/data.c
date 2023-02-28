@@ -11,7 +11,7 @@
 TRACK_BORDER_INFO g_Border;
 TRACK_TYPE_INFO g_TrackType; /*赛道类型*/
 /***用于找线版本的数据***/
-// LINE_ERROR_INFO g_LineError; /*存放图像与边线相关的偏差信息*/
+LINE_ERROR_INFO g_LineError; /*存放图像与边线相关的偏差信息*/
 
 uint16 Protect_Frame;
 
@@ -43,13 +43,13 @@ void data_init(void)
 
     //    Stop_to_Charge = 1;
 
-    //     g_LineError.m_u8LeftCenterValid = 0;
-    //     g_LineError.m_u8RightCenterValid = 0;
+    g_LineError.m_u8LeftCenterValid  = 0;
+    g_LineError.m_u8RightCenterValid = 0;
 
-    //     g_LineError.m_f32RightBorderKappa = 0;
-    //     g_LineError.m_f32LeftBorderKappa = 0;
-    //     g_LineError.m_f32RampError = 0;
-    //     g_LineError.m_u8RampErrorValid = 0;
+    g_LineError.m_f32RightBorderKappa = 0;
+    g_LineError.m_f32LeftBorderKappa  = 0;
+    g_LineError.m_f32RampError        = 0;
+    g_LineError.m_u8RampErrorValid    = 0;
     //     //初始化运行圈数
 
     //     g_TrackType.m_u8Garage_Mode = 0;

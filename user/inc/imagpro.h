@@ -5,15 +5,18 @@
 #include "headfile.h"
 #include "imgStruct.h"
 
-#define IMGW    MT9V03X_W
-#define IMGH    MT9V03X_H
+// #define IMGW MT9V03X_W / 2
+// #define IMGH MT9V03X_H / 2
+#define IMGW_Y  MT9V03X_W
+#define IMGH_Y  MT9V03X_H
+
 #define B_WHITE 254
 #define B_BLACK 1
 
 /*-----------------------变量定义------------------------------------*/
 
-extern uint8 outimage[MT9V03X_H][MT9V03X_W];
-extern uint8 outimage1[MT9V03X_H][MT9V03X_W];
+// extern uint8 outimage[MT9V03X_H / 2][MT9V03X_W / 2];
+// extern uint8 outimage1[MT9V03X_H][MT9V03X_W];
 
 extern float32 CenterX;
 extern float32 CenterY;
@@ -75,11 +78,16 @@ extern int16 clp;
 extern const int16 normal_speed;
 extern const int16 now_speed;
 extern const float32 Avg_speed;
+extern uint8 inv_image[MT9V03X_H][MT9V03X_W];        // 逆透视全图数组
+extern uint8 outimage[MT9V03X_H / 2][MT9V03X_W / 2]; // 池化数组
 
 // void adaptiveThreshold_1(uint8 (*InImg)[MT9V03X_W], uint8 (*OutImg)[MT9V03X_W], int width, int height, int block, uint8_t clip_value);
 //  void adaptiveThreshold_2(uint8 (*InImg)[IMGW], uint8 (*OutImg)[IMGW], int block, uint8_t clip_value);
 // void ImageBinary(uint8 (*InImg)[IMGW], uint8 (*OutImg)[IMGW], uint16 width, uint16 height);
 // void Get_Perspective_Image(uint8 imageIn[MT9V03X_H][MT9V03X_W], uint8 imageOut[MT9V03X_H][MT9V03X_W]);
+void DrawCenter(TRACK_BORDER_INFO *p_Border);
+void DrawBoarder(TRACK_BORDER_INFO *p_Border);
+void adaptiveThreshold_2();
 void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type);
 void LeftLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, INT_POINT_INFO point[], uint8 pointDirection[], int16 blocksize, int16 threclip, int16 *num);
 void RightLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, INT_POINT_INFO point[], uint8 pointDirection[], int16 blocksize, int16 threclip, int16 *num);
@@ -96,5 +104,6 @@ unsigned char *out_float(double value, unsigned char decimal_digit, unsigned cha
 void FindCorner(TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type);
 void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type);
 void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type);
+void Full_Inverse_Perspective(void);
 
 #endif /* CODE_IMAGEPRO_H_ */
