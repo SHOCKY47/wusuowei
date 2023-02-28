@@ -1,31 +1,37 @@
 #include "key.h"
 
-uint8 key1_status = 1;
-uint8 key2_status = 1;
-uint8 key3_status = 1;
-uint8 key4_status = 1;
-uint8 key1_last_status, key2_last_status, key3_last_status, key4_last_status;
+uint8 key1_status    = 1;
+uint8 key2_status    = 1;
+uint8 key3_status    = 1;
+uint8 key4_status    = 1;
+uint8 SWITCH1_status = 1;
+uint8 SWITCH2_status = 1;
 
-uint8 motor_flag;
-uint8 start_flag = 0;
-uint8 stop_flag = 0;
-uint8 image_flag = 0;
-int8 tt = 1;
+uint8 key1_last_status, key2_last_status, key3_last_status, key4_last_status;
+uint8 SWITCH1_last_status, SWITCH2_last_status;
 
 uint8 key1_flag, key2_flag, key3_flag, key4_flag;
+uint8 SWITCH1_flag, SWITCH2_flag;
 
-void Key_Switch (void)
+uint16 i = 744;
+
+void Key_Switch(void)
 {
 
-    key1_last_status = key1_status;
-    key2_last_status = key2_status;
-    key3_last_status = key3_status;
-    key4_last_status = key4_status;
+    key1_last_status    = key1_status;
+    key2_last_status    = key2_status;
+    key3_last_status    = key3_status;
+    key4_last_status    = key4_status;
+    SWITCH1_last_status = SWITCH1_status;
+    SWITCH2_last_status = SWITCH1_status;
 
-    key1_status = key_get_state(KEY_1);
-    key2_status = key_get_state(KEY_2);
-    key3_status = key_get_state(KEY_3);
-    key4_status = key_get_state(KEY_4);
+    key1_status = gpio_get_level(KEY1);
+    key2_status = gpio_get_level(KEY2);
+    key3_status = gpio_get_level(KEY3);
+    key4_status = gpio_get_level(KEY4);
+
+    SWITCH1_status = gpio_get_level(SWITCH1);
+    SWITCH2_status = gpio_get_level(SWITCH2);
 
     if (key1_status && !key1_last_status)
         key1_flag = 1;
@@ -35,29 +41,39 @@ void Key_Switch (void)
         key3_flag = 1;
     if (key4_status && !key4_last_status)
         key4_flag = 1;
+    if (!SWITCH1_status && SWITCH1_last_status)
+        SWITCH1_flag = 1;
+    if (!SWITCH2_status && SWITCH2_last_status)
+        SWITCH2_flag = 1;
 
-    if (key1_flag)
-    {
+    if (key1_flag) {
         key1_flag = 0;
 
-        start_flag = 1;
-
+        i++;
+        Duoji_Out(i);
     }
-    if (key2_flag)
-    {
+    if (key2_flag) {
         key2_flag = 0;
 
+        i--;
+        Duoji_Out(i);
     }
-    if (key3_flag)
-    {
+    if (key3_flag) {
         key3_flag = 0;
-
+        i         = 660;
+        Duoji_Out(i);
     }
-    if (key4_flag)
-    {
+    if (key4_flag) {
         key4_flag = 0;
-        image_flag = -image_flag;
-        
+        i         = 820;
+        Duoji_Out(i);
     }
-    
+    if (SWITCH1_flag) {
+        SWITCH1_flag = 1;
+        i            = 744;
+        Duoji_Out(i);
+    }
+    if (SWITCH2_flag) {
+        SWITCH2_flag = 1;
+    }
 }

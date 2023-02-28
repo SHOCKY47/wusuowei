@@ -5,8 +5,23 @@
 #include "headfile.h"
 #include "imgStruct.h"
 
-#define LED1 (H2)
+#define LED1         (H2)
 
-void Initall();
+#define PIT          (TIM6_PIT)
+#define PIT_PRIORITY (TIM6_IRQn)
+#define S_MOTOR_PIN  ATOM1_CH1_P33_9
 
-#endif 
+void Initall(void);
+void PIT_Init(void);
+void Duoji_Init(void);
+void Motor_Init(void);
+void Encoder_Init(void);
+void Key_Init(void);
+
+void DATA_INIT(void);
+void Motor_L_Init(void);
+void Motor_R_Init(void);
+void MOTOR_PID_Init(void);
+void Chasu_Init(void);
+
+#endif

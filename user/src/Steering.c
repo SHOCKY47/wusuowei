@@ -22,8 +22,8 @@ void Duoji_PID_Init(void)
     /*****120******/
     Serve.KP = 0;
     Serve.KI = 0;
-    Serve.KD = 5;
-    //    Serve.KD = 13;
+    Serve.KD = 0;
+
     // 一次曲线
     Serve.K    = 0.1;
     Serve.Bias = 0.6;
@@ -139,12 +139,4 @@ void Duoji_Out(uint16 duty)
     }
 
     pwm_set_duty(DUOJI_CHANY, duty);
-}
-
-void Duoji_Test(void)
-{
-    uint16 i = 800;
-    i -= 1;
-
-    Duoji_Out(i);
 }

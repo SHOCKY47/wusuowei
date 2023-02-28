@@ -4,9 +4,9 @@
 #include "zf_common_headfile.h"
 #include "headfile.h"
 
-#define Duoji_Duty_Maximum 820
-#define Duoji_Duty_Minimum 650
-#define Duoji_Duty_Midmum  740
+#define Duoji_Duty_Maximum 810
+#define Duoji_Duty_Midmum  744
+#define Duoji_Duty_Minimum 660
 
 #define DUOJI_CHANY        TIM2_PWM_CH1_A15
 
@@ -62,6 +62,5 @@ void Duoji_Control(PID_Serve *vPID, Duoji_Para *Duoji, float processValue);
 void Duoji_PID_Init(void);
 void Duoji_Out(uint16 duty);
 void Duoji_Control_Advance_differential(PID_Serve *vPID, Duoji_Para *Duoji, float processValue);
-void Duoji_Test(void);
 
 #endif

@@ -36,11 +36,54 @@
 #include "zf_common_headfile.h"
 #include "headfile.h"
 
+uint8 virsco_data[10];
+
+// #define UART_INDEX              (DEBUG_UART_INDEX   )                           // 默认 UART_1
+// #define UART_BAUDRATE           (DEBUG_UART_BAUDRATE)                           // 默认 115200
+// #define UART_TX_PIN             (DEBUG_UART_TX_PIN  )                           // 默认 UART1_TX_A9
+// #define UART_RX_PIN             (DEBUG_UART_RX_PIN  )                           // 默认 UART1_RX_A10
+
+// #define UART_PRIORITY           (UART1_IRQn)                                    // 对应串口中断的中断编号 在 mm32f3277gx.h 头文件中查看 IRQn_Type 枚举体
+
+// uint8 uart_get_data[64];                                                        // 串口接收数据缓冲区
+// uint8 fifo_get_data[64];                                                        // fifo 输出读出缓冲区
+
+// uint8 get_data = 0;                                                             // 接收数据变量
+// uint32 fifo_data_count = 0;                                                     // fifo 数据个数
+
+// fifo_struct uart_data_fifo;
+
+// #define UART_INDEX              (DEBUG_UART_INDEX   )                           // 默认 UART_1
+// #define UART_BAUDRATE           (DEBUG_UART_BAUDRATE)                           // 默认 115200
+// #define UART_TX_PIN             (DEBUG_UART_TX_PIN  )                           // 默认 UART1_TX_A9
+// #define UART_RX_PIN             (DEBUG_UART_RX_PIN  )                           // 默认 UART1_RX_A10
+
+// #define UART_PRIORITY           (UART1_IRQn)                                    // 对应串口中断的中断编号 在 mm32f3277gx.h 头文件中查看 IRQn_Type 枚举体
+
+// uint8 uart_get_data[64];                                                        // 串口接收数据缓冲区
+// uint8 fifo_get_data[64];                                                        // fifo 输出读出缓冲区
+
+// uint8 get_data = 0;                                                             // 接收数据变量
+// uint32 fifo_data_count = 0;                                                     // fifo 数据个数
+
+// fifo_struct uart_data_fifo;
+
 int main(void)
 {
     SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
 
-    Initall(); // 初始化所有
+    Initall();   // 初始化所有
+    DATA_INIT(); // 初始化参数
+
+    // fifo_init(&uart_data_fifo, FIFO_DATA_8BIT, uart_get_data, 64);              // 初始化 fifo 挂载缓冲区
+
+    // uart_init(UART_INDEX, UART_BAUDRATE, UART_TX_PIN, UART_RX_PIN);             // 初始化编码器模块与引脚 正交解码编码器模式
+    // uart_rx_interrupt(UART_INDEX, ZF_ENABLE);                                   // 开启 UART_INDEX 的接收中断
+    // interrupt_set_priority(UART_PRIORITY, 0);                                   // 设置对应 UART_INDEX 的中断优先级为 0
+
+    // uart_write_string(UART_INDEX, "UART Text.");                                // 输出测试信息
+    // uart_write_byte(UART_INDEX, '\r');                                          // 输出回车
+    // uart_write_byte(UART_INDEX, '\n');                                          // 输出换行
 
     // 此处编写用户代码 例如外设初始化代码等
     // sdcard_read();
@@ -53,9 +96,9 @@ int main(void)
     // int i=0;
     // while(1)
     // {
-    timer_start(TIM_2);
+    // timer_start(TIM_2);
 
-    wusuowei(image_read_buffer, &g_Border, &g_TrackType);
+    // wusuowei(image_read_buffer, &g_Border, &g_TrackType);
 
     // 检查拐点
     // FindCorner(&g_Border, &g_TrackType);
@@ -73,9 +116,11 @@ int main(void)
     //     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_WHITE "\r\n LOG -> ry=%d.", g_Border.m_RCPnt[i].m_i16y);
     // }
     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_WHITE "\r\n LOG -> inv=%d.", Inv_x[3049]);
-    timer_stop(TIM_2);
-    SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
-    timer_clear(TIM_2);
+
+    // timer_stop(TIM_2);
+    // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
+    // timer_clear(TIM_2);
+
     // }
     // Change_Lpoint(image_read_buffer, 7, outimage, 12);
     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> Chang_Lpoint success.");
@@ -93,7 +138,15 @@ int main(void)
     // gpio_set_level(LED1, 0);
 
     while (1) {
-        gpio_toggle_level(LED1);
-        system_delay_ms(1000);
-        }
+
+        // gpio_toggle_level(LED1);
+        // system_delay_ms(1000);
+
+        // Key_Switch();
+
+        // wireless_uart_send_buff(virsco_data, 100);
+        // virtual_oscilloscope_data_conversion(encoder_data_quaddec_2, 0, 0, 0);
+
+        // system_delay_ms(100);
+    }
 }
