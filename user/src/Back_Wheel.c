@@ -11,101 +11,6 @@ Motor_Para MOTOR;  // 电机参数结构体变量
 Chasu_Para CHASU; // 差速参数结构体变量
 
 float history[4];
-float history_Result[4];
-float history_DuojiKP[4];
-
-//----------------------------------------------------------参数初始化--------------------------------------------------------------//
-//----------------------------------------------------------参数初始化--------------------------------------------------------------//
-//----------------------------------------------------------参数初始化--------------------------------------------------------------//
-//----------------------------------------------------------参数初始化--------------------------------------------------------------//
-
-void Motor_L_Init(void) // 左轮基本参数初始化
-{
-    Motor_Left.result      = 0;
-    Motor_Left.setpoint    = 100;    // 设定编码器的值
-    Motor_Left.maximum     = 12000;  // 输出最大值
-    Motor_Left.minimum     = -12000; // 输出最小值
-    Motor_Left.deadband    = 0;      // 死区
-    Motor_Left.epsilon     = 1000;   // 积分分离(本次偏差是否大于)
-    Motor_Left.gama        = 0.6;
-    Motor_Left.presetpoint = 100;
-}
-
-void Motor_R_Init(void) // 右轮基本参数初始化
-{
-    Motor_Right.result      = 0;
-    Motor_Right.setpoint    = 100;
-    Motor_Right.maximum     = 12000;
-    Motor_Right.minimum     = -12000;
-    Motor_Right.deadband    = 0;    // 死区
-    Motor_Right.epsilon     = 1000; // 积分分离(本次偏差是否大于)
-    Motor_Right.presetpoint = 100;
-}
-
-void MOTOR_PID_Init(void) // 后轮控制参数初始化
-{
-
-    /****************************增量式ʽ********************************/
-
-    /****120******/
-
-    //    MOTOR.L_P = 12.5;
-    MOTOR.L_I = 1.5;
-    MOTOR.L_D = 0;
-
-    //    MOTOR.R_P = 9;
-    MOTOR.R_I = 1.5;
-    MOTOR.R_D = 0;
-
-    /****120******/
-
-    MOTOR.L_P_120 = 9;
-    MOTOR.L_I_120 = 1.5;
-    MOTOR.L_D_120 = 0;
-
-    MOTOR.R_P_120 = 9;
-    MOTOR.R_I_120 = 1.5;
-    MOTOR.R_D_120 = 0;
-
-    /*****变积分参数******/
-
-    /*
-     MOTOR.L_P_100 = 15;
-     MOTOR.L_Ki_100 = 1.8;
-     MOTOR.L_Ci_100 = 0.01;
-     */
-
-    /*
-     MOTOR.L_P_140 = 12.5;
-     MOTOR.L_Ki_140= 1.5;
-     MOTOR.L_Ci_140= 0.01;     //Ci越小积分越快
-     */
-
-    MOTOR.L_P  = 12.5;
-    MOTOR.L_Ki = 1.5;
-    MOTOR.L_Ci = 0.01;
-    MOTOR.L_Ti = 0;
-
-    MOTOR.R_P  = 12.5;
-    MOTOR.R_Ki = 1.5;
-    MOTOR.R_Ci = 0.01;
-    MOTOR.L_Ti = 0;
-}
-
-void Chasu_Init(void) // 差速基本参数初始化
-{
-    CHASU.K           = 1.8; // 差速系数
-    CHASU.result_MAX  = 0.3;
-    CHASU.result_MIN  = -0.3;
-    CHASU.result      = 0;
-    CHASU.Sita        = 0;
-    CHASU.Duoji_Error = 0;
-
-    CHASU.L_result_MAX = 20;
-    CHASU.L_result_MIN = 10;
-    CHASU.R_result_MAX = 20;
-    CHASU.R_result_MIN = 10;
-}
 
 //----------------------------------------------------------后轮电机控制-------------------------------------------------------------//
 //----------------------------------------------------------后轮电机控制-------------------------------------------------------------//
@@ -125,61 +30,41 @@ void Motor_L_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 proce
     float thisError;
     float result;
     float increment;
-    float pError, dError, iError;
+    float pError, iError;
+    float Change_P;
     float Change_I;
+    static float lasterror = 0; // 前一拍偏差
+    static float preerror  = 0; // 前两拍偏差
 
-    thisError   = vPID->setpoint - processValue; // 得到偏差值
-    Motor->L_Ti = 1.0 / FExp(Motor->L_Ci * Fabs(thisError));
-    Change_I    = Motor->L_Ti * Motor->L_Ki;
+    thisError = vPID->setpoint - processValue; // 得到偏差值
+    Change_P  = Motor->L_Bas_KP + Motor->L_Gain_KP * (1 - 1.0 / FExp(Motor->L_Cp * Fabs(thisError)));
+    Change_I  = (1.0 / FExp(Motor->L_Ci * Fabs(thisError))) * Motor->L_Max_I;
 
     result = vPID->result;
 
-    if (Fabs(thisError) > vPID->deadband) // 如果大于死区
-    {
-        if (vPID->result > vPID->maximum - 1000) { // 如果上次输出结果大于(最大值-1000)，积分值只累计负值
-            if (thisError <= 0) {
-                iError = thisError;
-            }
-        } else if (vPID->result < vPID->minimum + 1000) { // 如果上次输出结果小于(最小值+1000)，积分值只累计正值
-            if (thisError >= 0) {
-                iError = thisError;
-            }
-        } else {
-            iError = (thisError + vPID->lasterror) / 2.0; // 如果上次输出结果处于正常范围内，正常积分
+    if (vPID->result > vPID->maximum - 500) { // 如果上次输出结果大于(最大值-1000)，积分值只累计负值
+        if (thisError <= 0) {
+            iError = thisError;
         }
-        pError = thisError - vPID->lasterror;
-        dError = thisError - 2 * (vPID->lasterror) + vPID->preerror;
-
-        if (BetaGeneration(thisError, vPID->epsilon) > 0) // 如果偏差值小，加入积分作用
-        {
-            increment = Motor->L_P * pError + Change_I * iError + Motor->L_D * dError;
-        } else // 如果偏差值大，取消积分作用
-        {
-            increment = Motor->L_P * pError + Motor->L_D * dError;
+    } else if (vPID->result < vPID->minimum + 500) { // 如果上次输出结果小于(最小值+1000)，积分值只累计正值
+        if (thisError >= 0) {
+            iError = thisError;
         }
-
-    } else // 如果在死区范围内
-    {
-        if ((Fabs(vPID->setpoint - vPID->minimum) < vPID->deadband) && (Fabs(processValue - vPID->minimum) < vPID->deadband)) {
-            result = vPID->minimum;
-        }
-        increment = 0.0;
+    } else {
+        iError = (thisError + lasterror) / 2.0; // 如果上次输出结果处于正常范围内，正常积分
     }
-    result = result + increment;
+
+    pError    = thisError - lasterror;
+    increment = Change_P * pError + Change_I * iError; // 变积分不用积分分离，因为积分分离本质就是变积分的一种特殊情况
+    result    = result + increment;
 
     /*对输出限值，避免超调和积分饱和问题*/
-    if (result >= vPID->maximum) {
-        result = vPID->maximum;
-    }
-    if (result <= vPID->minimum) {
-        result = vPID->minimum;
-    }
+    result = result >= vPID->maximum ? vPID->maximum : result;
+    result = result <= vPID->minimum ? vPID->minimum : result;
 
-    vPID->preerror  = vPID->lasterror; // 存放偏差用于下次运算
-    vPID->lasterror = thisError;
-
+    preerror     = lasterror; // 存放偏差用于下次运算
+    lasterror    = thisError;
     vPID->result = result;
-    vPID->output = ((result - vPID->minimum) / (vPID->maximum - vPID->minimum)) * 100.0;
 }
 
 //--------------------------------------------------------------
@@ -195,59 +80,40 @@ void Motor_R_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 proce
     float thisError;
     float result;
     float increment;
-    float pError, dError, iError;
+    float pError, iError;
+    float Change_P;
     float Change_I;
+    static float lasterror = 0; // 前一拍偏差
+    static float preerror  = 0; // 前两拍偏差
 
-    thisError   = vPID->setpoint - processValue; // 得到偏差值
-    Motor->R_Ti = 1.0 / FExp(Motor->R_Ci * Fabs(thisError));
-    Change_I    = Motor->R_Ti * Motor->R_Ki;
-    result      = vPID->result;
+    thisError = vPID->setpoint - processValue; // 得到偏差值
+    Change_P  = Motor->R_Bas_KP + Motor->R_Gain_KP * (1 - 1.0 / FExp(Motor->R_Cp * Fabs(thisError)));
+    Change_I  = (1.0 / FExp(Motor->R_Ci * Fabs(thisError))) * Motor->R_Max_I;
+    result    = vPID->result;
 
-    if (Fabs(thisError) > vPID->deadband) // 如果大于死区
-    {
-        if (vPID->result > vPID->maximum - 1000) { // 如果上次偏差大于(最大值-1000)，积分值累计负值
-            if (thisError <= 0) {
-                iError = thisError;
-            }
-        } else if (vPID->result < vPID->minimum + 1000) { // 如果上次输出结果小于(最小值+1000)，积分值只累计正值
-            if (thisError >= 0) {
-                iError = thisError;
-            }
-        } else {
-            iError = (thisError + vPID->lasterror) / 2.0; // 如果上次输出结果处于正常范围内，正常积分
+    if (vPID->result > vPID->maximum - 500) { // 如果上次输出结果大于(最大值-1000)，积分值只累计负值
+        if (thisError <= 0) {
+            iError = thisError;
         }
-        pError = thisError - vPID->lasterror;
-        dError = thisError - 2 * (vPID->lasterror) + vPID->preerror;
-
-        if (BetaGeneration(thisError, vPID->epsilon) > 0) // 如果偏差值小，加入积分作用
-        {
-            increment = Motor->R_P * pError + Change_I * iError + Motor->R_D * dError;
-        } else // 如果偏差值大，取消积分作用
-        {
-            increment = Motor->R_P * pError + Motor->R_D * dError;
+    } else if (vPID->result < vPID->minimum + 500) { // 如果上次输出结果小于(最小值+1000)，积分值只累计正值
+        if (thisError >= 0) {
+            iError = thisError;
         }
-    } else // 如果在死区范围内
-    {
-        if ((Fabs(vPID->setpoint - vPID->minimum) < vPID->deadband) && (Fabs(processValue - vPID->minimum) < vPID->deadband)) {
-            result = vPID->minimum;
-        }
-        increment = 0.0;
+    } else {
+        iError = (thisError + lasterror) / 2.0; // 如果上次输出结果处于正常范围内，正常积分
     }
-    result = result + increment;
+
+    pError    = thisError - lasterror;
+    increment = Change_P * pError + Change_I * iError; // 变积分不用积分分离，因为积分分离本质就是变积分的一种特殊情况
+    result    = result + increment;
 
     /*对输出限值，避免超调和积分饱和问题*/
-    if (result >= vPID->maximum) {
-        result = vPID->maximum;
-    }
-    if (result <= vPID->minimum) {
-        result = vPID->minimum;
-    }
+    result = result >= vPID->maximum ? vPID->maximum : result;
+    result = result <= vPID->minimum ? vPID->minimum : result;
 
-    vPID->preerror  = vPID->lasterror; // 存放偏差用于下次运算
-    vPID->lasterror = thisError;
-
+    preerror     = lasterror; // 存放偏差用于下次运算
+    lasterror    = thisError;
     vPID->result = result;
-    vPID->output = ((result - vPID->minimum) / (vPID->maximum - vPID->minimum)) * 100.0;
 }
 //--------------------------------------------------------------
 //  @brief     左轮增量式PID
@@ -264,57 +130,44 @@ void Motor_L_Control(PID_2 *vPID, Motor_Para *Motor, int16 processValue)
     float result;
     float increment;
     float pError, dError, iError;
+    static float lasterror = 0; // 前一拍偏差
+    static float preerror  = 0; // 前两拍偏差
 
     thisError = vPID->setpoint - processValue; // 得到偏差值
 
     result = vPID->result;
 
-    if (Fabs(thisError) > vPID->deadband) // 如果大于死区
-    {
-        if (vPID->result > vPID->maximum - 1000) { // 如果上次偏差大于(最大值-1000)，积分值只累计负值
-            if (thisError <= 0) {
-                iError = (thisError + vPID->lasterror) / 2.0;
-            }
-        } else if (vPID->result < vPID->minimum + 1000) { // 如果上次输出结果小于(最小值+1000)，积分值只累计正值
-            if (thisError >= 0) {
-                iError = (thisError + vPID->lasterror) / 2.0;
-            }
-        } else {
-            iError = (thisError + vPID->lasterror) / 2.0; // 如果上次输出结果处于正常范围，正常积分
+    if (vPID->result > vPID->maximum - 500) { // 如果上次偏差大于(最大值-1000)，积分值只累计负值
+        if (thisError <= 0) {
+            iError = (thisError + lasterror) / 2.0;
         }
-        pError = thisError - vPID->lasterror;
-        dError = thisError - 2 * (vPID->lasterror) + vPID->preerror;
-
-        if (BetaGeneration(thisError, vPID->epsilon) > 0) // 如果偏差小，加入积分作用
-        {
-            increment = Motor->L_P * pError + Motor->L_I * iError + Motor->L_D * dError;
-        } else // 如果偏差大，取消积分作用
-        {
-            increment = Motor->L_P * pError + Motor->L_D * dError;
+    } else if (vPID->result < vPID->minimum + 500) { // 如果上次输出结果小于(最小值+1000)，积分值只累计正值
+        if (thisError >= 0) {
+            iError = (thisError + lasterror) / 2.0;
         }
-
-    } else // 如果在死区范围
-    {
-        if ((Fabs(vPID->setpoint - vPID->minimum) < vPID->deadband) && (Fabs(processValue - vPID->minimum) < vPID->deadband)) {
-            result = vPID->minimum;
-        }
-        increment = 0.0;
+    } else {
+        iError = (thisError + lasterror) / 2.0; // 如果上次输出结果处于正常范围，正常积分
     }
+    pError = thisError - lasterror;
+    dError = thisError - 2 * lasterror + preerror;
+
+    if (BetaGeneration(thisError, vPID->epsilon) > 0) // 如果偏差小，加入积分作用
+    {
+        increment = Motor->L_P * pError + Motor->L_I * iError + Motor->L_D * dError;
+    } else // 如果偏差大，取消积分作用
+    {
+        increment = Motor->L_P * pError + Motor->L_D * dError;
+    }
+
     result = result + increment;
 
     /*对输出限幅，避免超调和积分饱和问题*/
-    if (result >= vPID->maximum) {
-        result = vPID->maximum;
-    }
-    if (result <= vPID->minimum) {
-        result = vPID->minimum;
-    }
+    result = result >= vPID->maximum ? vPID->maximum : result;
+    result = result <= vPID->minimum ? vPID->minimum : result;
 
-    vPID->preerror  = vPID->lasterror; // 存放偏差用于下次运算
-    vPID->lasterror = thisError;
-
+    preerror     = lasterror; // 存放偏差用于下次运算
+    lasterror    = thisError;
     vPID->result = result;
-    vPID->output = ((result - vPID->minimum) / (vPID->maximum - vPID->minimum)) * 100.0;
 }
 
 //--------------------------------------------------------------
@@ -332,56 +185,44 @@ void Motor_R_Control(PID_2 *vPID, Motor_Para *Motor, int16 processValue)
     float result;
     float increment;
     float pError, dError, iError;
+    static float lasterror = 0; // 前一拍偏差
+    static float preerror  = 0; // 前两拍偏差
 
     thisError = vPID->setpoint - processValue; // 得到偏差值
 
     result = vPID->result;
 
-    if (Fabs(thisError) > vPID->deadband) // 如果大于死区
-    {
-        if (vPID->result > vPID->maximum - 1000) { // 如果上次偏差大于(最大值-1000)，积分值只累计负值
-            if (thisError <= 0) {
-                iError = (thisError + vPID->lasterror) / 2.0;
-            }
-        } else if (vPID->result < vPID->minimum + 1000) { // 如果上次输出结果小于(最小值+1000)，积分值只累计正值
-            if (thisError >= 0) {
-                iError = (thisError + vPID->lasterror) / 2.0;
-            }
-        } else {
-            iError = (thisError + vPID->lasterror) / 2.0; // 如果上次输出结果处于正常范围，正常积分
+    if (vPID->result > vPID->maximum - 500) { // 如果上次偏差大于(最大值-1000)，积分值只累计负值
+        if (thisError <= 0) {
+            iError = (thisError + lasterror) / 2.0;
         }
-        pError = thisError - vPID->lasterror;
-        dError = thisError - 2 * (vPID->lasterror) + vPID->preerror;
-
-        if (BetaGeneration(thisError, vPID->epsilon) > 0) // 如果偏差小，加入积分作用
-        {
-            increment = Motor->R_P * pError + Motor->R_I * iError + Motor->R_D * dError;
-        } else // 如果偏差大，取消积分作用
-        {
-            increment = Motor->R_P * pError + Motor->R_D * dError;
+    } else if (vPID->result < vPID->minimum + 500) { // 如果上次输出结果小于(最小值+1000)，积分值只累计正值
+        if (thisError >= 0) {
+            iError = (thisError + lasterror) / 2.0;
         }
-
-    } else // 如果在死区范围内
-    {
-        if ((Fabs(vPID->setpoint - vPID->minimum) < vPID->deadband) && (Fabs(processValue - vPID->minimum) < vPID->deadband)) {
-            result = vPID->minimum;
-        }
-        increment = 0.0;
+    } else {
+        iError = (thisError + lasterror) / 2.0; // 如果上次输出结果处于正常范围，正常积分
     }
+    pError = thisError - lasterror;
+    dError = thisError - 2 * lasterror + preerror;
+
+    if (BetaGeneration(thisError, vPID->epsilon) > 0) // 如果偏差小，加入积分作用
+    {
+        increment = Motor->R_P * pError + Motor->R_I * iError + Motor->R_D * dError;
+    } else // 如果偏差大，取消积分作用
+    {
+        increment = Motor->R_P * pError + Motor->R_D * dError;
+    }
+
     result = result + increment;
 
     /*对输出限幅，避免超调和积分饱和问题*/
-    if (result >= vPID->maximum) {
-        result = vPID->maximum;
-    }
-    if (result <= vPID->minimum) {
-        result = vPID->minimum;
-    }
+    result = result >= vPID->maximum ? vPID->maximum : result;
+    result = result <= vPID->minimum ? vPID->minimum : result;
 
-    vPID->preerror  = vPID->lasterror; // 存放偏差，用于下次运算
-    vPID->lasterror = thisError;
-    vPID->result    = result;
-    vPID->output    = ((result - vPID->minimum) / (vPID->maximum - vPID->minimum)) * 100.0;
+    preerror     = lasterror; // 存放偏差，用于下次运算
+    lasterror    = thisError;
+    vPID->result = result;
 }
 
 //--------------------------------------------------------------
@@ -397,10 +238,12 @@ void Motor_L_Control_Position(PID_2 *vPID, Motor_Para *Motor, int16 processValue
 
     float thisError;
     float result;
+    static float lasterror = 0; // 前一拍偏差
+
     thisError = vPID->setpoint - processValue;
     if (Fabs(thisError) > vPID->deadband) {
-        vPID->integral += (thisError + vPID->lasterror) / 2;
-        result = Motor->L_P * thisError + Motor->L_I * vPID->integral + Motor->L_D * (thisError - vPID->lasterror);
+        vPID->integral += (thisError + lasterror) / 2;
+        result = Motor->L_P * thisError + Motor->L_I * vPID->integral + Motor->L_D * (thisError - lasterror);
 
     } else {
         if ((Fabs(vPID->setpoint - vPID->minimum) < vPID->deadband) && (Fabs(processValue - vPID->minimum) < vPID->deadband)) {
@@ -408,15 +251,11 @@ void Motor_L_Control_Position(PID_2 *vPID, Motor_Para *Motor, int16 processValue
         }
     }
     /*对输出限幅，避免超调和积分饱和问题*/
-    if (result >= vPID->maximum) {
-        result = vPID->maximum;
-    }
-    if (result <= vPID->minimum) {
-        result = vPID->minimum;
-    }
-    vPID->lasterror = thisError;
-    vPID->result    = result;
-    vPID->output    = ((result - vPID->minimum) / (vPID->maximum - vPID->minimum)) * 100.0;
+    result = result >= vPID->maximum ? vPID->maximum : result;
+    result = result <= vPID->minimum ? vPID->minimum : result;
+
+    lasterror    = thisError;
+    vPID->result = result;
 }
 
 //--------------------------------------------------------------
@@ -432,10 +271,11 @@ void Motor_R_Control_Position(PID_2 *vPID, Motor_Para *Motor, int16 processValue
 
     float thisError;
     float result;
-    thisError = vPID->setpoint - processValue;
+    static float lasterror = 0; // 前一拍偏差
+    thisError              = vPID->setpoint - processValue;
     if (Fabs(thisError) > vPID->deadband) {
-        vPID->integral += (thisError + vPID->lasterror) / 2;
-        result = Motor->R_P * thisError + Motor->R_I * vPID->integral + Motor->R_D * (thisError - vPID->lasterror);
+        vPID->integral += (thisError + lasterror) / 2;
+        result = Motor->R_P * thisError + Motor->R_I * vPID->integral + Motor->R_D * (thisError - lasterror);
 
     } else {
         if ((Fabs(vPID->setpoint - vPID->minimum) < vPID->deadband) && (Fabs(processValue - vPID->minimum) < vPID->deadband)) {
@@ -443,15 +283,11 @@ void Motor_R_Control_Position(PID_2 *vPID, Motor_Para *Motor, int16 processValue
         }
     }
     /*对输出限值，避免超调和积分饱和问题*/
-    if (result >= vPID->maximum) {
-        result = vPID->maximum;
-    }
-    if (result <= vPID->minimum) {
-        result = vPID->minimum;
-    }
-    vPID->lasterror = thisError;
-    vPID->result    = result;
-    vPID->output    = ((result - vPID->minimum) / (vPID->maximum - vPID->minimum)) * 100.0;
+    result = result >= vPID->maximum ? vPID->maximum : result;
+    result = result <= vPID->minimum ? vPID->minimum : result;
+
+    lasterror    = thisError;
+    vPID->result = result;
 }
 //--------------------------------------------------------------
 //  @brief     左轮位置式微分先行PID
@@ -467,6 +303,7 @@ void Motor_L_Control_Position_Advance_differential(PID_2 *vPID, Motor_Para *Moto
 
     float thisError;
     float c1, c2, c3, temp;
+    static float lasterror = 0; // 前一拍偏差
 
     thisError = vPID->setpoint - processValue;
     vPID->integral += thisError;
@@ -476,7 +313,7 @@ void Motor_L_Control_Position_Advance_differential(PID_2 *vPID, Motor_Para *Moto
     c1               = vPID->gama * c3;
     vPID->derivative = c1 * vPID->derivative + c2 * processValue + c3 * vPID->lastPv;
     vPID->result     = Motor->L_P * thisError + Motor->L_I * vPID->integral + vPID->derivative;
-    vPID->lasterror  = thisError;
+    lasterror        = thisError;
     vPID->lastPv     = processValue;
 }
 
@@ -493,7 +330,7 @@ void Motor_L_Control_Position_Advance_differential(PID_2 *vPID, Motor_Para *Moto
 //--------------------------------------------------------------
 void Differrntial(Chasu_Para *Diff)
 {
-    Diff->Duoji_Error = Duoji_Duty_final - 740;
+    Diff->Duoji_Error = Duoji_Duty - 740;
 
     //    Diff->Sita = (Diff->Duoji_Error-1.5)*Pi/2;  //实际测舵机输出角度改变100，转角变化20度,a=(l-1.5)×90°
     if (Fabs(Diff->Duoji_Error) <= 40) // 不差速
@@ -558,23 +395,33 @@ void Diff_Speed(Chasu_Para *Diff)
         Motor_Left.setpoint  = Motor_Left.presetpoint;
         //        chasu_L->setpoint = Motor_Left.presetpoint * (1 + Diff->K * Diff->result);
     }
-
-    if (Motor_Left.setpoint >= CHASU.L_result_MAX) // 限幅
-    {
-        Motor_Left.setpoint = CHASU.L_result_MAX;
-    } else if (Motor_Left.setpoint <= CHASU.L_result_MIN) {
-        Motor_Left.setpoint = CHASU.L_result_MIN;
-    }
-
-    if (Motor_Right.setpoint >= CHASU.R_result_MAX) // 限幅
-    {
-        Motor_Right.setpoint = CHASU.R_result_MAX;
-    } else if (Motor_Right.setpoint <= CHASU.R_result_MIN) {
-        Motor_Right.setpoint = CHASU.R_result_MIN;
-    }
 }
 
-///**********************被动差速lsd限滑********************/
+// float Differential(void)
+// {
+//     float L = 20;   // 轴距Lcm
+//     float X = 15.5; // 轮距Xcm
+//     float a;
+//     float Tmp_Vd;
+//     a = Fabs(pid_angel.ActualAngel - duty);
+//     if (Gear == 0) {
+//         a = a * 0.2 / 180 * 3.14; // 实际测舵机输出角度改变100，转角变化20度
+//     } else if (Gear == 1) {
+//         a = a * 0.25 / 180 * 3.14; // 实际测舵机输出角度改变100，转角变化20度
+//     } else {
+//         a = a * 0.35 / 180 * 3.14; // 实际测舵机输出角度改变100，转角变化20度
+//     }
+
+//     Tmp_Vd = X * tanf(a) / L * pid_speed.SetSpeed;
+//     return Tmp_Vd;
+// }
+//--------------------------------------------------------------
+//  @brief     lsd被动差速限滑动
+//  @param
+//  @return    void        没求得
+//  @note
+//--------------------------------------------------------------
+
 // float lsd_p=0.1,lsd_pl=0.6,lsd_d=0.8;
 // float lsd_p_base=0.15;
 // int16 speed_set_l,speed_set_r;
@@ -618,58 +465,7 @@ void Diff_Speed(Chasu_Para *Diff)
 //
 //
 //}
-//
-// int16 Speed_Ctl_l(int16 encoder_l)
-//{
-//  static int16 speed_err;
-//  static int16 speed;
-//  static int16 speed_err_last1,speed_err_last2;
-//  static int16 speed_bb;
-//  speed_err = speed_set_l - encoder_l;    //速度偏差=目标速度-当前速度
-//
-//  if(speed_err>80) speed_bb=9800;
-//  else if(speed_err<-80) speed_bb=-9800;
-//  else speed_bb=0;
-//  /**********************************/
-//  speed+=  speed_p*(speed_err-speed_err_last1)
-//                +speed_i* speed_err
-//                +speed_d*(speed_err-2*speed_err_last1+speed_err_last2)
-//                +speed_bb;
-//
-//  speed_err_last1=speed_err;
-//  speed_err_last2=speed_err_last1;
-//
-//  if(speed> 9800) speed= 9800;
-//  if(speed<-9800) speed=-9800;
-//
-//  return speed;
-//}
-//
-// int16 Speed_Ctl_r(int16 encoder_r)
-//{
-//  static int16 speed_err;
-//  static int16 speed;
-//  static int16 speed_err_last1,speed_err_last2;
-//  static int16 speed_bb;
-//  speed_err = speed_set_r - encoder_r;    //速度偏差=目标速度-当前速度
-//
-//  if(speed_err>80) speed_bb=9800;
-//  else if(speed_err<-80) speed_bb=-9800;
-//  else speed_bb=0;
-//  /**********************************/
-//  speed+=  speed_p*(speed_err-speed_err_last1)
-//                +speed_i* speed_err
-//                +speed_d*(speed_err-2*speed_err_last1+speed_err_last2)
-//                +speed_bb;
-//
-//  speed_err_last1=speed_err;
-//  speed_err_last2=speed_err_last1;
-//
-//  if(speed> 9800) speed= 9800;
-//  if(speed<-9800) speed=-9800;
-//
-//  return speed;
-//}
+
 //------------------------------------------------------------结果输出函数--------------------------------------------------------------//
 //------------------------------------------------------------结果输出函数--------------------------------------------------------------//
 //------------------------------------------------------------结果输出函数--------------------------------------------------------------//
@@ -682,7 +478,7 @@ void Diff_Speed(Chasu_Para *Diff)
 //  @return    void        没求得
 //  @note
 //--------------------------------------------------------------
-void Back_Wheel_Out(int32 L_outPWM, int32 R_outPWM)
+void Back_Wheel_Out(int32 R_outPWM, int32 L_outPWM)
 {
     if (0 <= L_outPWM) // 电机1 正转
     {
@@ -802,102 +598,6 @@ float Filter_ave_DuojiData(float value, uint8 time)
         j = filter_index;
         for (i = 0; i <= time - 1; i++) {
             sum += history[j] * factor[i];
-            j++;
-            if (j == time - 1) {
-                j = 0;
-            }
-        }
-    }
-    return sum / K;
-}
-//--------------------------------------------------------------
-//  @brief       滑动平均滤波(结果滤波)
-//  @param        float value        输入值
-//                uint8 time         取平均个数
-//  @return       sum / K            输出数据
-//  @note         float型
-//--------------------------------------------------------------
-float Filter_ave_DuojiResult(float value, uint8 time)
-{
-    static int filter_index = 0;
-    static int buff_init    = 0;
-    int i, j;
-    float sum = 0;
-
-    int factor[time];
-    int K = 0;
-
-    for (i = 0; i < time; i++) {
-        factor[i] = i + 1;
-        K += i + 1;
-    }
-    if (buff_init == 0) {
-
-        history_Result[filter_index] = value;
-        filter_index++;
-
-        if (filter_index >= time - 1) {
-
-            buff_init = 1;
-        }
-
-    } else {
-        history_Result[filter_index] = value;
-        filter_index++;
-        if (filter_index >= time - 1) {
-            filter_index = 0;
-        }
-        j = filter_index;
-        for (i = 0; i <= time - 1; i++) {
-            sum += history_Result[j] * factor[i];
-            j++;
-            if (j == time - 1) {
-                j = 0;
-            }
-        }
-    }
-    return sum / K;
-}
-
-//--------------------------------------------------------------
-//  @brief       滑动平均滤波(对舵机关联的KP值滤波)
-//  @param        float value        输入值
-//                uint8 time         取平均个数
-//  @return       sum / K            输出数据
-//  @note         float型
-//--------------------------------------------------------------
-float Filter_ave_Duoji_KP(float value, uint8 time)
-{
-    int i, j;
-    float sum = 0;
-
-    int factor[time];
-    int K                   = 0;
-    static int filter_index = 0;
-    static int buff_init    = 0;
-
-    for (i = 0; i < time; i++) {
-        factor[i] = i + 1;
-        K += i + 1;
-    }
-    if (buff_init == 0) {
-        history_DuojiKP[filter_index] = value;
-        filter_index++;
-
-        if (filter_index >= time - 1) {
-
-            buff_init = 1;
-        }
-
-    } else {
-        history_DuojiKP[filter_index] = value;
-        filter_index++;
-        if (filter_index >= time - 1) {
-            filter_index = 0;
-        }
-        j = filter_index;
-        for (i = 0; i <= time - 1; i++) {
-            sum += history_DuojiKP[j] * factor[i];
             j++;
             if (j == time - 1) {
                 j = 0;

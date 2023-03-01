@@ -12,6 +12,7 @@ static FIL g_infileObject; // 文件结构体变量
 static FIL g_outfileObject;
 FILINFO fileInformation; // 文件信息结构体
 uint8 image_read_buffer[MT9V03X_H][MT9V03X_W];
+
 void sdcardinit()
 {
 

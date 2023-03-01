@@ -42,14 +42,13 @@ typedef struct // 增量型普通PID
     float minimum;     /*输出值下限*/
     float setpoint;    // 设定值
     float presetpoint; // 未加差速设定值
-    float lasterror;   // 前一拍偏差
-    float preerror;    // 前两拍偏差
-    float result;      // 输出值
-    float integral;    // 积分值
-    float derivative;  // 微分值
-    float epsilon;     // 积分分离界限
-    float gama;        // 微分先行滤波系数
-    float lastPv;      // 上一次的观测值
+
+    float result;     // 输出值
+    float integral;   // 积分值
+    float derivative; // 微分值
+    float epsilon;    // 积分分离界限
+    float gama;       // 微分先行滤波系数
+    float lastPv;     // 上一次的观测值
 } PID_2;
 
 typedef struct // 后轮结构体参数
@@ -63,42 +62,21 @@ typedef struct // 后轮结构体参数
     float R_I;
     float R_D;
 
-    // 左轮参数
-    float L_P_120;
-    float L_I_120;
-    float L_D_120;
-
-    // 右轮参数
-    float R_P_120;
-    float R_I_120;
-    float R_D_120;
-
-    float L_P_100;
-    float L_I_100;
-    float L_D_100;
-
-    // 右轮参数
-    float R_P_100;
-    float R_I_100;
-    float R_D_100;
-
-    float L_P_70;
-    float L_I_70;
-    float L_D_70;
-
-    // 右轮参数
-    float R_P_70;
-    float R_I_70;
-    float R_D_70;
-
     // 变积分参数
-    float L_Ti;
-    float L_Ki;
+    float L_Max_I;
     float L_Ci;
 
-    float R_Ti;
-    float R_Ki;
+    float R_Max_I;
     float R_Ci;
+
+    // 变比例参数
+    float L_Bas_KP;
+    float L_Gain_KP;
+    float L_Cp;
+
+    float R_Bas_KP;
+    float R_Gain_KP;
+    float R_Cp;
 
 } Motor_Para;
 
@@ -128,15 +106,13 @@ extern float history[4]; // 舵机滑动平均滤波数值数组
 extern float history_Result[4];
 extern float history_DuojiKP[4];
 
-void Back_Wheel_Out(int32 L_outPWM, int32 R_outPWM);
+void Back_Wheel_Out(int32 R_outPWM, int32 L_outPWM);
 void Motor_L_Control(PID_2 *vPID, Motor_Para *Motor, int16 processValue);
 void Motor_R_Control(PID_2 *vPID, Motor_Para *Motor, int16 processValue);
 void Motor_L_Control_Position(PID_2 *vPID, Motor_Para *Motor, int16 processValue);
 void Motor_R_Control_Position(PID_2 *vPID, Motor_Para *Motor, int16 processValue);
 void Motor_L_Control_Position_Advance_differential(PID_2 *vPID, Motor_Para *Motor, int16 processValue);
-void Motor_L_Init(void);
-void Motor_R_Init(void);
-void MOTOR_PID_Init(void);
+
 uint16 BetaGeneration(float error, float epsilon);
 float errorfilter(float inData, float a);
 float data_filtering(float *filter, const float filter_data, const uint8 filter_depth);
@@ -148,9 +124,6 @@ float Filter_ave_Duoji_KP(float value, uint8 time);
 
 void Differrntial(Chasu_Para *Diff);
 void Diff_Speed(Chasu_Para *Diff);
-void Chasu_Init(void);
-void CSV_Left_Init(void);
-void CSV_Right_Init(void);
 
 //----------------------------------------------------------我是分割线-------------------------------------------------------------//
 //----------------------------------------------------------我是分割线-------------------------------------------------------------//
