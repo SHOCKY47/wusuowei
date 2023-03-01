@@ -4,7 +4,9 @@ void Initall(void)
 {
     clock_init(SYSTEM_CLOCK_120M); // 初始化芯片时钟 工作频率为 120MHz
     debug_init();                  // 初始化默认 Debug UART
-    system_delay_ms(1000);         // 务必延时
+
+    ips200_init(IPS200_TYPE_PARALLEL8);
+    system_delay_ms(1000); // 务必延时
 
     PIT_Init();
     // timer_init(TIM_2, TIMER_MS);
@@ -21,7 +23,7 @@ void Initall(void)
 void Duoji_Init(void)
 {
     pwm_init(DUOJI_CHANY, 50, Duoji_Duty);
-    Duoji_Duty = 750;
+    Duoji_Duty = 744;
 }
 
 void Motor_Init(void)
@@ -67,6 +69,8 @@ void DATA_INIT(void)
     Motor_L_Init();
     Motor_R_Init();
     MOTOR_PID_Init();
+    Duoji_Data_Init();
+    Duoji_PID_Init();
 }
 
 void Motor_L_Init(void) // 左轮基本参数初始化
@@ -97,7 +101,7 @@ void MOTOR_PID_Init(void) // 后轮控制参数初始化
     MOTOR.L_P = 80;
     MOTOR.L_I = 0.15;
 
-    MOTOR.R_P = 40;
+    MOTOR.R_P = 80;
     MOTOR.R_I = 0;
 
     /*****变积分参数******/
@@ -117,17 +121,34 @@ void MOTOR_PID_Init(void) // 后轮控制参数初始化
     MOTOR.L_Cp      = 0.01;
 }
 
+void Duoji_Data_Init(void)
+{
+    Steering.setpoint = 0;
+    Steering.deadband = 0; // 需要确定
+    Steering.minimum  = 5;
+}
+
+void Duoji_PID_Init(void)
+{
+
+    Serve.KP = 0;
+    Serve.KD = 0;
+
+    // 变比例参数
+    Serve.Kp_Gain = 0.1;
+    Serve.Base    = 0.6;
+
+    // 变微分参数
+    Serve.Kd_Gain = 2;
+}
+
 void Chasu_Init(void) // 差速基本参数初始化
 {
-    CHASU.K           = 1.8; // 差速系数
-    CHASU.result_MAX  = 0.3;
-    CHASU.result_MIN  = -0.3;
-    CHASU.result      = 0;
-    CHASU.Sita        = 0;
-    CHASU.Duoji_Error = 0;
+    CHASU.K          = 1.8; // 差速系数
+    CHASU.result_MAX = 0.3;
+    CHASU.result_MIN = -0.3;
+    CHASU.result     = 0;
+    CHASU.Sita       = 0;
 
-    CHASU.L_result_MAX = 20;
-    CHASU.L_result_MIN = 10;
-    CHASU.R_result_MAX = 20;
-    CHASU.R_result_MIN = 10;
+    CHASU.Duoji_Error = 0;
 }

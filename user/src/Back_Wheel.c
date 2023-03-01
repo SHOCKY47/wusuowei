@@ -11,8 +11,6 @@ Motor_Para MOTOR;  // 电机参数结构体变量
 Chasu_Para CHASU; // 差速参数结构体变量
 
 float history[4];
-float history_Result[4];
-float history_DuojiKP[4];
 
 //----------------------------------------------------------后轮电机控制-------------------------------------------------------------//
 //----------------------------------------------------------后轮电机控制-------------------------------------------------------------//
@@ -332,7 +330,7 @@ void Motor_L_Control_Position_Advance_differential(PID_2 *vPID, Motor_Para *Moto
 //--------------------------------------------------------------
 void Differrntial(Chasu_Para *Diff)
 {
-    Diff->Duoji_Error = Duoji_Duty_final - 740;
+    Diff->Duoji_Error = Duoji_Duty - 740;
 
     //    Diff->Sita = (Diff->Duoji_Error-1.5)*Pi/2;  //实际测舵机输出角度改变100，转角变化20度,a=(l-1.5)×90°
     if (Fabs(Diff->Duoji_Error) <= 40) // 不差速
@@ -397,27 +395,29 @@ void Diff_Speed(Chasu_Para *Diff)
         Motor_Left.setpoint  = Motor_Left.presetpoint;
         //        chasu_L->setpoint = Motor_Left.presetpoint * (1 + Diff->K * Diff->result);
     }
-
-    if (Motor_Left.setpoint >= CHASU.L_result_MAX) // 限幅
-    {
-        Motor_Left.setpoint = CHASU.L_result_MAX;
-    } else if (Motor_Left.setpoint <= CHASU.L_result_MIN) {
-        Motor_Left.setpoint = CHASU.L_result_MIN;
-    }
-
-    if (Motor_Right.setpoint >= CHASU.R_result_MAX) // 限幅
-    {
-        Motor_Right.setpoint = CHASU.R_result_MAX;
-    } else if (Motor_Right.setpoint <= CHASU.R_result_MIN) {
-        Motor_Right.setpoint = CHASU.R_result_MIN;
-    }
 }
 
+// float Differential(void)
+// {
+//     float L = 20;   // 轴距Lcm
+//     float X = 15.5; // 轮距Xcm
+//     float a;
+//     float Tmp_Vd;
+//     a = Fabs(pid_angel.ActualAngel - duty);
+//     if (Gear == 0) {
+//         a = a * 0.2 / 180 * 3.14; // 实际测舵机输出角度改变100，转角变化20度
+//     } else if (Gear == 1) {
+//         a = a * 0.25 / 180 * 3.14; // 实际测舵机输出角度改变100，转角变化20度
+//     } else {
+//         a = a * 0.35 / 180 * 3.14; // 实际测舵机输出角度改变100，转角变化20度
+//     }
+
+//     Tmp_Vd = X * tanf(a) / L * pid_speed.SetSpeed;
+//     return Tmp_Vd;
+// }
 //--------------------------------------------------------------
 //  @brief     lsd被动差速限滑动
-//  @param     Chasu_Para *Diff    差速参数结构体
-//             Chasu_V *chasu_L    左轮差速参数
-//             Chasu_V *chasu_R    右轮差速参数
+//  @param
 //  @return    void        没求得
 //  @note
 //--------------------------------------------------------------
@@ -465,58 +465,7 @@ void Diff_Speed(Chasu_Para *Diff)
 //
 //
 //}
-//
-// int16 Speed_Ctl_l(int16 encoder_l)
-//{
-//  static int16 speed_err;
-//  static int16 speed;
-//  static int16 speed_err_last1,speed_err_last2;
-//  static int16 speed_bb;
-//  speed_err = speed_set_l - encoder_l;    //速度偏差=目标速度-当前速度
-//
-//  if(speed_err>80) speed_bb=9800;
-//  else if(speed_err<-80) speed_bb=-9800;
-//  else speed_bb=0;
-//  /**********************************/
-//  speed+=  speed_p*(speed_err-speed_err_last1)
-//                +speed_i* speed_err
-//                +speed_d*(speed_err-2*speed_err_last1+speed_err_last2)
-//                +speed_bb;
-//
-//  speed_err_last1=speed_err;
-//  speed_err_last2=speed_err_last1;
-//
-//  if(speed> 9800) speed= 9800;
-//  if(speed<-9800) speed=-9800;
-//
-//  return speed;
-//}
-//
-// int16 Speed_Ctl_r(int16 encoder_r)
-//{
-//  static int16 speed_err;
-//  static int16 speed;
-//  static int16 speed_err_last1,speed_err_last2;
-//  static int16 speed_bb;
-//  speed_err = speed_set_r - encoder_r;    //速度偏差=目标速度-当前速度
-//
-//  if(speed_err>80) speed_bb=9800;
-//  else if(speed_err<-80) speed_bb=-9800;
-//  else speed_bb=0;
-//  /**********************************/
-//  speed+=  speed_p*(speed_err-speed_err_last1)
-//                +speed_i* speed_err
-//                +speed_d*(speed_err-2*speed_err_last1+speed_err_last2)
-//                +speed_bb;
-//
-//  speed_err_last1=speed_err;
-//  speed_err_last2=speed_err_last1;
-//
-//  if(speed> 9800) speed= 9800;
-//  if(speed<-9800) speed=-9800;
-//
-//  return speed;
-//}
+
 //------------------------------------------------------------结果输出函数--------------------------------------------------------------//
 //------------------------------------------------------------结果输出函数--------------------------------------------------------------//
 //------------------------------------------------------------结果输出函数--------------------------------------------------------------//
@@ -649,102 +598,6 @@ float Filter_ave_DuojiData(float value, uint8 time)
         j = filter_index;
         for (i = 0; i <= time - 1; i++) {
             sum += history[j] * factor[i];
-            j++;
-            if (j == time - 1) {
-                j = 0;
-            }
-        }
-    }
-    return sum / K;
-}
-//--------------------------------------------------------------
-//  @brief       滑动平均滤波(结果滤波)
-//  @param        float value        输入值
-//                uint8 time         取平均个数
-//  @return       sum / K            输出数据
-//  @note         float型
-//--------------------------------------------------------------
-float Filter_ave_DuojiResult(float value, uint8 time)
-{
-    static int filter_index = 0;
-    static int buff_init    = 0;
-    int i, j;
-    float sum = 0;
-
-    int factor[time];
-    int K = 0;
-
-    for (i = 0; i < time; i++) {
-        factor[i] = i + 1;
-        K += i + 1;
-    }
-    if (buff_init == 0) {
-
-        history_Result[filter_index] = value;
-        filter_index++;
-
-        if (filter_index >= time - 1) {
-
-            buff_init = 1;
-        }
-
-    } else {
-        history_Result[filter_index] = value;
-        filter_index++;
-        if (filter_index >= time - 1) {
-            filter_index = 0;
-        }
-        j = filter_index;
-        for (i = 0; i <= time - 1; i++) {
-            sum += history_Result[j] * factor[i];
-            j++;
-            if (j == time - 1) {
-                j = 0;
-            }
-        }
-    }
-    return sum / K;
-}
-
-//--------------------------------------------------------------
-//  @brief       滑动平均滤波(对舵机关联的KP值滤波)
-//  @param        float value        输入值
-//                uint8 time         取平均个数
-//  @return       sum / K            输出数据
-//  @note         float型
-//--------------------------------------------------------------
-float Filter_ave_Duoji_KP(float value, uint8 time)
-{
-    int i, j;
-    float sum = 0;
-
-    int factor[time];
-    int K                   = 0;
-    static int filter_index = 0;
-    static int buff_init    = 0;
-
-    for (i = 0; i < time; i++) {
-        factor[i] = i + 1;
-        K += i + 1;
-    }
-    if (buff_init == 0) {
-        history_DuojiKP[filter_index] = value;
-        filter_index++;
-
-        if (filter_index >= time - 1) {
-
-            buff_init = 1;
-        }
-
-    } else {
-        history_DuojiKP[filter_index] = value;
-        filter_index++;
-        if (filter_index >= time - 1) {
-            filter_index = 0;
-        }
-        j = filter_index;
-        for (i = 0; i <= time - 1; i++) {
-            sum += history_DuojiKP[j] * factor[i];
             j++;
             if (j == time - 1) {
                 j = 0;

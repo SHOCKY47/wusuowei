@@ -23,5 +23,7 @@ void Motor_L_Init(void);
 void Motor_R_Init(void);
 void MOTOR_PID_Init(void);
 void Chasu_Init(void);
+void Duoji_Data_Init(void);
+void Duoji_PID_Init(void);
 
 #endif

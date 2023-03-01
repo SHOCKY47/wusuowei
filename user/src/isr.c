@@ -103,13 +103,14 @@ void TIM6_IRQHandler(void)
 {
     // 此处编写用户代码
 
+    extern void Get_Speed(void);
+
     Get_Speed();
 
-    Motor_L_Control(&Motor_Left, &MOTOR, encoder_data_quaddec_1);
-    Motor_L_Control(&Motor_Right, &MOTOR, encoder_data_quaddec_2);
-    // Motor_R_Control_Position(&Motor_Right, &MOTOR, encoder_data_quaddec_2);
+    Motor_L_Control(&Motor_Left, &MOTOR, encoder_1);
+    Motor_R_Control(&Motor_Right, &MOTOR, encoder_2);
 
-    Back_Wheel_Out(-Motor_Left.result, 0);
+    Back_Wheel_Out(-Motor_Left.result, Motor_Right.result);
 
     // 此处编写用户代码
     TIM6->SR &= ~TIM6->SR; // 清空中断状态
