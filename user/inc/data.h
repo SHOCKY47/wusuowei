@@ -33,6 +33,6 @@ extern int16 GrowCount4;
 extern uint8 BinaryImg[90][188];
 
 /*-------------------------------函数声明---------------------------------*/
-void data_init(void);
+void Img_data_init(void);
 
 #endif /* CODE_DATA_H_ */

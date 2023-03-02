@@ -20,7 +20,7 @@ void Duoji_Control(PID_Serve *vPID, Duoji_Para *Duoji, float processValue)
 
     thisError = vPID->setpoint - processValue;
 
-    Duoji->KP = Fabs(thisError) * thisError * Duoji->Kp_Gain + Duoji->Base;
+    Duoji->KP = Fabs(thisError * thisError) * Duoji->Kp_Gain + Duoji->Base;
     Duoji->KD = Duoji->Kd_Gain * Duoji->KP;
 
     // KP_kx_b     = ((Fabs(((FExp(-Fabs(thisError / 8)) - 1)) / ((FExp(-Fabs(thisError / 8)) + 1)))) / 2 + 0.5) * Duoji->Bias;

@@ -23,10 +23,6 @@ const int16 PointsBlurKernel = 7;
 /*非极大值抑制核大小*/
 const int16 NMSKernel = 7;
 
-const int16 normal_speed;
-const int16 now_speed;
-const float32 Avg_speed;
-
 /*纯跟踪起点*/
 float32 CenterX;
 float32 CenterY;
@@ -319,21 +315,21 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
     uint8 m_u8RightEndLine = p_Border->m_i16RPointCnt > 60 ? 60 : p_Border->m_i16RPointCnt;
 
     /*计算边线斜率*/
-    // Regression(p_Border->m_LPnt, &p_Border->m_f64LeftSlope, &p_Border->m_f64LeftIntersect, m_u8StartLine, m_u8LeftEndLine);
-    // Regression(p_Border->m_RPnt, &p_Border->m_f64RightSlope, &p_Border->m_f64RightIntersect, m_u8StartLine, m_u8RightEndLine);
+    Regression(p_Border->m_LPnt, &p_Border->m_f64LeftSlope, &p_Border->m_f64LeftIntersect, m_u8StartLine, m_u8LeftEndLine);
+    Regression(p_Border->m_RPnt, &p_Border->m_f64RightSlope, &p_Border->m_f64RightIntersect, m_u8StartLine, m_u8RightEndLine);
 
     /*计算边线方差*/
-    // Variance(p_Border->m_LPnt, p_Border->m_f64LeftSlope, p_Border->m_f64LeftIntersect, &p_Border->m_f64LeftVariance, m_u8StartLine, m_u8LeftEndLine);
-    // Variance(p_Border->m_RPnt, p_Border->m_f64RightSlope, p_Border->m_f64RightIntersect, &p_Border->m_f64RightVariance, m_u8StartLine, m_u8RightEndLine);
+    Variance(p_Border->m_LPnt, p_Border->m_f64LeftSlope, p_Border->m_f64LeftIntersect, &p_Border->m_f64LeftVariance, m_u8StartLine, m_u8LeftEndLine);
+    Variance(p_Border->m_RPnt, p_Border->m_f64RightSlope, p_Border->m_f64RightIntersect, &p_Border->m_f64RightVariance, m_u8StartLine, m_u8RightEndLine);
 
     /*计算边线角度变化率*/
-    // Border_Local_Angle(p_Border->m_LPntRS, p_Border->LdAngle, p_Border->m_i16LPointCntRS, InterPoint);
-    // Border_Local_Angle(p_Border->m_RPntRS, p_Border->RdAngle, p_Border->m_i16RPointCntRS, InterPoint);
+    Border_Local_Angle(p_Border->m_LPntRS, p_Border->LdAngle, p_Border->m_i16LPointCntRS, InterPoint);
+    Border_Local_Angle(p_Border->m_RPntRS, p_Border->RdAngle, p_Border->m_i16RPointCntRS, InterPoint);
 
     /*角度非极大值抑制*/
     //    Angle_NMS(p_Border, NMSKernel);
-    // Angle_NMS(p_Border->LdAngle, p_Border->LdAngleNMS, p_Border->m_i16LPointCntRS, NMSKernel);
-    // Angle_NMS(p_Border->RdAngle, p_Border->RdAngleNMS, p_Border->m_i16RPointCntRS, NMSKernel);
+    Angle_NMS(p_Border->LdAngle, p_Border->LdAngleNMS, p_Border->m_i16LPointCntRS, NMSKernel);
+    Angle_NMS(p_Border->RdAngle, p_Border->RdAngleNMS, p_Border->m_i16RPointCntRS, NMSKernel);
 
     /*边线跟踪中线*/
     LeftBorderTrackingCenter(p_Border->m_LPntRS, p_Border->m_LCPnt, p_Border->m_i16LPointCntRS, InterPoint, (RoadWith * PixelperMeter / 2));
@@ -609,8 +605,8 @@ void Inverse_Perspective(INT_POINT_INFO PointIN[], INT_POINT_INFO PointOUT[], in
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> cnt=%d.", PointNum);
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> num=%d.", num);
 
-        PointOUT[int16_i].m_i16x = Inv_x[PointIN[int16_i].m_i16y * 188 + PointIN[int16_i].m_i16x];
-        PointOUT[int16_i].m_i16y = Inv_y[PointIN[int16_i].m_i16y * 188 + PointIN[int16_i].m_i16x];
+        PointOUT[int16_i].m_i16x = Inv_x1[PointIN[int16_i].m_i16y * 188 + PointIN[int16_i].m_i16x];
+        PointOUT[int16_i].m_i16y = Inv_y1[PointIN[int16_i].m_i16y * 188 + PointIN[int16_i].m_i16x];
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> invx=%d.", Inv_x[ pn ]);
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> invy=%d.", Inv_y[ pn ]);
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> out=%d.", PointOUT[int16_i].m_i16x);
@@ -1368,7 +1364,8 @@ void Full_Inverse_Perspective(void)
     for (i = 0; i < IMGH; i++) {
 
         for (j = 0; j < IMGW; j++) {
-            inv_image[i][j] = mt9v03x_image[Inv_y[i * IMGW + j]][Inv_x[i * IMGW + j]];
+            // inv_image[i][j] = mt9v03x_image[Inv_y1[i * IMGW + j]][Inv_x1[i * IMGW + j]];
+            inv_image[i][j] = mt9v03x_image[Inv_y_imge1[i * IMGW + j]][Inv_x_imge1[i * IMGW + j]];
         }
     }
 }

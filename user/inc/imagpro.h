@@ -20,6 +20,7 @@
 
 extern float32 CenterX;
 extern float32 CenterY;
+
 extern float32 SpeedThres;
 extern float32 SpeedDistance;
 
@@ -75,9 +76,6 @@ extern int16 clp;
 
 /****临时定义***/
 
-extern const int16 normal_speed;
-extern const int16 now_speed;
-extern const float32 Avg_speed;
 extern uint8 inv_image[MT9V03X_H][MT9V03X_W];        // 逆透视全图数组
 extern uint8 outimage[MT9V03X_H / 2][MT9V03X_W / 2]; // 池化数组
 

@@ -32,10 +32,10 @@ int16 GrowCount4 = 0;
 uint8 BinaryImg[90][188];
 
 /*---------------------------------º¯Êý¶¨Òå-----------------------------*/
-void data_init(void)
+void Img_data_init(void)
 {
-    CenterX       = Inv_x[10998];
-    CenterY       = Inv_y[10998];
+    CenterX       = Inv_x1[22090];
+    CenterY       = Inv_y1[22090];
     Protect_Frame = 0;
 
     // control_init();

@@ -65,22 +65,38 @@ int main(void)
     while (1) {
         // timer_start(TIM_2);
         // mt9v03x_get_version();
+        Key_Switch();
         if (mt9v03x_finish_flag) {
             // timer_start(TIM_2);
             // adaptiveThreshold_2();
-            wusuowei(mt9v03x_image, &g_Border, &g_TrackType);
-            ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);
-
             // Full_Inverse_Perspective();
+            wusuowei(mt9v03x_image, &g_Border, &g_TrackType);
+            FindCorner(&g_Border, &g_TrackType);
+            GetAimingDist(&g_Border, &g_LineError, &g_TrackType);
+            PurePursuit(&g_Border, &g_LineError, &g_TrackType);
+            if (Img_Open_falg) {
+                ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);
+                ips200_show_float(10, 130, g_LineError.m_f32LeftBorderKappa, 4, 4);
+                ips200_show_float(10, 150, g_LineError.m_f32RightBorderKappa, 4, 4);
+                DrawCenter(&g_Border);
+            }
+
             // timer_stop(TIM_2);
             // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
             // timer_clear(TIM_2);
 
-            DrawCenter(&g_Border);
             // DrawBoarder(&g_Border);
             // // ips200_show_gray_image(0, 0, (mt9v03x_image), MT9V03X_W, MT9V03X_H, (IMGW), (IMGH), 0);
             // ips200_show_char(50, 50, "A");
             // ips200_clear();
+            Control();
+
+#if 0
+        wireless_uart_send_buff(virsco_data, 100);
+        virtual_oscilloscope_data_conversion(encoder_2, Motor_Right.result, encoder_1, Motor_Left.result);
+        system_delay_ms(100);
+#endif
+
             mt9v03x_finish_flag = 0;
         }
 
@@ -128,19 +144,12 @@ int main(void)
 
     // gpio_set_level(LED1, 0);
 
-    while (1) {
+    // while (1) {
 
-        // gpio_toggle_level(LED1);
-        // system_delay_ms(1000);
+    //     // gpio_toggle_level(LED1);
+    //     // system_delay_ms(1000);
 
-        // Key_Switch();
+    //     // Key_Switch();
 
-        Duoji_Control(&Steering, &Serve, 5);
-
-#if 0
-        wireless_uart_send_buff(virsco_data, 100);
-        virtual_oscilloscope_data_conversion(encoder_2, Motor_Right.result, encoder_1, Motor_Left.result);
-        system_delay_ms(100);
-#endif
-    }
+    // }
 }
