@@ -36,6 +36,8 @@
 #include "zf_common_headfile.h"
 #include "headfile.h"
 
+uint8 virsco_data[10];
+
 int main(void)
 {
     //     disableInterrupts();
@@ -48,7 +50,8 @@ int main(void)
     // enableInterrupts();
     SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
 
-    Initall(); // 初始化所有
+    Initall();   // 初始化所有
+    DATA_INIT(); // 初始化参数
 
     // 此处编写用户代码 例如外设初始化代码等
     // sdcard_read();
@@ -125,8 +128,19 @@ int main(void)
 
     // gpio_set_level(LED1, 0);
 
-    // while (1) {
-    //     gpio_toggle_level(LED1);
-    //     system_delay_ms(1000);
-    // }
+    while (1) {
+
+        // gpio_toggle_level(LED1);
+        // system_delay_ms(1000);
+
+        // Key_Switch();
+
+        Duoji_Control(&Steering, &Serve, 5);
+
+#if 0
+        wireless_uart_send_buff(virsco_data, 100);
+        virtual_oscilloscope_data_conversion(encoder_2, Motor_Right.result, encoder_1, Motor_Left.result);
+        system_delay_ms(100);
+#endif
+    }
 }
