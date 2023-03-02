@@ -6,9 +6,9 @@
 
 #define DUOJI_CHANY        TIM2_PWM_CH1_A15
 
-#define Duoji_Duty_Maximum 810
+#define Duoji_Duty_Maximum 810 - 10;
 #define Duoji_Duty_Midmum  744
-#define Duoji_Duty_Minimum 660
+#define Duoji_Duty_Minimum 660 + 10
 
 extern uint16 Duoji_Duty;
 

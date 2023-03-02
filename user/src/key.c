@@ -13,6 +13,8 @@ uint8 SWITCH1_last_status, SWITCH2_last_status;
 uint8 key1_flag, key2_flag, key3_flag, key4_flag;
 uint8 SWITCH1_flag, SWITCH2_flag;
 
+uint8 Img_Open_falg = 0;
+
 uint16 i = 744;
 
 void Key_Switch(void)
@@ -47,31 +49,21 @@ void Key_Switch(void)
         SWITCH2_flag = 1;
 
     if (key1_flag) {
-        key1_flag = 0;
-
-        i++;
-        Duoji_Out(i);
+        key1_flag     = 0;
+        Img_Open_falg = !Img_Open_falg;
+        ips200_clear();
     }
     if (key2_flag) {
         key2_flag = 0;
-
-        i--;
-        Duoji_Out(i);
     }
     if (key3_flag) {
         key3_flag = 0;
-        i         = 660;
-        Duoji_Out(i);
     }
     if (key4_flag) {
         key4_flag = 0;
-        i         = 820;
-        Duoji_Out(i);
     }
     if (SWITCH1_flag) {
         SWITCH1_flag = 1;
-        i            = 744;
-        Duoji_Out(i);
     }
     if (SWITCH2_flag) {
         SWITCH2_flag = 1;

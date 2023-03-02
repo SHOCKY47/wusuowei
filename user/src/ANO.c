@@ -41,5 +41,5 @@ void ANO_DT_send_int16byte16(short data1, short data2, short data3, short data4,
         sum += data_to_send[i];
     data_to_send[_cnt++] = sum;
 
-    UART_PutBuff(UART1, data_to_send, _cnt); // 可以修改不同的串口发送数据;
+    // UART_PutBuff(UART1, data_to_send, _cnt); // 可以修改不同的串口发送数据;
 }

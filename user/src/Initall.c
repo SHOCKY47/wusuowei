@@ -66,6 +66,7 @@ void Key_Init(void)
 void DATA_INIT(void)
 {
 
+    Img_data_init();
     Motor_L_Init();
     Motor_R_Init();
     MOTOR_PID_Init();
@@ -125,7 +126,7 @@ void Duoji_Data_Init(void)
 {
     Steering.setpoint = 0;
     Steering.deadband = 0; // 需要确定
-    Steering.minimum  = 5;
+    Steering.minimum  = 2;
 }
 
 void Duoji_PID_Init(void)
@@ -135,10 +136,11 @@ void Duoji_PID_Init(void)
     Serve.KD = 0;
 
     // 变比例参数
-    Serve.Kp_Gain = 0.1;
-    Serve.Base    = 0.6;
+    Serve.Kp_Gain = 0;
+    Serve.Base    = 8;
 
     // 变微分参数
+
     Serve.Kd_Gain = 2;
 }
 
