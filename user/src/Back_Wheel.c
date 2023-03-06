@@ -10,6 +10,8 @@ Motor_Para MOTOR;  // 电机参数结构体变量
 
 Chasu_Para CHASU; // 差速参数结构体变量
 
+uint8 Speed_Bia = 3; // 左右轮速度差(保证直行时走直线)
+
 float history[4];
 
 //----------------------------------------------------------后轮电机控制-------------------------------------------------------------//
@@ -241,6 +243,7 @@ void Motor_L_Control_Position(PID_2 *vPID, Motor_Para *Motor, int16 processValue
     static float lasterror = 0; // 前一拍偏差
 
     thisError = vPID->setpoint - processValue;
+    result    = vPID->result;
     if (Fabs(thisError) > vPID->deadband) {
         vPID->integral += (thisError + lasterror) / 2;
         result = Motor->L_P * thisError + Motor->L_I * vPID->integral + Motor->L_D * (thisError - lasterror);
@@ -273,6 +276,7 @@ void Motor_R_Control_Position(PID_2 *vPID, Motor_Para *Motor, int16 processValue
     float result;
     static float lasterror = 0; // 前一拍偏差
     thisError              = vPID->setpoint - processValue;
+    result                 = vPID->result;
     if (Fabs(thisError) > vPID->deadband) {
         vPID->integral += (thisError + lasterror) / 2;
         result = Motor->R_P * thisError + Motor->R_I * vPID->integral + Motor->R_D * (thisError - lasterror);
@@ -478,6 +482,29 @@ void Diff_Speed(Chasu_Para *Diff)
 //  @return    void        没求得
 //  @note
 //--------------------------------------------------------------
+// void Back_Wheel_Out(int32 L_outPWM, int32 R_outPWM)
+// {
+//     if (0 <= R_outPWM) // 电机1 正转
+//     {
+
+//         pwm_set_duty(MOTOR1_PWM, R_outPWM);
+//         pwm_set_duty(MOTOR1_DIR, 0);
+//     } else // 电机2 反转
+//     {
+//         pwm_set_duty(MOTOR1_PWM, 0);
+//         pwm_set_duty(MOTOR1_DIR, -R_outPWM);
+//     }
+//     if (0 <= L_outPWM) // 电机2 正转
+//     {
+//         pwm_set_duty(MOTOR2_PWM, L_outPWM);
+//         pwm_set_duty(MOTOR2_DIR, 0);
+//     } else // 电机2 反转
+//     {
+//         pwm_set_duty(MOTOR2_PWM, 0);
+//         pwm_set_duty(MOTOR2_DIR, -L_outPWM);
+//     }
+// }
+
 void Back_Wheel_Out(int32 R_outPWM, int32 L_outPWM)
 {
     if (0 <= L_outPWM) // 电机1 正转

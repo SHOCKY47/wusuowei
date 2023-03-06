@@ -37,46 +37,7 @@ void Duoji_Control(PID_Serve *vPID, Duoji_Para *Duoji, float processValue)
 
     lasterror  = thisError;
     Duoji_Duty = Duoji_Duty_Midmum + result;
+    Duoji_Duty = Duoji_Duty >= Duoji_Duty_Maximum ? Duoji_Duty_Maximum : Duoji_Duty;
+    Duoji_Duty = Duoji_Duty <= Duoji_Duty_Minimum ? Duoji_Duty_Minimum : Duoji_Duty;
     pwm_set_duty(DUOJI_CHANY, Duoji_Duty);
 }
-
-//--------------------------------------------------------------
-//  @brief     微分先行舵机控制
-//  @param     PID_2 *vPID                       PID结构体
-//             processValue                      图像误差
-//  @return    void        没有欸
-//  @note      微分先行PID
-//--------------------------------------------------------------
-// void Duoji_Control_Advance_differential(PID_Serve *vPID, Duoji_Para *Duoji, float processValue)
-// {
-
-//     float thisError;
-//     float KP_kx_b;
-//     float c1, c2, c3, temp;
-//     float result;
-
-//     thisError   = vPID->setpoint - processValue;
-//     Duoji->KP_V = ((Fabs(((FExp(-Fabs(thisError)) - 1)) / ((FExp(-Fabs(thisError)) + 1)))) / 2 + 0.5) * Duoji->bas_kp;
-
-//     //    KP_kx_b = Fabs(thisError)*Duoji->K + Duoji->Bias;
-
-//     vPID->integral += thisError;
-//     temp             = vPID->gama * Duoji->KD + Duoji->KP_V;
-//     c3               = Duoji->KD / temp;
-//     c2               = (Duoji->KD + Duoji->KP_V) / temp;
-//     c1               = vPID->gama * c3;
-//     vPID->derivative = c1 * vPID->derivative + c2 * processValue + c3 * vPID->lastPv;
-//     result           = Duoji->KP_V * thisError + Duoji->KI * vPID->integral + vPID->derivative;
-
-//     if (result >= vPID->maximum) {
-//         result = vPID->maximum;
-//     }
-//     if (result <= vPID->minimum) {
-//         result = vPID->minimum;
-//     }
-//     vPID->lasterror = thisError;
-//     vPID->lastPv    = processValue;
-
-//     vPID->result = result;
-//     Duoji_Duty   = Duoji_Duty_Midmum - result;
-// }

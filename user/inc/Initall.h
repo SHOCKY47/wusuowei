@@ -5,11 +5,14 @@
 #include "headfile.h"
 #include "imgStruct.h"
 
-#define LED1         (H2)
+#define LED1           (H2)
 
-#define PIT          (TIM6_PIT)
-#define PIT_PRIORITY (TIM6_IRQn)
-#define S_MOTOR_PIN  ATOM1_CH1_P33_9
+#define PIT            (TIM6_PIT)
+#define PIT_PRIORITY   (TIM6_IRQn)
+#define PIT_2          (TIM7_PIT)
+#define PIT_PRIORITY_2 (TIM7_IRQn)
+
+#define S_MOTOR_PIN    ATOM1_CH1_P33_9
 
 void Initall(void);
 void PIT_Init(void);

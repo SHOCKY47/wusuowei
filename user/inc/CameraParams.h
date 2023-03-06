@@ -7,8 +7,6 @@
 
 /*每米的像素点*/
 extern const float32 PixelperMeter;
-extern const float32 PixelperMeter1;
-extern const float32 PixelperMeter2;
 
 /*逆透视转换矩阵*/
 // extern const float32 INV_PERS[3][3];

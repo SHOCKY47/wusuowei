@@ -18,12 +18,13 @@ void Initall(void)
     Encoder_Init();
     Key_Init();
     wireless_uart_init();
+    imu660ra_init();
 }
 
 void Duoji_Init(void)
 {
     pwm_init(DUOJI_CHANY, 50, Duoji_Duty);
-    Duoji_Duty = 744;
+    Duoji_Duty = Duoji_Duty_Midmum;
 }
 
 void Motor_Init(void)
@@ -36,8 +37,11 @@ void Motor_Init(void)
 
 void PIT_Init(void)
 {
-    pit_ms_init(PIT, 5); // TIM2
-    interrupt_set_priority(PIT_PRIORITY, 0);
+    pit_ms_init(PIT, 5);                     // TIM6
+    interrupt_set_priority(PIT_PRIORITY, 1); // 中断优先级越低越高
+
+    pit_ms_init(PIT_2, 5);
+    interrupt_set_priority(PIT_PRIORITY_2, 0);
 }
 
 void Encoder_Init(void)
@@ -49,13 +53,13 @@ void Encoder_Init(void)
 
 void Key_Init(void)
 {
-    gpio_init(KEY1, GPI, GPIO_HIGH, GPI_PULL_UP);
-    gpio_init(KEY2, GPI, GPIO_HIGH, GPI_PULL_UP);
-    gpio_init(KEY3, GPI, GPIO_HIGH, GPI_PULL_UP);
-    gpio_init(KEY4, GPI, GPIO_HIGH, GPI_PULL_UP);
+    gpio_init(KEY1_PIN, GPI, GPIO_HIGH, GPI_PULL_UP);
+    gpio_init(KEY2_PIN, GPI, GPIO_HIGH, GPI_PULL_UP);
+    gpio_init(KEY3_PIN, GPI, GPIO_HIGH, GPI_PULL_UP);
+    gpio_init(KEY4_PIN, GPI, GPIO_HIGH, GPI_PULL_UP);
 
-    gpio_init(SWITCH1, GPI, GPIO_HIGH, GPI_FLOATING_IN);
-    gpio_init(SWITCH2, GPI, GPIO_HIGH, GPI_FLOATING_IN);
+    gpio_init(SW1_PIN, GPI, GPIO_HIGH, GPI_FLOATING_IN);
+    gpio_init(SW2_PIN, GPI, GPIO_HIGH, GPI_FLOATING_IN);
 }
 
 //----------------------------------------------------------参数初始化--------------------------------------------------------------//
@@ -77,10 +81,10 @@ void DATA_INIT(void)
 void Motor_L_Init(void) // 左轮基本参数初始化
 {
     Motor_Left.result      = 0;
-    Motor_Left.setpoint    = 100;   // 设定编码器的值
-    Motor_Left.maximum     = 8000;  // 输出最大值
-    Motor_Left.minimum     = -8000; // 输出最小值
-    Motor_Left.epsilon     = 100;   // 积分分离(本次偏差是否大于)
+    Motor_Left.setpoint    = 100 - Speed_Bia; // 设定编码器的值
+    Motor_Left.maximum     = 8000;            // 输出最大值
+    Motor_Left.minimum     = -8000;           // 输出最小值
+    Motor_Left.epsilon     = 100;             // 积分分离(本次偏差是否大于)
     Motor_Left.presetpoint = 100;
 }
 
@@ -136,11 +140,10 @@ void Duoji_PID_Init(void)
     Serve.KD = 0;
 
     // 变比例参数
-    Serve.Kp_Gain = 0;
+    Serve.Kp_Gain = 1.5;
     Serve.Base    = 8;
 
     // 变微分参数
-
     Serve.Kd_Gain = 2;
 }
 

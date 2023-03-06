@@ -37,7 +37,6 @@
 #include "headfile.h"
 
 uint8 virsco_data[10];
-
 int main(void)
 {
     //     disableInterrupts();
@@ -65,7 +64,10 @@ int main(void)
     while (1) {
         // timer_start(TIM_2);
         // mt9v03x_get_version();
-        Key_Switch();
+        // imu660ra_get_acc();  // 获取 IMU660RA 的加速度测量数值
+        // imu660ra_get_gyro(); // 获取 IMU660RA 的角速度测量数值
+
+        // Key_Switch();
         if (mt9v03x_finish_flag) {
             // timer_start(TIM_2);
             // adaptiveThreshold_2();
@@ -74,21 +76,29 @@ int main(void)
             FindCorner(&g_Border, &g_TrackType);
             GetAimingDist(&g_Border, &g_LineError, &g_TrackType);
             PurePursuit(&g_Border, &g_LineError, &g_TrackType);
-            if (Img_Open_falg) {
-                ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);
-                ips200_show_float(10, 130, g_LineError.m_f32LeftBorderKappa, 4, 4);
-                ips200_show_float(10, 150, g_LineError.m_f32RightBorderKappa, 4, 4);
-                DrawCenter(&g_Border);
-            }
+
+            // ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);
+            // ips200_show_float(10, 130, g_LineError.m_f32LeftBorderKappa, 4, 4);
+            // ips200_show_float(10, 150, g_LineError.m_f32RightBorderKappa, 4, 4);
+            // DrawCenter(&g_Border);
+
+            // 显示陀螺仪数据
+            // ips200_show_float(10, 80, imu660ra_acc_x, 4, 4);
+            // ips200_show_float(10, 100, imu660ra_gyro_x, 4, 4);
+            // ips200_show_float(10, 120, imu660ra_acc_y, 4, 4);
+            // ips200_show_float(10, 140, imu660ra_gyro_y, 4, 4);
+            // ips200_show_float(10, 160, imu660ra_acc_z, 4, 4);
+            // ips200_show_float(10, 180, imu660ra_gyro_z, 4, 4);
+
+            // ips200_show_float(10, 200, yaw_angle, 4, 4);
+            // ips200_show_float(10, 220, g_z, 4, 4);
 
             // timer_stop(TIM_2);
             // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
             // timer_clear(TIM_2);
 
             // DrawBoarder(&g_Border);
-            // // ips200_show_gray_image(0, 0, (mt9v03x_image), MT9V03X_W, MT9V03X_H, (IMGW), (IMGH), 0);
-            // ips200_show_char(50, 50, "A");
-            // ips200_clear();
+
             Control();
 
 #if 0

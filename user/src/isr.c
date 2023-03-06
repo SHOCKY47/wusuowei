@@ -104,7 +104,7 @@ void TIM6_IRQHandler(void)
     // 此处编写用户代码
 
     extern void Get_Speed(void);
-
+    // gyro_calculate();
     Get_Speed();
 
     Motor_L_Control(&Motor_Left, &MOTOR, encoder_1);
@@ -124,6 +124,7 @@ void TIM7_IRQHandler(void)
 {
     // 此处编写用户代码
 
+    // gyro_calculate();
     // 此处编写用户代码
     TIM7->SR &= ~TIM7->SR; // 清空中断状态
 }

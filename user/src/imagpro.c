@@ -605,8 +605,8 @@ void Inverse_Perspective(INT_POINT_INFO PointIN[], INT_POINT_INFO PointOUT[], in
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> cnt=%d.", PointNum);
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> num=%d.", num);
 
-        PointOUT[int16_i].m_i16x = Inv_x1[PointIN[int16_i].m_i16y * 188 + PointIN[int16_i].m_i16x];
-        PointOUT[int16_i].m_i16y = Inv_y1[PointIN[int16_i].m_i16y * 188 + PointIN[int16_i].m_i16x];
+        PointOUT[int16_i].m_i16x = Inv_x[PointIN[int16_i].m_i16y * 188 + PointIN[int16_i].m_i16x];
+        PointOUT[int16_i].m_i16y = Inv_y[PointIN[int16_i].m_i16y * 188 + PointIN[int16_i].m_i16x];
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> invx=%d.", Inv_x[ pn ]);
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> invy=%d.", Inv_y[ pn ]);
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> out=%d.", PointOUT[int16_i].m_i16x);
@@ -1365,7 +1365,7 @@ void Full_Inverse_Perspective(void)
 
         for (j = 0; j < IMGW; j++) {
             // inv_image[i][j] = mt9v03x_image[Inv_y1[i * IMGW + j]][Inv_x1[i * IMGW + j]];
-            inv_image[i][j] = mt9v03x_image[Inv_y_imge1[i * IMGW + j]][Inv_x_imge1[i * IMGW + j]];
+            inv_image[i][j] = mt9v03x_image[Inv_y_imge[i * IMGW + j]][Inv_x_imge[i * IMGW + j]];
         }
     }
 }

@@ -103,6 +103,8 @@ extern Motor_Para MOTOR;  // PID参数结构体
 
 extern Chasu_Para CHASU; // 差速参数结构体
 
+extern uint8 Speed_Bia;
+
 extern float history[4]; // 舵机滑动平均滤波数值数组
 extern float history_Result[4];
 extern float history_DuojiKP[4];
