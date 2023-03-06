@@ -708,7 +708,7 @@ void Border_Local_Angle(FLOAT_POINT_INFO PointIN[], float32 AngleOUT[], int16 Po
 
     int16_loopi = -1;
 
-    memset(AngleOUT, 0, sizeof(AngleOUT[0]) * PointNum);
+    memset((void *)AngleOUT, 0, sizeof(AngleOUT[0]) * PointNum);
 
     while (++int16_loopi < PointNum) {
 
@@ -745,7 +745,7 @@ void Angle_NMS(float32 AngleIN[], float32 AngleOUT[], int16 AngleNum, int16 kern
 
     int16 int16_loopi, int16_loopj;
 
-    memset(AngleOUT, 0, sizeof(AngleOUT[0]) * AngleNum);
+    memset((void *)AngleOUT, 0, sizeof(AngleOUT[0]) * AngleNum);
 
     int16_loopi = -1;
     while (++int16_loopi < AngleNum) {

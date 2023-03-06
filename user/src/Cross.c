@@ -137,11 +137,11 @@ void FindRemoteLine(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border)
 
     RightLine_SeedGrow_Adaptive(InImg, t_SeedRRemote, p_Border->m_RRemotePnt, p_Border->m_RRemotePntGrowDirection, BinaryBlock, Threclip, &p_Border->m_i16RRemotePointCnt);
 
-    Inverse_Perspective(p_Border->m_LRemotePnt, p_Border->m_LPntInvpRemote, p_Border->m_i16LRemotePointCnt);
-    Inverse_Perspective(p_Border->m_RRemotePnt, p_Border->m_RPntInvpRemote, p_Border->m_i16RRemotePointCnt);
+    Inverse_Perspective(p_Border->m_LRemotePnt, (INT_POINT_INFO *)p_Border->m_LPntInvpRemote, p_Border->m_i16LRemotePointCnt);
+    Inverse_Perspective(p_Border->m_RRemotePnt, (INT_POINT_INFO *)p_Border->m_RPntInvpRemote, p_Border->m_i16RRemotePointCnt);
 
-    Points_Blur(p_Border->m_LPntInvpRemote, p_Border->m_LPntoutRemote, p_Border->m_i16LRemotePointCnt, PointsBlurKernel);
-    Points_Blur(p_Border->m_RPntInvpRemote, p_Border->m_RPntoutRemote, p_Border->m_i16RRemotePointCnt, PointsBlurKernel);
+    Points_Blur((INT_POINT_INFO *)p_Border->m_LPntInvpRemote, p_Border->m_LPntoutRemote, p_Border->m_i16LRemotePointCnt, PointsBlurKernel);
+    Points_Blur((INT_POINT_INFO *)p_Border->m_RPntInvpRemote, p_Border->m_RPntoutRemote, p_Border->m_i16RRemotePointCnt, PointsBlurKernel);
 
     p_Border->m_i16LPointCntRSRemote = IMGH;
     p_Border->m_i16RPointCntRSRemote = IMGH;
@@ -313,11 +313,11 @@ void SideCrossFindRemoteLine(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border)
 
     RightLine_SeedGrow_Adaptive(InImg, t_SeedRRemote, p_Border->m_RRemotePnt, p_Border->m_RRemotePntGrowDirection, BinaryBlock, Threclip, &p_Border->m_i16RRemotePointCnt);
 
-    Inverse_Perspective(p_Border->m_LRemotePnt, p_Border->m_LPntInvpRemote, p_Border->m_i16LRemotePointCnt);
-    Inverse_Perspective(p_Border->m_RRemotePnt, p_Border->m_RPntInvpRemote, p_Border->m_i16RRemotePointCnt);
+    Inverse_Perspective(p_Border->m_LRemotePnt, (INT_POINT_INFO *)p_Border->m_LPntInvpRemote, p_Border->m_i16LRemotePointCnt);
+    Inverse_Perspective(p_Border->m_RRemotePnt, (INT_POINT_INFO *)p_Border->m_RPntInvpRemote, p_Border->m_i16RRemotePointCnt);
 
-    Points_Blur(p_Border->m_LPntInvpRemote, p_Border->m_LPntoutRemote, p_Border->m_i16LRemotePointCnt, PointsBlurKernel);
-    Points_Blur(p_Border->m_RPntInvpRemote, p_Border->m_RPntoutRemote, p_Border->m_i16RRemotePointCnt, PointsBlurKernel);
+    Points_Blur((INT_POINT_INFO *)p_Border->m_LPntInvpRemote, p_Border->m_LPntoutRemote, p_Border->m_i16LRemotePointCnt, PointsBlurKernel);
+    Points_Blur((INT_POINT_INFO *)p_Border->m_RPntInvpRemote, p_Border->m_RPntoutRemote, p_Border->m_i16RRemotePointCnt, PointsBlurKernel);
 
     p_Border->m_i16LPointCntRSRemote = IMGH;
     p_Border->m_i16RPointCntRSRemote = IMGH;

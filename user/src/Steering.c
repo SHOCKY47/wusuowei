@@ -16,7 +16,7 @@ void Duoji_Control(PID_Serve *vPID, Duoji_Para *Duoji, float processValue)
 
     float thisError;
     float result;
-    static lasterror = 0;
+    static int lasterror = 0;
 
     thisError = vPID->setpoint - processValue;
 
