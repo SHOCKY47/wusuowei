@@ -63,12 +63,13 @@ int main(void)
     // int i=0;
     while (1) {
         // timer_start(TIM_2);
-        // mt9v03x_get_version();
+
         // imu660ra_get_acc();  // 获取 IMU660RA 的加速度测量数值
         // imu660ra_get_gyro(); // 获取 IMU660RA 的角速度测量数值
 
         // Key_Switch();
         if (mt9v03x_finish_flag) {
+            Out_Protect(mt9v03x_image);
             // timer_start(TIM_2);
             // adaptiveThreshold_2();
             // Full_Inverse_Perspective();
@@ -78,7 +79,7 @@ int main(void)
             PurePursuit(&g_Border, &g_LineError, &g_TrackType);
 
             // ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);
-            // ips200_show_float(10, 130, g_LineError.m_f32LeftBorderKappa, 4, 4);
+            ips200_show_int(10, 130, g_TrackType.Outframe, 4);
             // ips200_show_float(10, 150, g_LineError.m_f32RightBorderKappa, 4, 4);
             // DrawCenter(&g_Border);
 

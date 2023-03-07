@@ -223,6 +223,7 @@ typedef struct track_type_info_ {
 
     // 运行圈数计数
     uint8 m_u8Round_Count;
+    uint8 Outframe; // 出界
 
     // 左边线长直道标志位
     uint8 m_u8LeftLineStraightFlag;

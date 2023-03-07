@@ -332,73 +332,17 @@ void Motor_L_Control_Position_Advance_differential(PID_2 *vPID, Motor_Para *Moto
 //  @return    void        没求得
 //  @note
 //--------------------------------------------------------------
-void Differrntial(Chasu_Para *Diff)
+float32 Differrntial(Chasu_Para *Diff)
 {
-    Diff->Duoji_Error = Duoji_Duty - 740;
+    float32 Duoji_Error;
+    float32 Sita;
+    float32 result;
+    Duoji_Error = Fabs(Duoji_Duty - Duoji_Duty_Midmum);
+    Sita        = (Duoji_Error * 0.2 / 180) * Pi;
 
-    //    Diff->Sita = (Diff->Duoji_Error-1.5)*Pi/2;  //实际测舵机输出角度改变100，转角变化20度,a=(l-1.5)×90°
-    if (Fabs(Diff->Duoji_Error) <= 40) // 不差速
-    {
-        Diff->Sita = 0;
-    } else if (Fabs(Diff->Duoji_Error) > 40) {
-        Diff->Sita = (Diff->Duoji_Error * 0.2 / 180) * Pi; // 实际测舵机输出角度改变100，转角变化20度
-    } else if (Fabs(Diff->Duoji_Error) > 80) {
-        Diff->Sita = (Diff->Duoji_Error * 0.2 / 180) * Pi; // 实际测舵机输出角度改变100，转角变化20度
-    } else if (Fabs(Diff->Duoji_Error) > 80 && Fabs(Diff->Duoji_Error) < 110) {
-        Diff->Sita = (Diff->Duoji_Error * 0.15 / 180) * Pi; // 实际测舵机输出角度改变100，转角变化20度
-    } else if (Fabs(Diff->Duoji_Error) <= 20) {
-        Diff->Sita = Diff->Duoji_Error * 0.2 / 180 * Pi; // 实际测舵机输出角度改变100，转角变化20度
-    } else if (Fabs(Diff->Duoji_Error) >= 20 && Fabs(Diff->Duoji_Error) <= 40) {
-        Diff->Sita = Diff->Duoji_Error * 0.2 / 180 * Pi; // 实际测舵机输出角度改变100，转角变化20度
-    } else if (Fabs(Diff->Duoji_Error) >= 40) {
-        Diff->Sita = Diff->Duoji_Error * 0.2 / 180 * Pi; // 实际测舵机输出角度改变100，转角变化20度
-    }
-
-    Diff->result = Fabs(Distance_Row * tanf(Diff->Sita) / (Distance_Col * 2));
-    //  2L errorfilter(Diff->result, 0.7); // 滤波
-    //  Diff->CS_MAX = DIstance_Row * tanf((MAX->maximum - 1.5) * Pi / 2) / (Distance_Col * 2);
-
-    //    if(Fabs(Diff->result) > Diff->result_MAX )
-    //       {
-    //        if(Diff->result<0)
-    //        {
-    //           Diff->result = -Diff->result_MAX;    //限幅
-    //        }
-    //        else
-    //        {
-    //           Diff->result =  Diff->result_MAX;
-    //        }
-    //       }
-
-    if (Diff->result >= Diff->result_MAX) // 限幅
-    {
-        Diff->result = Diff->result_MAX;
-    }
-}
-
-//--------------------------------------------------------------
-//  @brief     差速输出(改变电机设定速度)
-//  @param     Chasu_Para *Diff    差速参数结构体
-//             Chasu_V *chasu_L    左轮差速参数
-//             Chasu_V *chasu_R    右轮差速参数
-//  @return    void        没求得
-//  @note
-//--------------------------------------------------------------
-void Diff_Speed(Chasu_Para *Diff)
-{
-
-    //    chasu_L->setpoint = Motor_Left.setpoint * (1 + Diff->K * Diff->result);//双边差速
-    //    chasu_R->setpoint = Motor_Right.setpoint * (1 - Diff->K * Diff->result);
-    if (Diff->Duoji_Error > 0) // 单边差速
-    {
-        Motor_Left.setpoint  = Motor_Left.presetpoint * (1 - Diff->K * Diff->result);
-        Motor_Right.setpoint = Motor_Right.presetpoint;
-        //        chasu_R->setpoint = Motor_Right.presetpoint * (1 + Diff->K * Diff->result);
-    } else if (Diff->Duoji_Error <= 0) {
-        Motor_Right.setpoint = Motor_Right.presetpoint * (1 - Diff->K * Diff->result);
-        Motor_Left.setpoint  = Motor_Left.presetpoint;
-        //        chasu_L->setpoint = Motor_Left.presetpoint * (1 + Diff->K * Diff->result);
-    }
+    result = Distance_Row * tanf(Sita) / (Distance_Col * 2);
+    result = result > Diff->maximun ? Diff->maximun : result;
+    return result;
 }
 
 // float Differential(void)

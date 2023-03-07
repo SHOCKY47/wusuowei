@@ -34,15 +34,15 @@ uint8 BinaryImg[90][188];
 /*---------------------------------º¯Êý¶¨Òå-----------------------------*/
 void Img_data_init(void)
 {
-    CenterX       = Inv_x[22090];
-    CenterY       = Inv_y[22090];
-    Protect_Frame = 0;
+    CenterX = Inv_x[22090];
+    CenterY = Inv_y[22090];
+    // Protect_Frame = 0;
 
     // control_init();
     // Nomal_Charge = 1;
 
     //    Stop_to_Charge = 1;
-
+    g_TrackType.Outframe             = 0;
     g_LineError.m_u8LeftCenterValid  = 0;
     g_LineError.m_u8RightCenterValid = 0;
 

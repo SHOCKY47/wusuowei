@@ -102,13 +102,16 @@ void TIM5_IRQHandler(void)
 void TIM6_IRQHandler(void)
 {
     // 此处编写用户代码
-
+    if (g_TrackType.Outframe == 1) {
+        Motor_Left.setpoint  = 0;
+        Motor_Right.setpoint = 0;
+    }
     extern void Get_Speed(void);
     // gyro_calculate();
     Get_Speed();
 
-    Motor_L_Control(&Motor_Left, &MOTOR, encoder_1);
-    Motor_R_Control(&Motor_Right, &MOTOR, encoder_2);
+    Motor_L_Control_Change_Integral(&Motor_Left, &MOTOR, encoder_1);
+    Motor_R_Control_Change_Integral(&Motor_Right, &MOTOR, encoder_2);
 
     Back_Wheel_Out(-Motor_Left.result, Motor_Right.result);
 

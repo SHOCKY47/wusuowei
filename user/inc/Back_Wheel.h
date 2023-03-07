@@ -2,11 +2,12 @@
 #define __BACK_WHEEL_H__
 
 #include "zf_common_headfile.h"
+
 #include "headfile.h"
 
-#define MOTOR1_DIR   (A0)
+#define MOTOR1_DIR   (TIM5_PWM_CH1_A0)
 #define MOTOR1_PWM   (TIM5_PWM_CH2_A1)
-#define MOTOR2_DIR   (A2)
+#define MOTOR2_DIR   (TIM5_PWM_CH3_A2)
 #define MOTOR2_PWM   (TIM5_PWM_CH4_A3)
 
 #define Distance_Col 0.200 // 车身的前后轮中心距
@@ -83,17 +84,9 @@ typedef struct // 后轮结构体参数
 
 typedef struct // 差速结构体参数
 {
-    float K;           // 补偿系数(K越大差速越提前)
-    int16 Duoji_Error; // 舵机设定打角于中值之差
-    float Sita;        // 打角角度(转弯半径于车长)
-    float result;      // 差速结果
-    float result_MAX;  // 差速最大值
-    float result_MIN;  // 差速最小值
-
-    float L_result_MAX; // 差速最大值
-    float L_result_MIN; // 差速最小值
-    float R_result_MAX; // 差速最大值
-    float R_result_MIN; // 差速最小值
+    float K;       // 补偿系数
+    float maximun; // 差速最大值
+    float minimum; // 差速最小值
 
 } Chasu_Para;
 
@@ -120,13 +113,11 @@ uint16 BetaGeneration(float error, float epsilon);
 float errorfilter(float inData, float a);
 float data_filtering(float *filter, const float filter_data, const uint8 filter_depth);
 float Filter_ave_DuojiData(float value, uint8 time);
-float Filter_ave_DuojiResult(float value, uint8 time);
+
 void Motor_L_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 processValue);
 void Motor_R_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 processValue);
-float Filter_ave_Duoji_KP(float value, uint8 time);
 
-void Differrntial(Chasu_Para *Diff);
-void Diff_Speed(Chasu_Para *Diff);
+float32 Differrntial(Chasu_Para *Diff);
 
 //----------------------------------------------------------我是分割线-------------------------------------------------------------//
 //----------------------------------------------------------我是分割线-------------------------------------------------------------//

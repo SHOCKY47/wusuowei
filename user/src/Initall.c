@@ -149,11 +149,6 @@ void Duoji_PID_Init(void)
 
 void Chasu_Init(void) // 差速基本参数初始化
 {
-    CHASU.K          = 1.8; // 差速系数
-    CHASU.result_MAX = 0.3;
-    CHASU.result_MIN = -0.3;
-    CHASU.result     = 0;
-    CHASU.Sita       = 0;
-
-    CHASU.Duoji_Error = 0;
+    CHASU.K       = 1.8; // 差速系数
+    CHASU.maximun = 20;
 }

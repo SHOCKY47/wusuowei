@@ -1390,3 +1390,13 @@ void Full_Inverse_Perspective(void)
 //     }
 //     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n count=%d.", count);
 // }
+
+void Out_Protect(uint8 (*image)[IMGW])
+{
+    uint8 i;
+    int16 Sum = 0;
+    for (i = 0; i < 188; i++) {
+        if (image[90][i] > 200) Sum++; // 判断赛道白点
+    }
+    if (Sum < 50) g_TrackType.Outframe = 1; // 赛道白点小于50个就出界
+}
