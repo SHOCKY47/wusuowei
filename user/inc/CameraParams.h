@@ -12,10 +12,10 @@ extern const float32 PixelperMeter;
 // extern const float32 INV_PERS[3][3];
 
 /*逆透视打表数组*/
-extern uint8 Inv_x1[22560];
-extern uint8 Inv_y1[22560];
-extern uint8 Inv_x_imge1[22560];
-extern uint8 Inv_y_imge1[22560];
+extern uint8 Inv_x[22560];
+extern uint8 Inv_y[22560];
+extern uint8 Inv_x_imge[22560];
+extern uint8 Inv_y_imge[22560];
 // extern uint8 Inv_x2[22560];
 // extern uint8 Inv_y2[22560];
 // extern uint8 Inv_x_imge2[22560];
