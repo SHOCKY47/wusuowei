@@ -165,6 +165,12 @@ void menu_tuning(float32 *tuning, char name[30]) // 调参界面菜单
     }
 }
 
+void menu_Departure()
+{
+    system_delay_ms(1500);
+    start_flag = 1;
+}
+
 menu_item menu[] = {
     {1, "Image Mode", NULL, NULL},                                         // 图像模式
     {11, "Original line", menu_11, NULL},                                  // 显示原边线
@@ -208,7 +214,7 @@ menu_item menu[] = {
     {2222, "Back to Main", NULL, NULL},                                    // 回到主菜单
     {223, "Back to Main", NULL, NULL},                                     // 回到主菜单
     {23, "Back to Main", NULL, NULL},                                      // 回到主菜单
-    {3, "Departure Mode", NULL, NULL},                                     // 发车模式
+    {3, "Departure Mode", menu_Departure, NULL},                           // 发车模式
     {4, "PESS KEY_4 TO SAVE PARAM", NULL, NULL},                           // 保存所有数据
 
 };

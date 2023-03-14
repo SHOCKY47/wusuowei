@@ -1,5 +1,7 @@
 #include "Initall.h"
 
+uint8 start_flag = 0;
+
 void Initall(void)
 {
     clock_init(SYSTEM_CLOCK_120M); // 初始化芯片时钟 工作频率为 120MHz
