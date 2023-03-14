@@ -1,5 +1,7 @@
 #include "Initall.h"
 
+uint8 start_flag = 0;
+
 void Initall(void)
 {
     clock_init(SYSTEM_CLOCK_120M); // 初始化芯片时钟 工作频率为 120MHz
@@ -10,13 +12,14 @@ void Initall(void)
 
     PIT_Init();
     // timer_init(TIM_2, TIMER_MS);
+    SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "PIT Init Success.\r\n");
     mt9v03x_init();
+    SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "Mt9v03x_init Success.\r\n");
     gpio_init(LED1, GPO, GPIO_HIGH, GPO_PUSH_PULL); // 初始化 LED1 输出 默认高电平 推挽输出模式
     sdcardinit();
     Duoji_Init();
     Motor_Init();
     Encoder_Init();
-    Key_Init();
     wireless_uart_init();
     imu660ra_init();
 }
@@ -53,13 +56,13 @@ void Encoder_Init(void)
 
 void Key_Init(void)
 {
-    gpio_init(KEY1_PIN, GPI, GPIO_HIGH, GPI_PULL_UP);
-    gpio_init(KEY2_PIN, GPI, GPIO_HIGH, GPI_PULL_UP);
-    gpio_init(KEY3_PIN, GPI, GPIO_HIGH, GPI_PULL_UP);
-    gpio_init(KEY4_PIN, GPI, GPIO_HIGH, GPI_PULL_UP);
+    gpio_init(KEY1, GPI, GPIO_HIGH, GPI_PULL_UP);
+    gpio_init(KEY2, GPI, GPIO_HIGH, GPI_PULL_UP);
+    gpio_init(KEY3, GPI, GPIO_HIGH, GPI_PULL_UP);
+    gpio_init(KEY4, GPI, GPIO_HIGH, GPI_PULL_UP);
 
-    gpio_init(SW1_PIN, GPI, GPIO_HIGH, GPI_FLOATING_IN);
-    gpio_init(SW2_PIN, GPI, GPIO_HIGH, GPI_FLOATING_IN);
+    gpio_init(SW1, GPI, GPIO_HIGH, GPI_FLOATING_IN);
+    gpio_init(SW2, GPI, GPIO_HIGH, GPI_FLOATING_IN);
 }
 
 //----------------------------------------------------------参数初始化--------------------------------------------------------------//
@@ -110,7 +113,7 @@ void MOTOR_PID_Init(void) // 后轮控制参数初始化
     MOTOR.R_I = 0;
 
     /*****变积分参数******/
-    MOTOR.R_Max_I = 0.15;
+    MOTOR.L_Max_I = 0.15;
     MOTOR.L_Ci    = 0.01; // Ci越小积分越快
 
     MOTOR.R_Max_I = 0.15; // 补偿
@@ -122,8 +125,8 @@ void MOTOR_PID_Init(void) // 后轮控制参数初始化
     MOTOR.L_Cp      = 0.01;
 
     MOTOR.R_Bas_KP  = 50;
-    MOTOR.L_Gain_KP = 40;
-    MOTOR.L_Cp      = 0.01;
+    MOTOR.R_Gain_KP = 40;
+    MOTOR.R_Cp      = 0.01;
 }
 
 void Duoji_Data_Init(void)

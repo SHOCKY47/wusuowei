@@ -14,6 +14,8 @@
 
 #define S_MOTOR_PIN    ATOM1_CH1_P33_9
 
+extern uint8 start_flag;
+
 void Initall(void);
 void PIT_Init(void);
 void Duoji_Init(void);

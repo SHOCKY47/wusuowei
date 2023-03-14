@@ -110,10 +110,14 @@ void TIM6_IRQHandler(void)
     // gyro_calculate();
     Get_Speed();
 
+    if (start_flag == 1) {
+        Get_Speed();
+
     Motor_L_Control_Change_Integral(&Motor_Left, &MOTOR, encoder_1);
     Motor_R_Control_Change_Integral(&Motor_Right, &MOTOR, encoder_2);
 
-    Back_Wheel_Out(-Motor_Left.result, Motor_Right.result);
+        Back_Wheel_Out(-Motor_Left.result, Motor_Right.result);
+    }
 
     // 此处编写用户代码
     TIM6->SR &= ~TIM6->SR; // 清空中断状态
