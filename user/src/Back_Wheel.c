@@ -329,8 +329,8 @@ void Motor_L_Control_Position_Advance_differential(PID_2 *vPID, Motor_Para *Moto
 //--------------------------------------------------------------
 //  @brief     差速控制
 //  @param     Chasu_Para *Diff         差速参数结构体
-//  @return    差速
-//  @ 2.36*10^-5*error*K
+//  @return    void        没求得
+//  @note
 //--------------------------------------------------------------
 float32 Differrntial(Chasu_Para *Diff)
 {
@@ -341,7 +341,6 @@ float32 Differrntial(Chasu_Para *Diff)
     Sita        = (Duoji_Error * 0.2 / 180) * Pi;
 
     result = Distance_Row * tanf(Sita) / (Distance_Col * 2);
-    result = result * Diff->K;
     result = result > Diff->maximun ? Diff->maximun : result;
     return result;
 }

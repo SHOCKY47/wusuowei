@@ -34,9 +34,9 @@ uint8 BinaryImg[90][188];
 /*---------------------------------函数定义-----------------------------*/
 void Img_data_init(void)
 {
-    CenterX = Inv_x[22090];
-    CenterY = Inv_y[22090];
-    // Protect_Frame = 0;
+    CenterX       = Inv_x[22090];
+    CenterY       = Inv_y[22090];
+    Protect_Frame = 0;
 
     // control_init();
     // Nomal_Charge = 1;
@@ -62,22 +62,22 @@ void Img_data_init(void)
 
     //     /*特殊赛道元素初始化*/
     // //    g_TrackType.m_u8PRoadDir = PROAD_INIT;
-    //     g_TrackType.m_u8CrossFlag = CROSS_NONE;
-    //     g_TrackType.m_u8LeftSideCrossFlag = CROSS_NONE;
-    //     g_TrackType.m_u8RightSideCrossFlag = CROSS_NONE;
+    g_TrackType.m_u8CrossFlag          = CROSS_NONE;
+    g_TrackType.m_u8LeftSideCrossFlag  = CROSS_NONE;
+    g_TrackType.m_u8RightSideCrossFlag = CROSS_NONE;
     //     g_TrackType.m_u8YjunctionFlag = YJUNCTION_NONE;
-    //     g_TrackType.m_u8RightRoundaboutFlag = ROUNDABOUT_NONE;
-    //     g_TrackType.m_u8LeftRoundaboutFlag = ROUNDABOUT_NONE;
+    g_TrackType.m_u8RightRoundaboutFlag = ROUNDABOUT_NONE;
+    g_TrackType.m_u8LeftRoundaboutFlag  = ROUNDABOUT_NONE;
     //     g_TrackType.m_u8RightPRoadFlag = PROAD_NONE;
     //     g_TrackType.m_u8LeftPRoadFlag = PROAD_NONE;
     //     g_TrackType.m_u8BendSFlag = BENDS_NONE;
     //     g_TrackType.m_u8RampFlag = RAMP_NONE;
     //     g_TrackType.m_int16BendSCount = 0;
-    //     CornerLossCount = 0;
+    // CornerLossCount = 0;
     //     StopCharging = 0;
     //     Beep.flag = 0;
     //     Beep.time = 0;
     //     Beep.num = 0;
-    //     memset(g_Border.m_LRemotePnt, 0 , sizeof(g_Border.m_LRemotePnt[0]) * IMGH);
-    //     memset(g_Border.m_RRemotePnt, 0 , sizeof(g_Border.m_RRemotePnt[0]) * IMGH);
+    memset(g_Border.m_LRemotePnt, 0, sizeof(g_Border.m_LRemotePnt[0]) * IMGH);
+    memset(g_Border.m_RRemotePnt, 0, sizeof(g_Border.m_RRemotePnt[0]) * IMGH);
 }

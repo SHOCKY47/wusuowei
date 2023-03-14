@@ -15,9 +15,15 @@
 extern int16 encoder_1;
 extern int16 encoder_2;
 
+extern int64 LeftMotor_TotalEncoder;
+extern int64 RightMotor_TotalEncoder;
+extern const int64 EncoderPerMeter;
+
 extern float V_L;
 extern float V_R;
 
 void Get_Speed(void);
+void EncoderCount(void);
+int64 GetEncoder(void);
 
 #endif

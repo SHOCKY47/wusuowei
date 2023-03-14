@@ -14,12 +14,12 @@ void DrawRemoteLine(TRACK_BORDER_INFO *p_Border)
 
     int16 int16_step = -1;
     while (++int16_step < int16_numL) {
-        ips200_draw_point(p_Border->m_LRemotePnt[int16_step].m_i16x, p_Border->m_LRemotePnt[int16_step].m_i16y, RGB565_RED);
+        ips200_draw_point(p_Border->m_LRemotePnt[int16_step].m_i16x, p_Border->m_LRemotePnt[int16_step].m_i16y, RGB565_YELLOW);
     }
 
     int16_step = -1;
     while (++int16_step < int16_numR) {
-        ips200_draw_point(p_Border->m_RRemotePnt[int16_step].m_i16x, p_Border->m_RRemotePnt[int16_step].m_i16y, RGB565_BLUE);
+        ips200_draw_point(p_Border->m_RRemotePnt[int16_step].m_i16x, p_Border->m_RRemotePnt[int16_step].m_i16y, RGB565_PURPLE);
     }
 }
 
@@ -28,7 +28,7 @@ void DrawRemoteLine(TRACK_BORDER_INFO *p_Border)
 void Check_Cross(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type)
 {
 
-    if (p_Border->LL_CornerPos != -1 && p_Border->RL_CornerPos != -1 && p_Type->m_u8CrossFlag == CROSS_NONE) {
+    if (p_Border->LL_CornerPos != -1 && p_Border->RL_CornerPos != -1 && p_Type->m_u8CrossFlag == CROSS_NONE) /*左右都有拐点，正入十字标志位为none*/ {
         p_Type->m_u8CrossFlag          = CROSS_FAR; // CROSS_FAR
         p_Type->m_u8RightSideCrossFlag = CROSS_NONE;
         p_Type->m_u8LeftSideCrossFlag  = CROSS_NONE;

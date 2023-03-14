@@ -14,6 +14,8 @@ extern TRACK_BORDER_INFO g_Border;  /*全局图像提取的大部分信息都保
 extern TRACK_TYPE_INFO g_TrackType; /*赛道类型*/
 extern LINE_ERROR_INFO g_LineError; /*存放图像与边线相关的偏差信息*/
 
+
+
 extern uint16 Protect_Frame;
 
 extern uint32 tim1;

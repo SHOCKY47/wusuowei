@@ -2,35 +2,27 @@
 #define _KEY_H_
 
 #include "zf_common_headfile.h"
+#include "headfile.h"
 
-#define KEY1        (G0)
-#define KEY2        (G1)
-#define KEY3        (G2)
-#define KEY4        (G3)
+#define KEY1_PIN (G0)
+#define KEY2_PIN (G1)
+#define KEY3_PIN (G2)
+#define KEY4_PIN (G3)
 
-#define SW1         (D14)
-#define SW2         (D15)
+#define SW1_PIN  (D14)
+#define SW2_PIN  (D15)
 
-#define ROWMIN      0
-#define ROW0MAX     3
-#define ROW1MAX     4
-#define ROW2MAX     1
-#define ROW3MAX     2
-#define ROW4MAX     2
-#define ROW5MAX     2
-
-#define BALANCE     1
-#define VELOCITY    2
-#define KALMAN      3
-#define SYSTEM      4
-#define DATA_OPTION 5
-
-extern uint16 i;
 extern uint8 key1_status, key2_status, key3_status, key4_status;
 extern uint8 key1_last_status, key2_last_status, key3_last_status, key4_last_status;
-extern uint8 key1_flag, key2_flag, key3_flag, key4_flag;
+extern char key1_flag, key2_flag, key3_flag, key4_flag;
+extern uint8 sw1_status;
+extern uint8 sw2_status;
 
-bool key_switch(void);
-void key_flag_clear(void);
+// extern int8 vision_page, vision_line;
+// extern uint8 start_flag, wireless_flag;
+// extern uint8 stop_flag;
+// extern uint8 page_max, line_max;
+
+// void button(void);
 
 #endif
