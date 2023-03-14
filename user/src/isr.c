@@ -106,9 +106,8 @@ void TIM6_IRQHandler(void)
         Motor_Left.setpoint  = 0;
         Motor_Right.setpoint = 0;
     }
-    extern void Get_Speed(void);
-    // gyro_calculate();
-    Get_Speed();
+
+    Speed_Control();
 
     if (start_flag == 1) {
         Get_Speed();

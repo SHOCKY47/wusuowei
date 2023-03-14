@@ -201,6 +201,9 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
     int16_y = IMGH - 5;
     // 找到种子标志位
     p_Border->u8_FindLeftSeed = 0;
+
+    // timer_start(TIM_2);
+
     while (--int16_y > LYEND) {
         /*从图像的中线向左搜索*/
         int16_x = IMGW / 2;
@@ -240,6 +243,8 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
         // 扫到种子后跳出循环
         if (p_Border->u8_FindLeftSeed == 1) break;
     }
+
+    // timer_stop(TIM_2);
     LeftLine_SeedGrow_Adaptive(mt9v03x_image, t_SeedL, p_Border->m_LPnt, p_Border->m_LPntGrowDirection, BinaryBlock, Threclip, &p_Border->m_i16LPointCnt);
 
     int16_y                    = IMGH - 5;
@@ -283,9 +288,7 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
     /*初始化右边界数组个数*/
     p_Border->m_i16RPointCnt = IMGH;
     RightLine_SeedGrow_Adaptive(mt9v03x_image, t_SeedR, p_Border->m_RPnt, p_Border->m_RPntGrowDirection, BinaryBlock, Threclip, &p_Border->m_i16RPointCnt);
-    // timer_stop(TIM_2);
-    // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
-    // timer_clear(TIM_2);
+
     /*边线数组重新压栈*/
     BorderLineReCoor(p_Border->m_LPnt, p_Border->m_i16LPointCnt, p_Border->m_LeftLineCoor);
     BorderLineReCoor(p_Border->m_RPnt, p_Border->m_i16RPointCnt, p_Border->m_RightLineCoor);
@@ -924,7 +927,7 @@ void FindCorner(TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type)
         int16 lower = clip(int16_Loopi - InterPoint, 0, p_Border->m_i16LPointCntRS - 1);
 
         float32 f32_Corn = Fabs(p_Border->LdAngle[int16_Loopi]) - (Fabs(p_Border->LdAngle[upper]) + Fabs(p_Border->LdAngle[lower])) / 2;
-
+        // ips200_show_float(0, 130, f32_Corn, 4, 4);
         if (f32_Corn > L_CORNER_LOWERBOUND && f32_Corn < L_CORNER_UPPERBOUND && int16_Loopi < 0.8 / SampleDist && p_Border->LL_CornerPos == -1) {
             p_Border->LL_CornerPos = int16_Loopi;
         }
@@ -1109,7 +1112,7 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
     // 无特殊元素直道
     else {
         p_Error->m_f32LeftBorderAimingMin = fclip(((int16)(now_speed / 5.0 + 0.5)) * 5, 130, 145) * 0.004 - 0.22;
-        p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
+        p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.3; // 修改直道预瞄最大距离
         p_Error->m_u8TackingType          = TRACKINGBOTH;
     }
 
@@ -1174,46 +1177,35 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
     // 非特殊元素直道
     else {
         p_Error->m_f32RightBorderAimingMin = fclip(((int16)(now_speed / 5.0 + 0.5)) * 5, 130, 145) * 0.004 - 0.22;
-        p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
+        p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.3;
     }
 }
 
-/*纯跟踪计算曲率*/
+/*纯跟踪计算中线误差*/
 
 void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type)
 {
     int16 int16_i    = clip((int16)(p_Error->m_f32LeftBorderAimingMin / SampleDist), 0, p_Border->m_i16LCnterCntRS - 1);
     int16 int16_iEnd = clip((int16)(p_Error->m_f32LeftBorderAimingMax / SampleDist), 0, p_Border->m_i16LCnterCntRS - 1);
-    float32 dx, dy, VerticalDist, HoriError, Kappa, Kappatotal;
-    float32 gain;
+    float32 t        = (p_Error->m_f32LeftBorderAimingMin + p_Error->m_f32LeftBorderAimingMax) / 2;
+    float32 a        = (p_Error->m_f32LeftBorderAimingMax - p_Error->m_f32LeftBorderAimingMin) / 4;
+    float32 Kappa, Kappatotal;
+    // float32 gain;
     int16 norm = 0;
     if ((p_Error->m_u8TackingType == TRACKINGBOTH || p_Error->m_u8TackingType == TRACKINGLEFT) && p_Type->m_u8CrossFlag != CROSS_NEAR && p_Type->m_u8RightSideCrossFlag != CROSS_NEAR && p_Type->m_u8LeftSideCrossFlag != CROSS_NEAR /* && p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != GARAGE_RIGHT_TURN && p_Type->m_u8GarageFlag != GARAGE_LEFT_TURN && !(p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/) {
         while (int16_i++ < int16_iEnd) {
             if (p_Border->m_LCPntRS[int16_i].m_i16y != 0) {
-                dx = p_Border->m_LCPntRS[int16_i].m_i16x - CenterX;
-                dy = Fabs(p_Border->m_LCPntRS[int16_i].m_i16y - CenterY);
-
-                VerticalDist = dy / PixelperMeter + 0.243;
-                HoriError    = dx / PixelperMeter;
-
-                Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
-
-                if (Fabs(Kappa) > 1) {
-                    if (dx == 0 || Avg_speed == 0) gain = 0;
-                    //                    else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
-                } else {
-                    gain = 0;
+                Kappa = 0.4 * FExp(-((int16_i - t) * 1.0 / a) * ((int16_i - t) * 1.0 / a) / 2.0);
+                if (Kappa < 0) Kappa = 0;
+                if (p_Border->m_LCPntRS[int16_i].m_i16x > 1) {
+                    Kappatotal = Kappatotal + Kappa * p_Border->m_LCPntRS[int16_i].m_i16x;
+                    norm += Kappa;
+                    // flag=1;
                 }
-
-                Kappa += gain;
-
-                norm += 1;
-                Kappatotal += Kappa;
             }
         }
-
         if (norm != 0) {
-            p_Error->m_f32LeftBorderKappa = Kappatotal / norm;
+            p_Error->m_f32LeftBorderKappa = CenterX - Kappatotal / norm;
             p_Error->m_u8LeftCenterValid  = 1;
 
             if (p_Type->m_u8CrossFlag == CROSS_FAR && p_Border->LL_CornerPos == -1) p_Error->m_u8LeftCenterValid = 0;
@@ -1231,30 +1223,17 @@ void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TY
 
         while (int16_i++ < int16_iEnd) {
             if (p_Border->m_LCPntRSRemote[int16_i].m_i16y != 0) {
-                dx = p_Border->m_LCPntRSRemote[int16_i].m_i16x - CenterX;
-                dy = Fabs(p_Border->m_LCPntRSRemote[int16_i].m_i16y - CenterY);
-
-                VerticalDist = dy / PixelperMeter + 0.243;
-                HoriError    = dx / PixelperMeter;
-
-                Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
-
-                if (Fabs(Kappa) > 1) {
-                    if (dx == 0 || Avg_speed == 0) gain = 0;
-                    //                    else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
-                } else {
-                    gain = 0;
+                Kappa = 0.4 * FExp(-((int16_i - t) * 1.0 / a) * ((int16_i - t) * 1.0 / a) / 2.0);
+                if (Kappa < 0) Kappa = 0;
+                if (p_Border->m_LCPntRSRemote[int16_i].m_i16x > 1) {
+                    Kappatotal = Kappatotal + Kappa * p_Border->m_LCPntRSRemote[int16_i].m_i16x;
+                    norm += Kappa;
                 }
-
-                Kappa += gain;
-
-                norm += 1;
-                Kappatotal += Kappa;
             }
         }
 
         if (norm != 0) {
-            p_Error->m_f32LeftBorderKappa = Kappatotal / norm;
+            p_Error->m_f32LeftBorderKappa = CenterX - Kappatotal / norm;
             p_Error->m_u8LeftCenterValid  = 1;
             // if (p_Border->LL_CornerPosRemote == -1 && p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != OUT_GARAGE) p_Error->m_u8LeftCenterValid = 0;
         } else {
@@ -1274,30 +1253,17 @@ void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TY
     if ((p_Error->m_u8TackingType == TRACKINGBOTH || p_Error->m_u8TackingType == TRACKINGRIGHT) && p_Type->m_u8CrossFlag != CROSS_NEAR && p_Type->m_u8RightSideCrossFlag != CROSS_NEAR && p_Type->m_u8LeftSideCrossFlag != CROSS_NEAR /*&& p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != GARAGE_RIGHT_TURN && p_Type->m_u8GarageFlag != GARAGE_LEFT_TURN && !(p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/) {
         while (int16_i++ < int16_iEnd) {
             if (p_Border->m_RCPntRS[int16_i].m_i16y != 0) {
-                dx = p_Border->m_RCPntRS[int16_i].m_i16x - CenterX;
-                dy = Fabs(p_Border->m_RCPntRS[int16_i].m_i16y - CenterY);
-
-                VerticalDist = dy / PixelperMeter + 0.243;
-                HoriError    = dx / PixelperMeter;
-
-                Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
-
-                if (Fabs(Kappa) > 1) {
-                    if (dx == 0 || Avg_speed == 0) gain = 0;
-                    //                    else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
-                } else {
-                    gain = 0;
+                Kappa = 0.4 * FExp(-((int16_i - t) * 1.0 / a) * ((int16_i - t) * 1.0 / a) / 2.0);
+                if (Kappa < 0) Kappa = 0;
+                if (p_Border->m_RCPntRS[int16_i].m_i16x < IMGH - 6) {
+                    Kappatotal = Kappatotal + Kappa * p_Border->m_RCPntRS[int16_i].m_i16x;
+                    norm += Kappa;
                 }
-
-                Kappa += gain;
-
-                norm += 1;
-                Kappatotal += Kappa;
             }
         }
 
         if (norm != 0) {
-            p_Error->m_f32RightBorderKappa = Kappatotal / norm;
+            p_Error->m_f32RightBorderKappa = CenterX - Kappatotal / norm;
             p_Error->m_u8RightCenterValid  = 1;
 
             if (p_Type->m_u8CrossFlag == CROSS_FAR && p_Border->RL_CornerPos == -1) p_Error->m_u8RightCenterValid = 0;
@@ -1315,30 +1281,18 @@ void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TY
 
         while (int16_i++ < int16_iEnd) {
             if (p_Border->m_RCPntRSRemote[int16_i].m_i16y != 0) {
-                dx = p_Border->m_RCPntRSRemote[int16_i].m_i16x - CenterX;
-                dy = Fabs(p_Border->m_RCPntRSRemote[int16_i].m_i16y - CenterY);
 
-                VerticalDist = dy / PixelperMeter + 0.243;
-                HoriError    = dx / PixelperMeter;
-
-                Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
-
-                if (Fabs(Kappa) > 1) {
-                    if (dx == 0 || Avg_speed == 0) gain = 0;
-                    //                     else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
-                } else {
-                    gain = 0;
+                Kappa = 0.4 * FExp(-((int16_i - t) * 1.0 / a) * ((int16_i - t) * 1.0 / a) / 2.0);
+                if (Kappa < 0) Kappa = 0;
+                if (p_Border->m_RCPntRSRemote[int16_i].m_i16x < IMGH - 6) {
+                    Kappatotal = Kappatotal + Kappa * p_Border->m_RCPntRSRemote[int16_i].m_i16x;
+                    norm += Kappa;
                 }
-
-                Kappa += gain;
-
-                norm += 1;
-                Kappatotal += Kappa;
             }
         }
 
         if (norm != 0) {
-            p_Error->m_f32RightBorderKappa = Kappatotal / norm;
+            p_Error->m_f32RightBorderKappa = CenterX - Kappatotal / norm;
             p_Error->m_u8RightCenterValid  = 1;
             // if (p_Border->RL_CornerPosRemote == -1 && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != OUT_GARAGE) p_Error->m_u8RightCenterValid = 0;
         } else {

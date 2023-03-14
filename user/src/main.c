@@ -37,6 +37,7 @@
 #include "headfile.h"
 
 uint8 virsco_data[10];
+uint16 t = 0;
 int main(void)
 {
     //     disableInterrupts();

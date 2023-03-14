@@ -79,6 +79,7 @@ void DATA_INIT(void)
     MOTOR_PID_Init();
     Duoji_Data_Init();
     Duoji_PID_Init();
+    Chasu_Init();
 }
 
 void Motor_L_Init(void) // 左轮基本参数初始化
@@ -152,6 +153,7 @@ void Duoji_PID_Init(void)
 
 void Chasu_Init(void) // 差速基本参数初始化
 {
-    CHASU.K       = 1.8; // 差速系数
+    V_Bia         = 0;
+    CHASU.K       = 75; // 差速系数
     CHASU.maximun = 20;
 }
