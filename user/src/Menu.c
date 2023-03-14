@@ -25,19 +25,20 @@ typedef struct {
 
 menu_item *current_menu_item;
 
-void menu_11(void)
+void menu_11()
 {
     ips200_clear();
     key_flag_clear();
-    while (!key3_flag) {
+    while (key3_flag == 0) {
         ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
         ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
         DrawBoarder(&g_Border);                               // 原边线
+        key_switch();
     }
     return;
 }
 
-void menu_12(void)
+void menu_12()
 {
     ips200_clear();
     key_flag_clear();
@@ -45,11 +46,12 @@ void menu_12(void)
         ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
         ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
         DrawBoarderInvp(&g_Border);                           // 逆透视边线
+        key_switch();
     }
     return;
 }
 
-void menu_13(void)
+void menu_13()
 {
     ips200_clear();
     key_flag_clear();
@@ -57,11 +59,12 @@ void menu_13(void)
         ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
         ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
         DrawCenter(&g_Border);                                // 逆透视中线
+        key_switch();
     }
     return;
 }
 
-void menu_14(void)
+void menu_14()
 {
     ips200_clear();
     key_flag_clear();
@@ -69,10 +72,11 @@ void menu_14(void)
         ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
         ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
         DrawRemoteLine(&g_Border);                            // 远端边线数组
+        key_switch();
     }
     return;
 }
-void menu_15(void)
+void menu_15()
 {
     ips200_clear();
     key_flag_clear();
@@ -102,6 +106,7 @@ void menu_15(void)
         ips200_show_string(0, 290, "Rline size:");
         ips200_show_string(95, 130, "RDZ:");
         ips200_show_string(95, 150, "LDZ:");
+        key_switch();
     }
     return;
 }
@@ -111,7 +116,7 @@ void menu_tuning(float32 *tuning, char name[30]) // 调参界面菜单
     char buf[50];
     char *menu_name   = name;
     float32 level[4]  = {0.01, 0.1, 1, 10};
-    int current_level = 1;
+    int current_level = 0;
     SEGGER_RTT_printf(0, "\r\n%s: %5.2f", menu_name, *tuning); // 调节挡位开关
     ips200_clear();
     ips200_show_string(1, 0, "Change_level:");
@@ -121,9 +126,8 @@ void menu_tuning(float32 *tuning, char name[30]) // 调参界面菜单
 
     while (1) {
         if (key_switch()) {
-            if (key1_flag && current_level < 4) {
+            if (key1_flag && current_level < 3) {
                 current_level += 1;
-
             } else if (key2_flag && current_level > 0) {
                 current_level -= 1;
             } else if (key3_flag) {
@@ -204,7 +208,8 @@ menu_item menu[] = {
     {2222, "Back to Main", NULL, NULL},                                    // 回到主菜单
     {223, "Back to Main", NULL, NULL},                                     // 回到主菜单
     {23, "Back to Main", NULL, NULL},                                      // 回到主菜单
-    {3, "Departure Mode", NULL, NULL}                                      // 发车模式
+    {3, "Departure Mode", NULL, NULL},                                     // 发车模式
+    {4, "PESS KEY_4 TO SAVE PARAM", NULL, NULL},                           // 保存所有数据
 
 };
 
@@ -244,7 +249,9 @@ void load_config()
     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "Speed: %d\n", config.speed);
 }
 
-void save_config()
+void
+
+save_config()
 {
     flash_write_page(127, 0, (uint32 *)&MOTOR, sizeof(MOTOR)); // 将MOTOR结构体的数据写入127-0扇区
     flash_write_page(127, 1, (uint32 *)&Serve, sizeof(Serve)); // 将Serve结构体的数据写入127-1扇区
@@ -261,7 +268,7 @@ void Menu_Switch(void)
     clock_init(SYSTEM_CLOCK_120M); // 初始化芯片时钟 工作频率为 120MHz
     debug_init();                  // 初始化默认 Debug UART
 
-    // load_config();
+    load_config();
 
     gpio_init(KEY1, GPI, GPIO_HIGH, GPI_PULL_UP); // 初始化 KEY1 输入 默认高电平 上拉输入
     gpio_init(KEY2, GPI, GPIO_HIGH, GPI_PULL_UP); // 初始化 KEY2 输入 默认高电平 上拉输入
