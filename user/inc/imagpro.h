@@ -103,5 +103,6 @@ void FindCorner(TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type);
 void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type);
 void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type);
 void Full_Inverse_Perspective(void);
+void DrawBoarderInvp(TRACK_BORDER_INFO *p_Border);
 
 #endif /* CODE_IMAGEPRO_H_ */

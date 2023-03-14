@@ -48,10 +48,16 @@ int main(void)
     // // IfxCpu_waitEvent(&g_cpuSyncEvent, 0xFFFF);
     // enableInterrupts();
     SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
+    SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "Engine started.\r\n");
+    Initall();                     // 初始化所有
+    DATA_INIT();                   // 初始化参数
+    clock_init(SYSTEM_CLOCK_120M); // 初始化芯片时钟 工作频率为 120MHz
+    debug_init();                  // 初始化默认 Debug UART
 
-    Initall();   // 初始化所有
-    DATA_INIT(); // 初始化参数
-
+    ips200_init(IPS200_TYPE_PARALLEL8);
+    ips200_set_color(RGB565_GREEN, RGB565_BLACK);
+    system_delay_ms(1000); // 务必延时
+    key_init(10);
     // 此处编写用户代码 例如外设初始化代码等
     // sdcard_read();
 
@@ -61,84 +67,88 @@ int main(void)
     // (outimage, outimage1);
 
     // int i=0;
-    while (1) {
-        // timer_start(TIM_2);
-        // mt9v03x_get_version();
-        // imu660ra_get_acc();  // 获取 IMU660RA 的加速度测量数值
-        // imu660ra_get_gyro(); // 获取 IMU660RA 的角速度测量数值
 
-        // Key_Switch();
-        if (mt9v03x_finish_flag) {
-            // timer_start(TIM_2);
-            // adaptiveThreshold_2();
-            // Full_Inverse_Perspective();
-            wusuowei(mt9v03x_image, &g_Border, &g_TrackType);
-            FindCorner(&g_Border, &g_TrackType);
-            GetAimingDist(&g_Border, &g_LineError, &g_TrackType);
-            PurePursuit(&g_Border, &g_LineError, &g_TrackType);
+    Menu_Switch();
 
-            // ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);
-            // ips200_show_float(10, 130, g_LineError.m_f32LeftBorderKappa, 4, 4);
-            // ips200_show_float(10, 150, g_LineError.m_f32RightBorderKappa, 4, 4);
-            // DrawCenter(&g_Border);
+    // timer_start(TIM_2);
+    // mt9v03x_get_version();
+    // imu660ra_get_acc();  // 获取 IMU660RA 的加速度测量数值
+    // imu660ra_get_gyro(); // 获取 IMU660RA 的角速度测量数值
 
-            // 显示陀螺仪数据
-            // ips200_show_float(10, 80, imu660ra_acc_x, 4, 4);
-            // ips200_show_float(10, 100, imu660ra_gyro_x, 4, 4);
-            // ips200_show_float(10, 120, imu660ra_acc_y, 4, 4);
-            // ips200_show_float(10, 140, imu660ra_gyro_y, 4, 4);
-            // ips200_show_float(10, 160, imu660ra_acc_z, 4, 4);
-            // ips200_show_float(10, 180, imu660ra_gyro_z, 4, 4);
+    // Key_Switch();
+    // button();
 
-            // ips200_show_float(10, 200, yaw_angle, 4, 4);
-            // ips200_show_float(10, 220, g_z, 4, 4);
+    //         if (mt9v03x_finish_flag) {
+    //             // timer_start(TIM_2);
+    //             // adaptiveThreshold_2();
+    //             // Full_Inverse_Perspective();
+    //             wusuowei(mt9v03x_image, &g_Border, &g_TrackType);
+    //             FindCorner(&g_Border, &g_TrackType);
+    //             GetAimingDist(&g_Border, &g_LineError, &g_TrackType);
+    //             PurePursuit(&g_Border, &g_LineError, &g_TrackType);
 
-            // timer_stop(TIM_2);
-            // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
-            // timer_clear(TIM_2);
+    //             // ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);
+    //             // ips200_show_float(10, 130, g_LineError.m_f32LeftBorderKappa, 4, 4);
+    //             // ips200_show_float(10, 150, g_LineError.m_f32RightBorderKappa, 4, 4);
+    //             // DrawCenter(&g_Border);
 
-            // DrawBoarder(&g_Border);
+    //             // 显示陀螺仪数据
+    //             // ips200_show_float(10, 80, imu660ra_acc_x, 4, 4);
+    //             // ips200_show_float(10, 100, imu660ra_gyro_x, 4, 4);
+    //             // ips200_show_float(10, 120, imu660ra_acc_y, 4, 4);
+    //             // ips200_show_float(10, 140, imu660ra_gyro_y, 4, 4);
+    //             // ips200_show_float(10, 160, imu660ra_acc_z, 4, 4);
+    //             // ips200_show_float(10, 180, imu660ra_gyro_z, 4, 4);
 
-            Control();
+    //             // ips200_show_float(10, 200, yaw_angle, 4, 4);
+    //             // ips200_show_float(10, 220, g_z, 4, 4);
 
-#if 0
-        wireless_uart_send_buff(virsco_data, 100);
-        virtual_oscilloscope_data_conversion(encoder_2, Motor_Right.result, encoder_1, Motor_Left.result);
-        system_delay_ms(100);
-#endif
+    //             // timer_stop(TIM_2);
+    //             // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
+    //             // timer_clear(TIM_2);
 
-            mt9v03x_finish_flag = 0;
-        }
+    //             // DrawBoarder(&g_Border);
 
-        // // 检查拐点
-        // FindCorner(&g_Border, &g_TrackType);
-        // // 获取预瞄距离
-        // GetAimingDist(&g_Border, &g_LineError, &g_TrackType);
-        // // 纯跟踪计算赛道曲率
-        // PurePursuit(&g_Border, &g_LineError, &g_TrackType);
+    //             Control();
 
-        // 十字
-        // if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE/*  && g_TrackType.m_u8LeftPRoadFlag == PROAD_NONE && g_TrackType.m_u8RightPRoadFlag == PROAD_NONE&& g_TrackType.m_u8YjunctionFlag == YJUNCTION_NONE */&& Protect_Frame == 0)
-        //     Check_Cross(mt9v03x_image, &g_Border, &g_TrackType);
-        // // 中入十字
-        // if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE/* && g_TrackType.m_u8LeftPRoadFlag == PROAD_NONE && g_TrackType.m_u8RightPRoadFlag == PROAD_NONE && g_TrackType.m_u8YjunctionFlag == YJUNCTION_NONE */&& Protect_Frame == 0)
-        //     Check_MIDCross(mt9v03x_image, &g_Border, &g_TrackType);
-        // int i = 0;
-        // while (++i < 100) {
-        //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> lx=%d.", g_Border.m_LPnt[i].m_i16x);
-        //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> ly=%d.", g_Border.m_LPnt[i].m_i16y);
-        //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_WHITE "\r\n LOG -> rx=%d.", g_Border.m_LPntout[i].m_i16x);
-        //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_WHITE "\r\n LOG -> ry=%d.", g_Border.m_LPntout[i].m_i16y);
-        //     // unsigned char length;
-        //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> bx=%s.", out_float(g_Border.m_LCPnt[i].m_i16x, 4, &length));
-        //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> djx=%s.", out_float(g_Border.m_LCPnt[i].m_i16y, 4, &length));
-        // }
-        // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_WHITE "\r\n LOG -> inv=%d.", Inv_x[3049]);
-        // timer_stop(TIM_2);
-        // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
-        // timer_clear(TIM_2);
-        // system_delay_ms(20);
-    }
+    // #if 0
+    //         wireless_uart_send_buff(virsco_data, 100);
+    //         virtual_oscilloscope_data_conversion(encoder_2, Motor_Right.result, encoder_1, Motor_Left.result);
+    //         system_delay_ms(100);
+    // #endif
+
+    //             mt9v03x_finish_flag = 0;
+    //         }
+
+    // // 检查拐点
+    // FindCorner(&g_Border, &g_TrackType);
+    // // 获取预瞄距离
+    // GetAimingDist(&g_Border, &g_LineError, &g_TrackType);
+    // // 纯跟踪计算赛道曲率
+    // PurePursuit(&g_Border, &g_LineError, &g_TrackType);
+
+    // 十字
+    // if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE/*  && g_TrackType.m_u8LeftPRoadFlag == PROAD_NONE && g_TrackType.m_u8RightPRoadFlag == PROAD_NONE&& g_TrackType.m_u8YjunctionFlag == YJUNCTION_NONE */&& Protect_Frame == 0)
+    //     Check_Cross(mt9v03x_image, &g_Border, &g_TrackType);
+    // // 中入十字
+    // if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE/* && g_TrackType.m_u8LeftPRoadFlag == PROAD_NONE && g_TrackType.m_u8RightPRoadFlag == PROAD_NONE && g_TrackType.m_u8YjunctionFlag == YJUNCTION_NONE */&& Protect_Frame == 0)
+    //     Check_MIDCross(mt9v03x_image, &g_Border, &g_TrackType);
+    // int i = 0;
+    // while (++i < 100) {
+    //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> lx=%d.", g_Border.m_LPnt[i].m_i16x);
+    //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> ly=%d.", g_Border.m_LPnt[i].m_i16y);
+    //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_WHITE "\r\n LOG -> rx=%d.", g_Border.m_LPntout[i].m_i16x);
+    //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_WHITE "\r\n LOG -> ry=%d.", g_Border.m_LPntout[i].m_i16y);
+    //     // unsigned char length;
+    //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> bx=%s.", out_float(g_Border.m_LCPnt[i].m_i16x, 4, &length));
+    //     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> djx=%s.", out_float(g_Border.m_LCPnt[i].m_i16y, 4, &length));
+    // }
+    // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_WHITE "\r\n LOG -> inv=%d.", Inv_x[3049]);
+    // timer_stop(TIM_2);
+    // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
+    // timer_clear(TIM_2);
+    // system_delay_ms(20);
+
     // Change_Lpoint(image_read_buffer, 7, outimage, 12);
     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> Chang_Lpoint success.");
     // findline_lefthand_adaptive(image_read_buffer, 7, 0, &g_Border, 0);
