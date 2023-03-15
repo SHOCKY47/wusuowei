@@ -39,17 +39,9 @@
 // uint8 virsco_data[10];
 int main(void)
 {
-    SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
-    SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "Engine started.\r\n");
+
     Initall();   // 初始化所有
     DATA_INIT(); // 初始化参数
-
-    ips200_init(IPS200_TYPE_PARALLEL8);
-    ips200_set_color(RGB565_GREEN, RGB565_BLACK);
-    system_delay_ms(1000); // 务必延时
-    key_init(10);
-    // 此处编写用户代码 例如外设初始化代码等
-    // sdcard_read();
 
     Menu_Switch();
 }
