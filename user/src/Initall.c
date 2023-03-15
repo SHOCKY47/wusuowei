@@ -23,7 +23,7 @@ void Initall(void)
     Motor_Init();
     Encoder_Init();
     wireless_uart_init();
-    // imu660ra_init();
+    imu660ra_init();
 }
 
 void Duoji_Init(void)
@@ -74,21 +74,21 @@ void DATA_INIT(void)
 
 void Motor_L_Init(void) // 左轮基本参数初始化
 {
-    Motor_Left.result      = 0;
-    Motor_Left.setpoint    = 100 - Speed_Bia; // 设定编码器的值
-    Motor_Left.maximum     = 8000;            // 输出最大值
-    Motor_Left.minimum     = -8000;           // 输出最小值
-    Motor_Left.epsilon     = 100;             // 积分分离(本次偏差是否大于)
+    Motor_Left.result = 0;
+    Motor_Left.setpoint = 100 - Speed_Bia; // 设定编码器的值
+    Motor_Left.maximum = 8000;             // 输出最大值
+    Motor_Left.minimum = -8000;            // 输出最小值
+    Motor_Left.epsilon = 100;              // 积分分离(本次偏差是否大于)
     Motor_Left.presetpoint = 100;
 }
 
 void Motor_R_Init(void) // 右轮基本参数初始化
 {
-    Motor_Right.result      = 0;
-    Motor_Right.setpoint    = 100;
-    Motor_Right.maximum     = 8000;
-    Motor_Right.minimum     = -8000;
-    Motor_Right.epsilon     = 100; // 积分分离(本次偏差是否大于)
+    Motor_Right.result = 0;
+    Motor_Right.setpoint = 100;
+    Motor_Right.maximum = 8000;
+    Motor_Right.minimum = -8000;
+    Motor_Right.epsilon = 100; // 积分分离(本次偏差是否大于)
     Motor_Right.presetpoint = 100;
 }
 
@@ -105,26 +105,26 @@ void MOTOR_PID_Init(void) // 后轮控制参数初始化
 
     /*****变积分参数******/
     MOTOR.L_Max_I = 0.15;
-    MOTOR.L_Ci    = 0.01; // Ci越小积分越快
+    MOTOR.L_Ci = 0.01; // Ci越小积分越快
 
     MOTOR.R_Max_I = 0.15; // 补偿
-    MOTOR.R_Ci    = 0.01;
+    MOTOR.R_Ci = 0.01;
 
     /*****变比例参数*****/
-    MOTOR.L_Bas_KP  = 50;
+    MOTOR.L_Bas_KP = 50;
     MOTOR.L_Gain_KP = 40;
-    MOTOR.L_Cp      = 0.01;
+    MOTOR.L_Cp = 0.01;
 
-    MOTOR.R_Bas_KP  = 50;
+    MOTOR.R_Bas_KP = 50;
     MOTOR.R_Gain_KP = 40;
-    MOTOR.R_Cp      = 0.01;
+    MOTOR.R_Cp = 0.01;
 }
 
 void Duoji_Data_Init(void)
 {
     Steering.setpoint = 0;
     Steering.deadband = 0; // 需要确定
-    Steering.minimum  = 2;
+    Steering.minimum = 2;
 }
 
 void Duoji_PID_Init(void)
@@ -135,7 +135,7 @@ void Duoji_PID_Init(void)
 
     // 变比例参数
     Serve.Kp_Gain = 1.5;
-    Serve.Base    = 8;
+    Serve.Base = 8;
 
     // 变微分参数
     Serve.Kd_Gain = 2;
@@ -143,6 +143,6 @@ void Duoji_PID_Init(void)
 
 void Chasu_Init(void) // 差速基本参数初始化
 {
-    CHASU.K       = 1.8; // 差速系数
+    CHASU.K = 1.8; // 差速系数
     CHASU.maximun = 20;
 }

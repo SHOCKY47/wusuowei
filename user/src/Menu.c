@@ -1,12 +1,14 @@
 #include "Menu.h"
 
-typedef struct {
+typedef struct
+{
     int speed;
 } app_config;
 
 app_config config = {10};
 
-typedef struct {
+typedef struct
+{
     int menu_id;
     char menu_name[30];
     void (*menu_action)(float32 *param, char name[30]);
@@ -26,10 +28,10 @@ void menu_11(void)
 {
     ips200_clear();
     key_flag_clear();
-    while (key3_flag == 0) {
-        ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
-        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
-        DrawBoarder(&g_Border);                               // 原边线
+    while (key3_flag == 0)
+    {
+        All_image();
+        DrawBoarder(&g_Border); // 原边线
         key_switch();
     }
     return;
@@ -39,10 +41,10 @@ void menu_12(void)
 {
     ips200_clear();
     key_flag_clear();
-    while (!key3_flag) {
-        ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
-        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
-        DrawBoarderInvp(&g_Border);                           // 逆透视边线
+    while (!key3_flag)
+    {
+        All_image();
+        DrawBoarderInvp(&g_Border); // 逆透视边线
         key_switch();
     }
     return;
@@ -52,10 +54,10 @@ void menu_13(void)
 {
     ips200_clear();
     key_flag_clear();
-    while (!key3_flag) {
-        ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
-        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
-        DrawCenter(&g_Border);                                // 逆透视中线
+    while (!key3_flag)
+    {
+        All_image();
+        DrawCenter(&g_Border); // 逆透视中线
         key_switch();
     }
     return;
@@ -65,10 +67,10 @@ void menu_14(void)
 {
     ips200_clear();
     key_flag_clear();
-    while (!key3_flag) {
-        ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
-        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
-        DrawRemoteLine(&g_Border);                            // 远端边线数组
+    while (!key3_flag)
+    {
+        All_image();
+        DrawRemoteLine(&g_Border); // 远端边线数组
         key_switch();
     }
     return;
@@ -77,8 +79,9 @@ void menu_15(void)
 {
     ips200_clear();
     key_flag_clear();
-    while (!key3_flag) {
-        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
+    while (!key3_flag)
+    {
+        All_image();
         ips200_draw_line(0, 120 - g_LineError.m_f32LeftBorderAimingMin / SampleDist, 188, 120 - g_LineError.m_f32LeftBorderAimingMin / SampleDist, RGB565_RED);
         ips200_draw_line(0, 120 - g_LineError.m_f32LeftBorderAimingMax / SampleDist, 188, 120 - g_LineError.m_f32LeftBorderAimingMax / SampleDist, RGB565_RED);
         ips200_show_int(30, 130, g_TrackType.m_u8RightRoundaboutFlag, 4); // 环岛标志位
@@ -111,8 +114,8 @@ void menu_15(void)
 void menu_tuning(float32 *tuning, char name[30]) // 调参界面菜单
 {
     char buf[50];
-    char *menu_name   = name;
-    float32 level[4]  = {0.01, 0.1, 1, 10};
+    char *menu_name = name;
+    float32 level[4] = {0.01, 0.1, 1, 10};
     int current_level = 0;
     SEGGER_RTT_printf(0, "\r\n%s: %5.2f", menu_name, *tuning); // 调节挡位开关
     ips200_clear();
@@ -121,26 +124,40 @@ void menu_tuning(float32 *tuning, char name[30]) // 调参界面菜单
     ips200_show_string(1, 30, buf);
     key_flag_clear();
 
-    while (1) {
-        if (key_switch()) {
-            if (key1_flag && current_level < 3) {
+    while (1)
+    {
+        if (key_switch())
+        {
+            if (key1_flag && current_level < 3)
+            {
                 current_level += 1;
-            } else if (key2_flag && current_level > 0) {
+            }
+            else if (key2_flag && current_level > 0)
+            {
                 current_level -= 1;
-            } else if (key3_flag) {
+            }
+            else if (key3_flag)
+            {
                 ips200_clear();
                 sprintf(buf, "%s: ", menu_name);
                 ips200_show_string(1, 0, buf);
                 sprintf(buf, "%5.2f", *tuning);
                 ips200_show_string(1, 30, buf);
                 key_flag_clear();
-                while (1) {
-                    if (key_switch()) {
-                        if (key1_flag) {
+                while (1)
+                {
+                    if (key_switch())
+                    {
+                        if (key1_flag)
+                        {
                             *tuning += level[current_level];
-                        } else if (key2_flag) {
+                        }
+                        else if (key2_flag)
+                        {
                             *tuning -= level[current_level];
-                        } else if (key3_flag) {
+                        }
+                        else if (key3_flag)
+                        {
                             return;
                         }
                         ips200_clear();
@@ -212,8 +229,10 @@ menu_item menu[] = {
 
 bool have_sub_menu(int menu_id) // 获取当前行位置
 {
-    for (int i = 0; i < sizeof(menu) / sizeof(menu[0]); i++) {
-        if (menu[i].menu_id / 10 == menu_id) {
+    for (int i = 0; i < sizeof(menu) / sizeof(menu[0]); i++)
+    {
+        if (menu[i].menu_id / 10 == menu_id)
+        {
             return true;
         }
     }
@@ -224,12 +243,17 @@ int show_sub_menu(int parent_id, int highlight_col) // 当前行显示异色
 {
     ips200_clear();
     int item_idx = 0;
-    for (int i = 0; i < sizeof(menu) / sizeof(menu[0]); i++) {
-        if (menu[i].menu_id / 10 == parent_id) {
-            if (item_idx == highlight_col) {
+    for (int i = 0; i < sizeof(menu) / sizeof(menu[0]); i++)
+    {
+        if (menu[i].menu_id / 10 == parent_id)
+        {
+            if (item_idx == highlight_col)
+            {
                 current_menu_item = &menu[i];
                 ips200_set_color(RGB565_RED, RGB565_BLACK);
-            } else {
+            }
+            else
+            {
                 ips200_set_color(RGB565_GREEN, RGB565_BLACK);
             }
             ips200_show_string(1, 30 * item_idx, menu[i].menu_name);
@@ -254,11 +278,16 @@ void save_config(void)
     ips200_show_string(1, 0, "Config saved.Press any key");
     key_flag_clear();
 
-    while (!key_switch()) {}
+    while (!key_switch())
+    {
+    }
 }
 
 void Menu_Switch(void)
 {
+
+    // clock_init(SYSTEM_CLOCK_120M); // 初始化芯片时钟 工作频率为 120MHz
+    // debug_init();                  // 初始化默认 Debug UART
 
     // load_config();
 
@@ -267,26 +296,44 @@ void Menu_Switch(void)
     gpio_init(KEY3, GPI, GPIO_HIGH, GPI_PULL_UP); // 初始化 KEY3 输入 默认高电平 上拉输入
     gpio_init(KEY4, GPI, GPIO_HIGH, GPI_PULL_UP); // 初始化 KEY4 输入 默认高电平 上拉输入
 
-    int parent_menu_id  = 0; // 目前位置的行号ID
-    int highlight_col   = 0; // 高亮行号ID
+    // ips200_init(IPS200_TYPE_PARALLEL8);
+    // system_delay_ms(1000);
+    // ips200_set_color(RGB565_GREEN, RGB565_BLACK);
+
+    int parent_menu_id = 0; // 目前位置的行号ID
+    int highlight_col = 0;  // 高亮行号ID
     int menu_item_count = show_sub_menu(parent_menu_id, highlight_col);
-    while (1) {
-        if (key_switch()) {
-            if (key1_flag && highlight_col > 0) {
+    while (1)
+    {
+        if (key_switch())
+        {
+            if (key1_flag && highlight_col > 0)
+            {
                 highlight_col--;
-            } else if (key2_flag && highlight_col < menu_item_count - 1) {
+            }
+            else if (key2_flag && highlight_col < menu_item_count - 1)
+            {
                 highlight_col++;
-            } else if (key3_flag) {
-                if (have_sub_menu(current_menu_item->menu_id)) {
-                    highlight_col  = 0;
+            }
+            else if (key3_flag)
+            {
+                if (have_sub_menu(current_menu_item->menu_id))
+                {
+                    highlight_col = 0;
                     parent_menu_id = current_menu_item->menu_id;
-                } else if (strcmp(current_menu_item->menu_name, "Back to Main") == 0) { // 检测到"Back to Main",则返回主菜单界面
-                    highlight_col  = 0;
+                }
+                else if (strcmp(current_menu_item->menu_name, "Back to Main") == 0)
+                { // 检测到"Back to Main",则返回主菜单界面
+                    highlight_col = 0;
                     parent_menu_id = 0;
-                } else if (current_menu_item->menu_action) { // 执行当前行号对应封装函数
+                }
+                else if (current_menu_item->menu_action)
+                { // 执行当前行号对应封装函数
                     current_menu_item->menu_action(current_menu_item->param, current_menu_item->menu_name);
                 }
-            } else if (key4_flag) {
+            }
+            else if (key4_flag)
+            {
                 save_config();
             }
 
