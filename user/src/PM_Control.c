@@ -36,7 +36,6 @@ void Angle_Control(void)
     {
         Img_Error = Img_LastError;
     }
-
     // 需要处理的元素:环岛、P字、S路、坡道、车库
     // 需要固定速度的元素：坡道上、P字出阶段、入库阶段
     // 直道弯道区分 无元素

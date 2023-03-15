@@ -28,10 +28,12 @@ void menu_11(void)
 {
     ips200_clear();
     key_flag_clear();
-    while (key3_flag == 0)
-    {
+    while (key3_flag == 0) {
+        // ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
+
+        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
+        DrawBoarder(&g_Border);                               // 原边线
         All_image();
-        DrawBoarder(&g_Border); // 原边线
         key_switch();
     }
     return;
@@ -41,10 +43,11 @@ void menu_12(void)
 {
     ips200_clear();
     key_flag_clear();
-    while (!key3_flag)
-    {
+    while (!key3_flag) {
+        // ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
         All_image();
-        DrawBoarderInvp(&g_Border); // 逆透视边线
+        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
+        DrawBoarderInvp(&g_Border);                           // 逆透视边线
         key_switch();
     }
     return;
@@ -54,10 +57,11 @@ void menu_13(void)
 {
     ips200_clear();
     key_flag_clear();
-    while (!key3_flag)
-    {
+    while (!key3_flag) {
+        // ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
         All_image();
-        DrawCenter(&g_Border); // 逆透视中线
+        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
+        DrawCenter(&g_Border);                                // 逆透视中线
         key_switch();
     }
     return;
@@ -67,10 +71,11 @@ void menu_14(void)
 {
     ips200_clear();
     key_flag_clear();
-    while (!key3_flag)
-    {
+    while (!key3_flag) {
+        // ips200_show_string(1, 150, "PRESS KEY3 TO QUIT");
         All_image();
-        DrawRemoteLine(&g_Border); // 远端边线数组
+        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
+        DrawRemoteLine(&g_Border);                            // 远端边线数组
         key_switch();
     }
     return;
@@ -79,9 +84,10 @@ void menu_15(void)
 {
     ips200_clear();
     key_flag_clear();
-    while (!key3_flag)
-    {
+    while (!key3_flag) {
         All_image();
+        DrawRemoteLine(&g_Border);                            // 远端边线数组
+        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH); // 显示原图像
         ips200_draw_line(0, 120 - g_LineError.m_f32LeftBorderAimingMin / SampleDist, 188, 120 - g_LineError.m_f32LeftBorderAimingMin / SampleDist, RGB565_RED);
         ips200_draw_line(0, 120 - g_LineError.m_f32LeftBorderAimingMax / SampleDist, 188, 120 - g_LineError.m_f32LeftBorderAimingMax / SampleDist, RGB565_RED);
         ips200_show_int(30, 130, g_TrackType.m_u8RightRoundaboutFlag, 4); // 环岛标志位

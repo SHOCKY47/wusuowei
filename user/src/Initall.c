@@ -23,7 +23,7 @@ void Initall(void)
     Motor_Init();
     Encoder_Init();
     wireless_uart_init();
-    imu660ra_init();
+    // imu660ra_init();
 }
 
 void Duoji_Init(void)
