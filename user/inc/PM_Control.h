@@ -14,7 +14,7 @@ extern uint8 leave_kp_flag;
 extern uint8 choose_flag;
 extern uint8 charging_switch;
 
-void Control_init(void);
-void Control(void);
+void Angle_Control(void);
+void Speed_Control(void);
 
 #endif

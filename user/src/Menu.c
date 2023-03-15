@@ -1,13 +1,3 @@
-/*****************************************************************/
-// /*
-//  * Menu.c
-//  *
-//  *  Created on: 2023/3/7
-//  *      Author: SHOCKY
-//  *
-//  */
-/*****************************************************************/
-
 #include "Menu.h"
 
 typedef struct {
@@ -25,7 +15,37 @@ typedef struct {
 
 menu_item *current_menu_item;
 
-void menu_11()
+void menu_Departure(void)
+{
+    system_delay_ms(1500);
+    start_flag = 1;
+
+    while (1) {
+        if (mt9v03x_finish_flag) {
+            //   imu660ra_get_acc();                                         // 获取 IMU660RA 加速度计数据
+            //   imu660ra_get_gyro();                                               // 获取 IMU660RA 陀螺仪数据
+
+            Out_Protect(mt9v03x_image);
+            wusuowei(mt9v03x_image, &g_Border, &g_TrackType);
+
+            FindCorner(&g_Border, &g_TrackType);
+            GetAimingDist(&g_Border, &g_LineError, &g_TrackType);
+            PurePursuit(&g_Border, &g_LineError, &g_TrackType);
+
+            Angle_Control();
+
+            // #if 0
+            //         wireless_uart_send_buff(virsco_data, 100);
+            //         virtual_oscilloscope_data_conversion(encoder_2, Motor_Right.result, encoder_1, Motor_Left.result);
+            //         system_delay_ms(100);
+            // #endif
+
+            mt9v03x_finish_flag = 0;
+        }
+    }
+}
+
+void menu_11(void)
 {
     ips200_clear();
     key_flag_clear();
@@ -38,7 +58,7 @@ void menu_11()
     return;
 }
 
-void menu_12()
+void menu_12(void)
 {
     ips200_clear();
     key_flag_clear();
@@ -51,7 +71,7 @@ void menu_12()
     return;
 }
 
-void menu_13()
+void menu_13(void)
 {
     ips200_clear();
     key_flag_clear();
@@ -64,7 +84,7 @@ void menu_13()
     return;
 }
 
-void menu_14()
+void menu_14(void)
 {
     ips200_clear();
     key_flag_clear();
@@ -76,7 +96,7 @@ void menu_14()
     }
     return;
 }
-void menu_15()
+void menu_15(void)
 {
     ips200_clear();
     key_flag_clear();
@@ -165,12 +185,6 @@ void menu_tuning(float32 *tuning, char name[30]) // 调参界面菜单
     }
 }
 
-void menu_Departure()
-{
-    system_delay_ms(1500);
-    start_flag = 1;
-}
-
 menu_item menu[] = {
     {1, "Image Mode", NULL, NULL},                                         // 图像模式
     {11, "Original line", menu_11, NULL},                                  // 显示原边线
@@ -248,7 +262,7 @@ int show_sub_menu(int parent_id, int highlight_col) // 当前行显示异色
     return item_idx;
 }
 
-void load_config()
+void load_config(void)
 {
     flash_read_page(127, 0, (uint32 *)&MOTOR, sizeof(MOTOR)); // 从127-0扇区读取MOTOR结构体的数据
     flash_read_page(127, 1, (uint32 *)&Serve, sizeof(Serve)); // 从127-1扇区读取Server结构体的数据
@@ -257,7 +271,7 @@ void load_config()
 
 void
 
-save_config()
+save_config(void)
 {
     flash_write_page(127, 0, (uint32 *)&MOTOR, sizeof(MOTOR)); // 将MOTOR结构体的数据写入127-0扇区
     flash_write_page(127, 1, (uint32 *)&Serve, sizeof(Serve)); // 将Serve结构体的数据写入127-1扇区
@@ -271,19 +285,12 @@ save_config()
 void Menu_Switch(void)
 {
 
-    clock_init(SYSTEM_CLOCK_120M); // 初始化芯片时钟 工作频率为 120MHz
-    debug_init();                  // 初始化默认 Debug UART
-
     load_config();
 
     gpio_init(KEY1, GPI, GPIO_HIGH, GPI_PULL_UP); // 初始化 KEY1 输入 默认高电平 上拉输入
     gpio_init(KEY2, GPI, GPIO_HIGH, GPI_PULL_UP); // 初始化 KEY2 输入 默认高电平 上拉输入
     gpio_init(KEY3, GPI, GPIO_HIGH, GPI_PULL_UP); // 初始化 KEY3 输入 默认高电平 上拉输入
     gpio_init(KEY4, GPI, GPIO_HIGH, GPI_PULL_UP); // 初始化 KEY4 输入 默认高电平 上拉输入
-
-    // ips200_init(IPS200_TYPE_PARALLEL8);
-    // system_delay_ms(1000);
-    // ips200_set_color(RGB565_GREEN, RGB565_BLACK);
 
     int parent_menu_id  = 0;
     int highlight_col   = 0;
