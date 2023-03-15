@@ -40,15 +40,27 @@
 int main(void)
 {
     SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
+    SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "Engine started.\r\n");
+    Initall();                     // 初始化所有
+    DATA_INIT();                   // 初始化参数
+    clock_init(SYSTEM_CLOCK_120M); // 初始化芯片时钟 工作频率为 120MHz
+    debug_init();                  // 初始化默认 Debug UART
 
-    Initall();   // 初始化所有
-    DATA_INIT(); // 初始化参数
-    // sdcardinit();
-
-    /********************sd卡读写函数*******************/
+    ips200_init(IPS200_TYPE_PARALLEL8);
+    ips200_set_color(RGB565_GREEN, RGB565_BLACK);
+    system_delay_ms(1000); // 务必延时
+    key_init(10);
+    // 此处编写用户代码 例如外设初始化代码等
     // sdcard_read();
-    // sdcard_write(mt9v03x_image, sizeof(mt9v03x_image));
-    /*************************************************/
+
+    // adaptiveThreshold_1(mt9v03x_image, outimage, MT9V03X_W, MT9V03X_H, 7, 8);
+    // adaptiveThreshold_2(mt9v03x_image, outimage, 7, 12);
+    // ImageBinary(image_read_buffer, outimage, MT9V03X_W, MT9V03X_H);
+    // (outimage, outimage1);
+
+    // int i=0;
+
+    Menu_Switch();
 
     /***************测时间******************/
     // timer_start(TIM_2);

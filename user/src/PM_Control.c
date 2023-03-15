@@ -34,17 +34,18 @@ void Control(void)
     // 直道弯道区分 无元素
 
     if (g_TrackType.m_u8ShortLeftLineStraightFlag == 1 || g_TrackType.m_u8ShortRightLineStraightFlag == 1 /*|| g_TrackType.m_u8CrossFlag != CROSS_NONE || g_TrackType.m_u8RightSideCrossFlag != CROSS_NONE || g_TrackType.m_u8LeftSideCrossFlag != CROSS_NONE*/) {
-        Serve.Kp_Gain = 1;
-        Serve.Base    = 10;
+        Serve.Kp_Gain = 0;
+        Serve.Base    = 8;
         Serve.Kd_Gain = 2;
     } else { // 弯道
 
-        Serve.Kp_Gain = 5;
-        Serve.Base    = 10;
-        Serve.Kd_Gain = 4;
+        Serve.Kp_Gain = 2;
+        Serve.Base    = 8;
+        Serve.Kd_Gain = 2;
     }
 
     Duoji_Control(&Steering, &Serve, Img_Error);
+
 
     Img_LastError = Img_Error;
 }

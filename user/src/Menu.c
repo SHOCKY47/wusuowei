@@ -165,7 +165,7 @@ void menu_tuning(float32 *tuning, char name[30]) // 调参界面菜单
     }
 }
 
-void menu_Departure()
+void menu_Departure() // 发车函数，请将主函数里的while（1）移至此处
 {
     system_delay_ms(1500);
     start_flag = 1;
@@ -285,8 +285,8 @@ void Menu_Switch(void)
     // system_delay_ms(1000);
     // ips200_set_color(RGB565_GREEN, RGB565_BLACK);
 
-    int parent_menu_id  = 0;
-    int highlight_col   = 0;
+    int parent_menu_id  = 0; // 目前位置的行号ID
+    int highlight_col   = 0; // 高亮行号ID
     int menu_item_count = show_sub_menu(parent_menu_id, highlight_col);
     while (1) {
         if (key_switch()) {
@@ -298,10 +298,10 @@ void Menu_Switch(void)
                 if (have_sub_menu(current_menu_item->menu_id)) {
                     highlight_col  = 0;
                     parent_menu_id = current_menu_item->menu_id;
-                } else if (strcmp(current_menu_item->menu_name, "Back to Main") == 0) {
+                } else if (strcmp(current_menu_item->menu_name, "Back to Main") == 0) { // 检测到"Back to Main",则返回主菜单界面
                     highlight_col  = 0;
                     parent_menu_id = 0;
-                } else if (current_menu_item->menu_action) {
+                } else if (current_menu_item->menu_action) { // 执行当前行号对应封装函数
                     current_menu_item->menu_action(current_menu_item->param, current_menu_item->menu_name);
                 }
             } else if (key4_flag) {
