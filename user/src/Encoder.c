@@ -4,7 +4,7 @@ int16 encoder_1 = 0;
 int16 encoder_2 = 0;
 
 /*测距离*/
-const int64 EncoderPerMeter = 6480*2;//速度控制变量 原：tc264 speed.c
+const int64 EncoderPerMeter   = 6480 * 2; // 速度控制变量 原：tc264 speed.c
 int64 LeftMotor_TotalEncoder  = 0;
 int64 RightMotor_TotalEncoder = 0;
 

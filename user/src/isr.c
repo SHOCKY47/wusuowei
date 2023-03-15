@@ -106,17 +106,10 @@ void TIM6_IRQHandler(void)
         Motor_Left.setpoint  = 0;
         Motor_Right.setpoint = 0;
     }
-    extern void Get_Speed(void);
-    // gyro_calculate();
-    Get_Speed();
 
     if (start_flag == 1) {
         Speed_Control();
-
-        Motor_L_Control_Change_Integral(&Motor_Left, &MOTOR, encoder_1);
-        Motor_R_Control_Change_Integral(&Motor_Right, &MOTOR, encoder_2);
-
-    Back_Wheel_Out(-Motor_Left.result, Motor_Right.result);
+    }
 
     // 此处编写用户代码
     TIM6->SR &= ~TIM6->SR; // 清空中断状态
@@ -129,7 +122,8 @@ void TIM6_IRQHandler(void)
 void TIM7_IRQHandler(void)
 {
     // 此处编写用户代码
-
+    // imu660ra_get_acc(); // 获取 IMU660RA 加速度计数据
+    // imu660ra_get_gyro();
     // gyro_calculate();
     // 此处编写用户代码
     TIM7->SR &= ~TIM7->SR; // 清空中断状态

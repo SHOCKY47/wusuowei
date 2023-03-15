@@ -142,12 +142,6 @@ void All_image(void)
             /**************未使用函数****************/
             // adaptiveThreshold_2();
             // Full_Inverse_Perspective();
-            // imu660ra_get_acc();  // 获取 IMU660RA 的加速度测量数值
-            // imu660ra_get_gyro(); // 获取 IMU660RA 的角速度测量数值
-            // Key_Switch();
-            //          if (Img_Open_falg) {
-            //     ips200_displayimage03x(mt9v03x_image[0], 188, 120);
-            // }
             /***************************************/
 
             Out_Protect(mt9v03x_image);
@@ -217,7 +211,7 @@ void All_image(void)
             // 纯跟踪计算赛道曲率
             PurePursuit(&g_Border, &g_LineError, &g_TrackType);
 
-            Control();
+            Angle_Control();
 
 #if 0
         wireless_uart_send_buff(virsco_data, 100);

@@ -27,7 +27,7 @@ float history[4];
 //  @return    void        没求得
 //  @note      增量式PID,死区限制，变积分
 //--------------------------------------------------------------
-void Motor_L_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 processValue)
+void Motor_L_Control_Change_Integral(float32 setpoint, PID_2 *vPID, Motor_Para *Motor, int16 processValue)
 {
     float thisError;
     float result;
@@ -38,7 +38,7 @@ void Motor_L_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 proce
     static float lasterror = 0; // 前一拍偏差
     static float preerror  = 0; // 前两拍偏差
 
-    thisError = vPID->setpoint - processValue; // 得到偏差值
+    thisError = setpoint - processValue; // 得到偏差值
     Change_P  = Motor->L_Bas_KP + Motor->L_Gain_KP * (1 - 1.0 / FExp(Motor->L_Cp * Fabs(thisError)));
     Change_I  = (1.0 / FExp(Motor->L_Ci * Fabs(thisError))) * Motor->L_Max_I;
 
@@ -77,7 +77,7 @@ void Motor_L_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 proce
 //  @return    void        没求得
 //  @note      增量式PID，死区限制，变积分
 //--------------------------------------------------------------
-void Motor_R_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 processValue)
+void Motor_R_Control_Change_Integral(float32 setpoint, PID_2 *vPID, Motor_Para *Motor, int16 processValue)
 {
     float thisError;
     float result;
@@ -88,7 +88,7 @@ void Motor_R_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 proce
     static float lasterror = 0; // 前一拍偏差
     static float preerror  = 0; // 前两拍偏差
 
-    thisError = vPID->setpoint - processValue; // 得到偏差值
+    thisError = setpoint - processValue; // 得到偏差值
     Change_P  = Motor->R_Bas_KP + Motor->R_Gain_KP * (1 - 1.0 / FExp(Motor->R_Cp * Fabs(thisError)));
     Change_I  = (1.0 / FExp(Motor->R_Ci * Fabs(thisError))) * Motor->R_Max_I;
     result    = vPID->result;

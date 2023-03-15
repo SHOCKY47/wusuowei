@@ -14,12 +14,13 @@
 
 #define S_MOTOR_PIN    ATOM1_CH1_P33_9
 
+extern uint8 start_flag;
+
 void Initall(void);
 void PIT_Init(void);
 void Duoji_Init(void);
 void Motor_Init(void);
 void Encoder_Init(void);
-void Key_Init(void);
 
 void DATA_INIT(void);
 void Motor_L_Init(void);

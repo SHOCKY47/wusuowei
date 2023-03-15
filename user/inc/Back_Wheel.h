@@ -114,8 +114,8 @@ float errorfilter(float inData, float a);
 float data_filtering(float *filter, const float filter_data, const uint8 filter_depth);
 float Filter_ave_DuojiData(float value, uint8 time);
 
-void Motor_L_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 processValue);
-void Motor_R_Control_Change_Integral(PID_2 *vPID, Motor_Para *Motor, int16 processValue);
+void Motor_L_Control_Change_Integral(float32 setpoint, PID_2 *vPID, Motor_Para *Motor, int16 processValue);
+void Motor_R_Control_Change_Integral(float32 setpoint, PID_2 *vPID, Motor_Para *Motor, int16 processValue);
 
 float32 Differrntial(Chasu_Para *Diff);
 

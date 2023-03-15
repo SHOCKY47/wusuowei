@@ -40,15 +40,8 @@
 int main(void)
 {
 
-    SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
+    Initall();   // 初始化所有
+    DATA_INIT(); // 初始化参数
 
-    // 此处编写用户代码 例如外设初始化代码等
-    ips200_init(IPS200_TYPE_PARALLEL8);
-    ips200_set_color(RGB565_GREEN, RGB565_BLACK);
-    system_delay_ms(1000); // 务必延时
-    // key_init(10);
     Menu_Switch();
-
-    // imu660ra_get_acc();  // 获取 IMU660RA 的加速度测量数值
-    // imu660ra_get_gyro(); // 获取 IMU660RA 的角速度测量数值
 }

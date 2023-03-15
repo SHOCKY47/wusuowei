@@ -4,5 +4,6 @@
 #include "headfile.h"
 
 void Menu_Switch(void);
+void menu_Departure(void);
 
 #endif
