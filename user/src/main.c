@@ -41,15 +41,9 @@ int main(void)
 {
     SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
     SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "Engine started.\r\n");
-    Initall();                     // 初始化所有
-    DATA_INIT();                   // 初始化参数
-    clock_init(SYSTEM_CLOCK_120M); // 初始化芯片时钟 工作频率为 120MHz
-    debug_init();                  // 初始化默认 Debug UART
+    Initall();   // 初始化所有
+    DATA_INIT(); // 初始化参数
 
-    ips200_init(IPS200_TYPE_PARALLEL8);
-    ips200_set_color(RGB565_GREEN, RGB565_BLACK);
-    system_delay_ms(1000); // 务必延时
-    key_init(10);
     // 此处编写用户代码 例如外设初始化代码等
     // sdcard_read();
 
@@ -68,100 +62,4 @@ int main(void)
     // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> POCEESS TIME ==%d", timer_get(TIM_2));
     // timer_clear(TIM_2);
     /************************************/
-
-    while (1) {
-        // timer_start(TIM_2);
-
-        if (mt9v03x_finish_flag) {
-            if (Protect_Frame > 0) Protect_Frame--;
-            /**************未使用函数****************/
-            // adaptiveThreshold_2();
-            // Full_Inverse_Perspective();
-            // imu660ra_get_acc();  // 获取 IMU660RA 的加速度测量数值
-            // imu660ra_get_gyro(); // 获取 IMU660RA 的角速度测量数值
-            // Key_Switch();
-            //          if (Img_Open_falg) {
-            //     ips200_displayimage03x(mt9v03x_image[0], 188, 120);
-            // }
-            /***************************************/
-
-            Out_Protect(mt9v03x_image);
-            wusuowei(mt9v03x_image, &g_Border, &g_TrackType);
-            FindCorner(&g_Border, &g_TrackType);
-
-            /**************************************************************************************元素判断函数群**********************************************************************/
-
-            // 十字
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0) { Check_Cross(mt9v03x_image, &g_Border, &g_TrackType); }
-            // 中入十字
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0) { Check_MIDCross(mt9v03x_image, &g_Border, &g_TrackType); }
-            // 右斜入三岔，三个直角拐点
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0) { RightThreeCornerCross(mt9v03x_image, &g_Border, &g_TrackType); }
-            // 左斜入三岔，三个直角拐点
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0) { LeftThreeCornerCross(mt9v03x_image, &g_Border, &g_TrackType); };
-            // 右环岛
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0) { Check_RightRoundabout(&g_Border, &g_TrackType); }
-            // 左环岛
-            if (g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0) { Check_LeftRoundabout(&g_Border, &g_TrackType); }
-            // 中入左环岛，用于错过环岛一阶段后直接进入环岛二阶段
-            if (g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0) { Check_MIDLeftRoundabout(mt9v03x_image, &g_Border, &g_TrackType, &g_LineError); }
-            // 中入右环岛，用于错过环岛一阶段后直接进入环岛二阶段
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0) { Check_MIDRightRoundabout(mt9v03x_image, &g_Border, &g_TrackType, &g_LineError); }
-
-            /********************************************************************************************************************************************************************/
-
-            /*******************************ips显示区***********************/
-            ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);//显示原图像
-            DrawBoarder(&g_Border); // 原边线
-            // DrawCenter(&g_Border);      // 逆透视后中线
-            DrawBoarderInvp(&g_Border); // 逆透视后边线
-            DrawRemoteLine(&g_Border);  // 远端边线数组
-            ips200_draw_line(0, 120 - g_LineError.m_f32LeftBorderAimingMin / SampleDist, 188, 120 - g_LineError.m_f32LeftBorderAimingMin / SampleDist, RGB565_RED);
-            ips200_draw_line(0, 120 - g_LineError.m_f32LeftBorderAimingMax / SampleDist, 188, 120 - g_LineError.m_f32LeftBorderAimingMax / SampleDist, RGB565_RED);
-            ips200_show_int(30, 130, g_TrackType.m_u8RightRoundaboutFlag, 4); // 环岛标志位
-            ips200_show_int(30, 150, g_TrackType.m_u8CrossFlag, 4);           // 十字标志位
-            ips200_show_int(30, 170, Protect_Frame, 4);                       // 不造什么标志位（运行完一个元素则赋值）
-            ips200_show_int(30, 190, g_Border.LL_CornerPos, 4);               // 左边线L角点位置
-            ips200_show_int(30, 210, g_Border.RL_CornerPos, 4);               // 右边线L角点位置
-            ips200_show_int(50, 230, g_Border.RL_CornerPosRemote, 4);
-            ips200_show_int(50, 250, g_Border.LL_CornerPosRemote, 4);
-            ips200_show_int(90, 270, g_Border.m_i16LPointCntRS, 4);
-            ips200_show_int(90, 290, g_Border.m_i16RPointCntRS, 4);
-            ips200_show_int(130, 130, g_TrackType.m_u8ShortRightLineStraightFlag, 4);
-            ips200_show_int(130, 150, g_TrackType.m_u8ShortLeftLineStraightFlag, 4);
-
-            ips200_show_string(0, 130, "HD:");
-            ips200_show_string(0, 150, "SZ:");
-            ips200_show_string(0, 170, "PF:");
-            ips200_show_string(0, 190, "LL:");
-            ips200_show_string(0, 210, "RL:");
-            ips200_show_string(0, 230, "LLfar:");
-            ips200_show_string(0, 250, "RLfar:");
-            ips200_show_string(0, 270, "Lline size:");
-            ips200_show_string(0, 290, "Rline size:");
-            ips200_show_string(95, 130, "RDZ:");
-            ips200_show_string(95, 150, "LDZ:");
-            // ips200_show_int(10, 190, g_TrackType.m_u8CrossFlag, 4);
-            // ips200_show_int(10, 130, g_TrackType.Outframe, 4);
-            // ips200_show_float(10, 200, yaw_angle, 4, 4);
-            // ips200_show_float(10, 150, g_LineError.m_f32RightBorderKappa, 4, 4);
-            /****************************************************************/
-
-            // 获取预瞄距离
-            GetAimingDist(&g_Border, &g_LineError, &g_TrackType);
-            // 纯跟踪计算赛道曲率
-            PurePursuit(&g_Border, &g_LineError, &g_TrackType);
-
-            Control();
-
-#if 0
-        wireless_uart_send_buff(virsco_data, 100);
-        virtual_oscilloscope_data_conversion(encoder_2, Motor_Right.result, encoder_1, Motor_Left.result);
-        system_delay_ms(100);
-#endif
-
-            mt9v03x_finish_flag = 0;
-        }
-    }
-    // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> Chang_Lpoint success.");
 }

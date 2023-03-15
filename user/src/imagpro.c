@@ -75,13 +75,15 @@ void DrawBoarder(TRACK_BORDER_INFO *p_Border)
 
     int16 int16_step = -1;
 
-    while (++int16_step < int16_numL) {
+    while (++int16_step < int16_numL)
+    {
         ips200_draw_point(p_Border->m_LPnt[int16_step].m_i16x, p_Border->m_LPnt[int16_step].m_i16y, RGB565_RED);
     }
 
     int16_step = -1;
 
-    while (++int16_step < int16_numR) {
+    while (++int16_step < int16_numR)
+    {
         ips200_draw_point(p_Border->m_RPnt[int16_step].m_i16x, p_Border->m_RPnt[int16_step].m_i16y, RGB565_BLUE);
     }
 }
@@ -95,15 +97,19 @@ void DrawBoarderInvp(TRACK_BORDER_INFO *p_Border)
 
     int16 int16_step = -1;
 
-    while (++int16_step < int16_numL) {
-        if (p_Border->m_LPntRS[int16_step].m_i16y > 3 && p_Border->m_LPntRS[int16_step].m_i16x > 3 && p_Border->m_LPntRS[int16_step].m_i16y < 115 && p_Border->m_LPntRS[int16_step].m_i16x < 183) {
+    while (++int16_step < int16_numL)
+    {
+        if (p_Border->m_LPntRS[int16_step].m_i16y > 3 && p_Border->m_LPntRS[int16_step].m_i16x > 3 && p_Border->m_LPntRS[int16_step].m_i16y < 115 && p_Border->m_LPntRS[int16_step].m_i16x < 183)
+        {
             ips200_draw_point((uint16)p_Border->m_LPntRS[int16_step].m_i16x, (uint16)p_Border->m_LPntRS[int16_step].m_i16y, RGB565_RED);
         }
     }
 
     int16_step = -1;
-    while (++int16_step < int16_numR) {
-        if (p_Border->m_RPntRS[int16_step].m_i16y > 3 && p_Border->m_RPntRS[int16_step].m_i16x > 3 && p_Border->m_RPntRS[int16_step].m_i16y < 115 && p_Border->m_RPntRS[int16_step].m_i16x < 183) {
+    while (++int16_step < int16_numR)
+    {
+        if (p_Border->m_RPntRS[int16_step].m_i16y > 3 && p_Border->m_RPntRS[int16_step].m_i16x > 3 && p_Border->m_RPntRS[int16_step].m_i16y < 115 && p_Border->m_RPntRS[int16_step].m_i16x < 183)
+        {
             ips200_draw_point((uint16)p_Border->m_RPntRS[int16_step].m_i16x, (uint16)p_Border->m_RPntRS[int16_step].m_i16y, RGB565_GREEN);
         }
     }
@@ -118,15 +124,19 @@ void DrawCenter(TRACK_BORDER_INFO *p_Border)
 
     int16 int16_step = -1;
 
-    while (++int16_step < int16_numL) {
-        if (p_Border->m_LCPntRS[int16_step].m_i16y > 0 && p_Border->m_LCPntRS[int16_step].m_i16x > 0 && p_Border->m_LCPntRS[int16_step].m_i16y < 118 && p_Border->m_LCPntRS[int16_step].m_i16x < 188) {
+    while (++int16_step < int16_numL)
+    {
+        if (p_Border->m_LCPntRS[int16_step].m_i16y > 0 && p_Border->m_LCPntRS[int16_step].m_i16x > 0 && p_Border->m_LCPntRS[int16_step].m_i16y < 118 && p_Border->m_LCPntRS[int16_step].m_i16x < 188)
+        {
             ips200_draw_point((uint16)p_Border->m_LCPntRS[int16_step].m_i16x, (uint16)p_Border->m_LCPntRS[int16_step].m_i16y, RGB565_PURPLE);
         }
     }
 
     int16_step = -1;
-    while (++int16_step < int16_numR) {
-        if (p_Border->m_RCPntRS[int16_step].m_i16y > 0 && p_Border->m_RCPntRS[int16_step].m_i16x > 0 && p_Border->m_RCPntRS[int16_step].m_i16y < 118 && p_Border->m_RCPntRS[int16_step].m_i16x < 188) {
+    while (++int16_step < int16_numR)
+    {
+        if (p_Border->m_RCPntRS[int16_step].m_i16y > 0 && p_Border->m_RCPntRS[int16_step].m_i16x > 0 && p_Border->m_RCPntRS[int16_step].m_i16y < 118 && p_Border->m_RCPntRS[int16_step].m_i16x < 188)
+        {
             ips200_draw_point((uint16)p_Border->m_RCPntRS[int16_step].m_i16x, (uint16)p_Border->m_RCPntRS[int16_step].m_i16y, RGB565_BROWN);
         }
     }
@@ -134,90 +144,117 @@ void DrawCenter(TRACK_BORDER_INFO *p_Border)
 
 void All_image(void)
 {
-    while (1) {
-        // timer_start(TIM_2);
 
-        if (mt9v03x_finish_flag) {
-            if (Protect_Frame > 0) Protect_Frame--;
-            /**************未使用函数****************/
-            // adaptiveThreshold_2();
-            // Full_Inverse_Perspective();
-            // imu660ra_get_acc();  // 获取 IMU660RA 的加速度测量数值
-            // imu660ra_get_gyro(); // 获取 IMU660RA 的角速度测量数值
-            // Key_Switch();
-            //          if (Img_Open_falg) {
-            //     ips200_displayimage03x(mt9v03x_image[0], 188, 120);
-            // }
-            /***************************************/
+    // timer_start(TIM_2);
 
-            Out_Protect(mt9v03x_image);
-            wusuowei(mt9v03x_image, &g_Border, &g_TrackType);
-            FindCorner(&g_Border, &g_TrackType);
+    if (mt9v03x_finish_flag)
+    {
+        if (Protect_Frame > 0)
+            Protect_Frame--;
+        /**************未使用函数****************/
+        // adaptiveThreshold_2();
+        // Full_Inverse_Perspective();
+        // imu660ra_get_acc();  // 获取 IMU660RA 的加速度测量数值
+        // imu660ra_get_gyro(); // 获取 IMU660RA 的角速度测量数值
+        // Key_Switch();
+        //          if (Img_Open_falg) {
+        //     ips200_displayimage03x(mt9v03x_image[0], 188, 120);
+        // }
+        /***************************************/
 
-            /**************************************************************************************元素判断函数群**********************************************************************/
+        Out_Protect(mt9v03x_image);
+        wusuowei(mt9v03x_image, &g_Border, &g_TrackType);
+        FindCorner(&g_Border, &g_TrackType);
 
-            // 十字
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0) { Check_Cross(mt9v03x_image, &g_Border, &g_TrackType); }
-            // 中入十字
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0) { Check_MIDCross(mt9v03x_image, &g_Border, &g_TrackType); }
-            // 右斜入三岔，三个直角拐点
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0) { RightThreeCornerCross(mt9v03x_image, &g_Border, &g_TrackType); }
-            // 左斜入三岔，三个直角拐点
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0) { LeftThreeCornerCross(mt9v03x_image, &g_Border, &g_TrackType); };
-            // 右环岛
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0) { Check_RightRoundabout(&g_Border, &g_TrackType); }
-            // 左环岛
-            if (g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0) { Check_LeftRoundabout(&g_Border, &g_TrackType); }
-            // 中入左环岛，用于错过环岛一阶段后直接进入环岛二阶段
-            if (g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0) { Check_MIDLeftRoundabout(mt9v03x_image, &g_Border, &g_TrackType, &g_LineError); }
-            // 中入右环岛，用于错过环岛一阶段后直接进入环岛二阶段
-            if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0) { Check_MIDRightRoundabout(mt9v03x_image, &g_Border, &g_TrackType, &g_LineError); }
+        /**************************************************************************************元素判断函数群**********************************************************************/
 
-            /********************************************************************************************************************************************************************/
+        // 十字
+        if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0)
+        {
+            Check_Cross(mt9v03x_image, &g_Border, &g_TrackType);
+        }
+        // 中入十字
+        if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0)
+        {
+            Check_MIDCross(mt9v03x_image, &g_Border, &g_TrackType);
+        }
+        // 右斜入三岔，三个直角拐点
+        if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0)
+        {
+            RightThreeCornerCross(mt9v03x_image, &g_Border, &g_TrackType);
+        }
+        // 左斜入三岔，三个直角拐点
+        if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && Protect_Frame == 0)
+        {
+            LeftThreeCornerCross(mt9v03x_image, &g_Border, &g_TrackType);
+        };
+        // 右环岛
+        if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0)
+        {
+            Check_RightRoundabout(&g_Border, &g_TrackType);
+        }
+        // 左环岛
+        if (g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0)
+        {
+            Check_LeftRoundabout(&g_Border, &g_TrackType);
+        }
+        // 中入左环岛，用于错过环岛一阶段后直接进入环岛二阶段
+        if (g_TrackType.m_u8RightRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0)
+        {
+            Check_MIDLeftRoundabout(mt9v03x_image, &g_Border, &g_TrackType, &g_LineError);
+        }
+        // 中入右环岛，用于错过环岛一阶段后直接进入环岛二阶段
+        if (g_TrackType.m_u8LeftRoundaboutFlag == ROUNDABOUT_NONE && g_TrackType.m_u8CrossFlag == CROSS_NONE && g_TrackType.m_u8RightSideCrossFlag == CROSS_NONE && g_TrackType.m_u8LeftSideCrossFlag == CROSS_NONE && Protect_Frame == 0)
+        {
+            Check_MIDRightRoundabout(mt9v03x_image, &g_Border, &g_TrackType, &g_LineError);
+        }
 
-            // /*******************************ips显示区***********************/
-            // ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);//显示原图像
-            // DrawBoarder(&g_Border); // 原边线
-            // // DrawCenter(&g_Border);      // 逆透视后中线
-            // DrawBoarderInvp(&g_Border); // 逆透视后边线
-            // DrawRemoteLine(&g_Border);  // 远端边线数组
-            // ips200_draw_line(0, 120 - g_LineError.m_f32LeftBorderAimingMin / SampleDist, 188, 120 - g_LineError.m_f32LeftBorderAimingMin / SampleDist, RGB565_RED);
-            // ips200_draw_line(0, 120 - g_LineError.m_f32LeftBorderAimingMax / SampleDist, 188, 120 - g_LineError.m_f32LeftBorderAimingMax / SampleDist, RGB565_RED);
-            // ips200_show_int(30, 130, g_TrackType.m_u8RightRoundaboutFlag, 4); // 环岛标志位
-            // ips200_show_int(30, 150, g_TrackType.m_u8CrossFlag, 4);           // 十字标志位
-            // ips200_show_int(30, 170, Protect_Frame, 4);                       // 不造什么标志位（运行完一个元素则赋值）
-            // ips200_show_int(30, 190, g_Border.LL_CornerPos, 4);               // 左边线L角点位置
-            // ips200_show_int(30, 210, g_Border.RL_CornerPos, 4);               // 右边线L角点位置
-            // ips200_show_int(50, 230, g_Border.RL_CornerPosRemote, 4);
-            // ips200_show_int(50, 250, g_Border.LL_CornerPosRemote, 4);
-            // ips200_show_int(90, 270, g_Border.m_i16LPointCntRS, 4);
-            // ips200_show_int(90, 290, g_Border.m_i16RPointCntRS, 4);
-            // ips200_show_int(130, 130, g_TrackType.m_u8ShortRightLineStraightFlag, 4);
-            // ips200_show_int(130, 150, g_TrackType.m_u8ShortLeftLineStraightFlag, 4);
+        /********************************************************************************************************************************************************************/
 
-            // ips200_show_string(0, 130, "HD:");
-            // ips200_show_string(0, 150, "SZ:");
-            // ips200_show_string(0, 170, "PF:");
-            // ips200_show_string(0, 190, "LL:");
-            // ips200_show_string(0, 210, "RL:");
-            // ips200_show_string(0, 230, "LLfar:");
-            // ips200_show_string(0, 250, "RLfar:");
-            // ips200_show_string(0, 270, "Lline size:");
-            // ips200_show_string(0, 290, "Rline size:");
-            // ips200_show_string(95, 130, "RDZ:");
-            // ips200_show_string(95, 150, "LDZ:");
-            // // ips200_show_int(10, 190, g_TrackType.m_u8CrossFlag, 4);
-            // // ips200_show_int(10, 130, g_TrackType.Outframe, 4);
-            // // ips200_show_float(10, 200, yaw_angle, 4, 4);
-            // // ips200_show_float(10, 150, g_LineError.m_f32RightBorderKappa, 4, 4);
-            // /****************************************************************/
+        // /*******************************ips显示区***********************/
+        // ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);//显示原图像
+        // DrawBoarder(&g_Border); // 原边线
+        // // DrawCenter(&g_Border);      // 逆透视后中线
+        // DrawBoarderInvp(&g_Border); // 逆透视后边线
+        // DrawRemoteLine(&g_Border);  // 远端边线数组
+        // ips200_draw_line(0, 120 - g_LineError.m_f32LeftBorderAimingMin / SampleDist, 188, 120 - g_LineError.m_f32LeftBorderAimingMin / SampleDist, RGB565_RED);
+        // ips200_draw_line(0, 120 - g_LineError.m_f32LeftBorderAimingMax / SampleDist, 188, 120 - g_LineError.m_f32LeftBorderAimingMax / SampleDist, RGB565_RED);
+        // ips200_show_int(30, 130, g_TrackType.m_u8RightRoundaboutFlag, 4); // 环岛标志位
+        // ips200_show_int(30, 150, g_TrackType.m_u8CrossFlag, 4);           // 十字标志位
+        // ips200_show_int(30, 170, Protect_Frame, 4);                       // 不造什么标志位（运行完一个元素则赋值）
+        // ips200_show_int(30, 190, g_Border.LL_CornerPos, 4);               // 左边线L角点位置
+        // ips200_show_int(30, 210, g_Border.RL_CornerPos, 4);               // 右边线L角点位置
+        // ips200_show_int(50, 230, g_Border.RL_CornerPosRemote, 4);
+        // ips200_show_int(50, 250, g_Border.LL_CornerPosRemote, 4);
+        // ips200_show_int(90, 270, g_Border.m_i16LPointCntRS, 4);
+        // ips200_show_int(90, 290, g_Border.m_i16RPointCntRS, 4);
+        // ips200_show_int(130, 130, g_TrackType.m_u8ShortRightLineStraightFlag, 4);
+        // ips200_show_int(130, 150, g_TrackType.m_u8ShortLeftLineStraightFlag, 4);
 
-            // 获取预瞄距离
-            GetAimingDist(&g_Border, &g_LineError, &g_TrackType);
-            // 纯跟踪计算赛道曲率
-            PurePursuit(&g_Border, &g_LineError, &g_TrackType);
+        // ips200_show_string(0, 130, "HD:");
+        // ips200_show_string(0, 150, "SZ:");
+        // ips200_show_string(0, 170, "PF:");
+        // ips200_show_string(0, 190, "LL:");
+        // ips200_show_string(0, 210, "RL:");
+        // ips200_show_string(0, 230, "LLfar:");
+        // ips200_show_string(0, 250, "RLfar:");
+        // ips200_show_string(0, 270, "Lline size:");
+        // ips200_show_string(0, 290, "Rline size:");
+        // ips200_show_string(95, 130, "RDZ:");
+        // ips200_show_string(95, 150, "LDZ:");
+        // // ips200_show_int(10, 190, g_TrackType.m_u8CrossFlag, 4);
+        // // ips200_show_int(10, 130, g_TrackType.Outframe, 4);
+        // // ips200_show_float(10, 200, yaw_angle, 4, 4);
+        // // ips200_show_float(10, 150, g_LineError.m_f32RightBorderKappa, 4, 4);
+        // /****************************************************************/
+        // 显示原图像
+        ips200_displayimage03x(mt9v03x_image[0], IMGW, IMGH);
+        // 获取预瞄距离
+        GetAimingDist(&g_Border, &g_LineError, &g_TrackType);
+        // 纯跟踪计算赛道曲率
+        PurePursuit(&g_Border, &g_LineError, &g_TrackType);
 
-            Control();
+        Control();
 
 #if 0
         wireless_uart_send_buff(virsco_data, 100);
@@ -225,8 +262,7 @@ void All_image(void)
         system_delay_ms(100);
 #endif
 
-            mt9v03x_finish_flag = 0;
-        }
+        mt9v03x_finish_flag = 0;
     }
 }
 
@@ -236,16 +272,20 @@ void adaptiveThreshold_1(uint8 (*InImg)[MT9V03X_W], uint8 (*OutImg)[MT9V03X_W], 
     int count = 0;
     // assert(block % 2 == 1); // block必须为奇数
     int half_block = block / 2;
-    for (int y = half_block; y < height - half_block; y++) {
-        for (int x = half_block; x < width - half_block; x++) {
+    for (int y = half_block; y < height - half_block; y++)
+    {
+        for (int x = half_block; x < width - half_block; x++)
+        {
             int thres = 0;
-            for (int dy = -half_block; dy <= half_block; dy++) {
-                for (int dx = -half_block; dx <= half_block; dx++) {
+            for (int dy = -half_block; dy <= half_block; dy++)
+            {
+                for (int dx = -half_block; dx <= half_block; dx++)
+                {
                     thres += InImg[y + dy + 1][x + dx];
                     count++;
                 }
             }
-            thres        = thres / (block * block) - clip_value; // 求得平均阈值在减去经验变量
+            thres = thres / (block * block) - clip_value; // 求得平均阈值在减去经验变量
             OutImg[y][x] = InImg[y][x] > thres ? 254 : 1;
         }
     }
@@ -261,13 +301,19 @@ void adaptiveThreshold_2(void)
     int16 min_value;
     // 先遍历y后遍历x比较cache-friendly
 
-    for (int16 i = 1; i < IMGH; i += 2) {
-        for (int16 j = 1; j < IMGW; j += 2) {
+    for (int16 i = 1; i < IMGH; i += 2)
+    {
+        for (int16 j = 1; j < IMGW; j += 2)
+        {
             min_value = 254;
-            if (mt9v03x_image[i][j] < min_value) min_value = mt9v03x_image[i][j];
-            if (mt9v03x_image[i - 1][j] < min_value) min_value = mt9v03x_image[i - 1][j];
-            if (mt9v03x_image[i][j - 1] < min_value) min_value = mt9v03x_image[i][j - 1];
-            if (mt9v03x_image[i - 1][j - 1] < min_value) min_value = mt9v03x_image[i - 1][j - 1];
+            if (mt9v03x_image[i][j] < min_value)
+                min_value = mt9v03x_image[i][j];
+            if (mt9v03x_image[i - 1][j] < min_value)
+                min_value = mt9v03x_image[i - 1][j];
+            if (mt9v03x_image[i][j - 1] < min_value)
+                min_value = mt9v03x_image[i][j - 1];
+            if (mt9v03x_image[i - 1][j - 1] < min_value)
+                min_value = mt9v03x_image[i - 1][j - 1];
             outimage[i / 2][j / 2] = min_value;
         }
     }
@@ -299,7 +345,8 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
     int16_y = IMGH - 5;
     // 找到种子标志位
     p_Border->u8_FindLeftSeed = 0;
-    while (--int16_y > LYEND) {
+    while (--int16_y > LYEND)
+    {
         /*从图像的中线向左搜索*/
         int16_x = IMGW / 2;
         // if (p_Type->m_u8GarageFlag == OUT_GARAGE) int16_x = IMGW / 2 - 40;
@@ -308,12 +355,15 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
         /*-------防止数组越界---------*/
         int16_xEnd = 4;
 
-        while (--int16_x > int16_xEnd) {
+        while (--int16_x > int16_xEnd)
+        {
             int16 int16_localthre = 0;
-            int16_dy              = -int16_half - 1;
-            while (++int16_dy <= int16_half) {
+            int16_dy = -int16_half - 1;
+            while (++int16_dy <= int16_half)
+            {
                 int16_dx = -int16_half - 1;
-                while (++int16_dx <= int16_half) {
+                while (++int16_dx <= int16_half)
+                {
                     int16_localthre += InImg[int16_y + int16_dy][int16_x + int16_dx];
                 }
             }
@@ -324,10 +374,11 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
             int16_localthre -= thresholdclip;
 
             // 根据阈值判断是否扫到黑点
-            if (InImg[int16_y][int16_x - 1] < int16_localthre) {
+            if (InImg[int16_y][int16_x - 1] < int16_localthre)
+            {
                 p_Border->u8_FindLeftSeed = 1;
-                t_SeedL.m_i16x            = int16_x;
-                t_SeedL.m_i16y            = int16_y;
+                t_SeedL.m_i16x = int16_x;
+                t_SeedL.m_i16y = int16_y;
                 // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> x=%d.", t_SeedL.m_i16x);
                 // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> y=%d.", t_SeedL.m_i16y);
                 // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> y=%d.", 1);
@@ -336,30 +387,35 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
         }
 
         // 扫到种子后跳出循环
-        if (p_Border->u8_FindLeftSeed == 1) break;
+        if (p_Border->u8_FindLeftSeed == 1)
+            break;
     }
     LeftLine_SeedGrow_Adaptive(InImg, t_SeedL, p_Border->m_LPnt, p_Border->m_LPntGrowDirection, BinaryBlock, Threclip, &p_Border->m_i16LPointCnt);
 
-    int16_y                    = IMGH - 5;
+    int16_y = IMGH - 5;
     p_Border->u8_FindRightSeed = 0;
 
     uint8 RYEND = IMGH * 2 / 3;
     // if(p_Type ->m_u8GarageFlag == GARAGE_RIGHT_IN) RYEND = 95;
     //    else if(p_Type ->m_u8GarageFlag == OUT_GARAGE) LYEND = 95;
 
-    while (--int16_y > RYEND) {
+    while (--int16_y > RYEND)
+    {
         int16_x = IMGW / 2;
         // if(p_Type ->m_u8GarageFlag == OUT_GARAGE) int16_x = IMGW/2 + 40;
         int16 int16_xEnd;
 
         int16_xEnd = IMGW - 6;
-        while (++int16_x < int16_xEnd) {
+        while (++int16_x < int16_xEnd)
+        {
 
             int16 int16_localthre = 0;
-            int16_dy              = -int16_half - 1;
-            while (++int16_dy <= int16_half) {
+            int16_dy = -int16_half - 1;
+            while (++int16_dy <= int16_half)
+            {
                 int16_dx = -int16_half - 1;
-                while (++int16_dx <= int16_half) {
+                while (++int16_dx <= int16_half)
+                {
                     int16_localthre += InImg[int16_y + int16_dy][int16_x + int16_dx];
                 }
             }
@@ -367,15 +423,17 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
 
             int16_localthre -= thresholdclip;
 
-            if (InImg[int16_y][int16_x + 1] < int16_localthre) {
+            if (InImg[int16_y][int16_x + 1] < int16_localthre)
+            {
                 p_Border->u8_FindRightSeed = 1;
-                t_SeedR.m_i16x             = int16_x;
-                t_SeedR.m_i16y             = int16_y;
+                t_SeedR.m_i16x = int16_x;
+                t_SeedR.m_i16y = int16_y;
                 break;
             }
         }
 
-        if (p_Border->u8_FindRightSeed == 1) break;
+        if (p_Border->u8_FindRightSeed == 1)
+            break;
     }
 
     /*初始化右边界数组个数*/
@@ -408,8 +466,8 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
     Points_Resample(p_Border->m_RPntout, p_Border->m_RPntRS, p_Border->m_i16RPointCnt, &p_Border->m_i16RPointCntRS, SampleDist * PixelperMeter);
 
     // 对最多一半的边线计算斜率和方差
-    uint8 m_u8StartLine    = 5;
-    uint8 m_u8LeftEndLine  = p_Border->m_i16LPointCnt > 60 ? 60 : p_Border->m_i16LPointCnt;
+    uint8 m_u8StartLine = 5;
+    uint8 m_u8LeftEndLine = p_Border->m_i16LPointCnt > 60 ? 60 : p_Border->m_i16LPointCnt;
     uint8 m_u8RightEndLine = p_Border->m_i16RPointCnt > 60 ? 60 : p_Border->m_i16RPointCnt;
 
     /*计算边线斜率*/
@@ -439,48 +497,57 @@ void wusuowei(uint8 (*InImg)[IMGW], TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO
     // 统一中线起点,把中线的起始点拉到车头,防止左右边线平移出的中线算出的曲率相差过大
 
     // 找中线距离车头的最近点
-    float32 LeftMinDist  = 1e10;
+    float32 LeftMinDist = 1e10;
     int16 LeftStartPoint = -1;
-    int16 Loopi          = -1;
-    while (++Loopi < p_Border->m_i16LPointCntRS - 1) {
+    int16 Loopi = -1;
+    while (++Loopi < p_Border->m_i16LPointCntRS - 1)
+    {
         float32 f32_dx = p_Border->m_LCPnt[Loopi].m_i16x - CenterX;
         float32 f32_dy = p_Border->m_LCPnt[Loopi].m_i16y - CenterY;
         float32 f32_dz = FSqrt(f32_dx * f32_dx + f32_dy * f32_dy);
 
         if (f32_dz < LeftMinDist) // 找最小Dist
         {
-            LeftMinDist    = f32_dz;
+            LeftMinDist = f32_dz;
             LeftStartPoint = Loopi;
         }
     }
 
-    float32 RightMinDist  = 1e10;
+    float32 RightMinDist = 1e10;
     int16 RightStartPoint = -1;
-    Loopi                 = -1;
-    while (++Loopi < p_Border->m_i16RPointCntRS - 1) {
+    Loopi = -1;
+    while (++Loopi < p_Border->m_i16RPointCntRS - 1)
+    {
         float32 f32_dx = p_Border->m_RCPnt[Loopi].m_i16x - CenterX;
         float32 f32_dy = p_Border->m_RCPnt[Loopi].m_i16y - CenterY;
         float32 f32_dz = FSqrt(f32_dx * f32_dx + f32_dy * f32_dy);
 
-        if (f32_dz < RightMinDist) {
-            RightMinDist    = f32_dz;
+        if (f32_dz < RightMinDist)
+        {
+            RightMinDist = f32_dz;
             RightStartPoint = Loopi;
         }
     }
 
-    if (LeftStartPoint != -1 && p_Border->m_i16LPointCntRS - LeftStartPoint >= 3) {
+    if (LeftStartPoint != -1 && p_Border->m_i16LPointCntRS - LeftStartPoint >= 3)
+    {
         p_Border->m_LCPnt[LeftStartPoint].m_i16x = CenterX;
         p_Border->m_LCPnt[LeftStartPoint].m_i16y = CenterY;
         Points_Resample(p_Border->m_LCPnt + LeftStartPoint, p_Border->m_LCPntRS, p_Border->m_i16LPointCntRS - LeftStartPoint, &p_Border->m_i16LCnterCntRS, SampleDist * PixelperMeter);
-    } else {
+    }
+    else
+    {
         p_Border->m_i16LCnterCntRS = 1;
     }
 
-    if (RightStartPoint != -1 && p_Border->m_i16RPointCntRS - RightStartPoint >= 3) {
+    if (RightStartPoint != -1 && p_Border->m_i16RPointCntRS - RightStartPoint >= 3)
+    {
         p_Border->m_RCPnt[RightStartPoint].m_i16x = CenterX;
         p_Border->m_RCPnt[RightStartPoint].m_i16y = CenterY;
         Points_Resample(p_Border->m_RCPnt + RightStartPoint, p_Border->m_RCPntRS, p_Border->m_i16RPointCntRS - RightStartPoint, &p_Border->m_i16RCnterCntRS, SampleDist * PixelperMeter);
-    } else {
+    }
+    else
+    {
         p_Border->m_i16RCnterCntRS = 1;
     }
 }
@@ -499,7 +566,8 @@ void LeftLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, INT
     *num = 0;
 
     // 检查是否搜索到种子
-    if (t_Seed.m_i16y == -1) {
+    if (t_Seed.m_i16y == -1)
+    {
         return;
     }
 
@@ -510,13 +578,16 @@ void LeftLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, INT
     int16_y = t_Seed.m_i16y;
 
     // 忽略图像的边界，防止数组越界
-    while (int16_x < IMGW - 6 && int16_x > 4 && int16_y < IMGH - 5 && int16_y >= 4 && u8_turn < 4 && int16_steps < IMGH) {
+    while (int16_x < IMGW - 6 && int16_x > 4 && int16_y < IMGH - 5 && int16_y >= 4 && u8_turn < 4 && int16_steps < IMGH)
+    {
         int16 int16_localthre = 0;
-        int16_dy              = -int16_half - 1;
-        while (++int16_dy <= int16_half) {
+        int16_dy = -int16_half - 1;
+        while (++int16_dy <= int16_half)
+        {
             int16_dx = -int16_half - 1;
             // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> A.");
-            while (++int16_dx <= int16_half) {
+            while (++int16_dx <= int16_half)
+            {
                 int16_localthre += InImg[int16_y + int16_dy][int16_x + int16_dx];
                 // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> B.");
             }
@@ -526,7 +597,7 @@ void LeftLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, INT
         /*阈值补偿*/
         int16_localthre -= threclip;
 
-        int16 int16_frontlevel     = InImg[int16_y + arr_frontdir[u8_dir][0]][int16_x + arr_frontdir[u8_dir][1]];
+        int16 int16_frontlevel = InImg[int16_y + arr_frontdir[u8_dir][0]][int16_x + arr_frontdir[u8_dir][1]];
         int16 int16_frontleftlevel = InImg[int16_y + arr_frontleftdir[u8_dir][0]][int16_x + arr_frontleftdir[u8_dir][1]];
 
         if (int16_frontlevel < int16_localthre) // 如果前方小于阈值，往右转
@@ -534,8 +605,8 @@ void LeftLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, INT
             u8_turn++;
             u8_dir = (u8_dir + 1) % 4;
             // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> C.");
-
-        } else if (int16_frontleftlevel < int16_localthre) // 左前方小于阈值并且前方大于阈值，往前方
+        }
+        else if (int16_frontleftlevel < int16_localthre) // 左前方小于阈值并且前方大于阈值，往前方
         {
             int16_y += arr_frontdir[u8_dir][0];
             int16_x += arr_frontdir[u8_dir][1];
@@ -550,7 +621,8 @@ void LeftLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, INT
             // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> else1 xx=%d.", point[int16_steps].m_i16x);
             // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG -> else1 yy=%d.", point[int16_steps].m_i16y);
             u8_turn = 0;
-        } else // 前方大于阈值并且左前方大于阈值，往左前方
+        }
+        else // 前方大于阈值并且左前方大于阈值，往左前方
         {
             int16_y += arr_frontleftdir[u8_dir][0];
             int16_x += arr_frontleftdir[u8_dir][1];
@@ -566,7 +638,7 @@ void LeftLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, INT
             // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG ->else2 xx=%d.", point[int16_steps].m_i16x);
             // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_RED "\r\n LOG ->else2 yy=%d.", point[int16_steps].m_i16y);
 
-            u8_dir  = (u8_dir + 3) % 4;
+            u8_dir = (u8_dir + 3) % 4;
             u8_turn = 0;
         }
     }
@@ -589,7 +661,8 @@ void RightLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, IN
     *num = 0;
 
     // 检查是否搜索到种子
-    if (t_Seed.m_i16y == -1) {
+    if (t_Seed.m_i16y == -1)
+    {
         return;
     }
 
@@ -597,12 +670,15 @@ void RightLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, IN
     /*赋值种子作为边线第一个点*/
     int16_x = t_Seed.m_i16x;
     int16_y = t_Seed.m_i16y;
-    while (int16_x < IMGW - 6 && int16_x > 4 && int16_y < IMGH - 5 && int16_y >= 4 && u8_turn < 4 && int16_steps < IMGH) {
+    while (int16_x < IMGW - 6 && int16_x > 4 && int16_y < IMGH - 5 && int16_y >= 4 && u8_turn < 4 && int16_steps < IMGH)
+    {
         int16 int16_localthre = 0;
-        int16_dy              = -int16_half - 1;
-        while (++int16_dy <= int16_half) {
+        int16_dy = -int16_half - 1;
+        while (++int16_dy <= int16_half)
+        {
             int16_dx = -int16_half - 1;
-            while (++int16_dx <= int16_half) {
+            while (++int16_dx <= int16_half)
+            {
                 int16_localthre += InImg[int16_y + int16_dy][int16_x + int16_dx];
             }
         }
@@ -611,14 +687,15 @@ void RightLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, IN
         /*阈值补偿*/
         int16_localthre -= threclip;
 
-        int16 frontlevel      = InImg[int16_y + arr_frontdir[u8_dir][0]][int16_x + arr_frontdir[u8_dir][1]];
+        int16 frontlevel = InImg[int16_y + arr_frontdir[u8_dir][0]][int16_x + arr_frontdir[u8_dir][1]];
         int16 frontrightlevel = InImg[int16_y + arr_frontrightdir[u8_dir][0]][int16_x + arr_frontrightdir[u8_dir][1]];
 
         if (frontlevel < int16_localthre) // 前方小于阈值，往左
         {
             u8_turn++;
             u8_dir = (u8_dir + 3) % 4;
-        } else if (frontrightlevel < int16_localthre) // 前方大于阈值并且右前方小于阈值，往前
+        }
+        else if (frontrightlevel < int16_localthre) // 前方大于阈值并且右前方小于阈值，往前
         {
             int16_y += arr_frontdir[u8_dir][0];
             int16_x += arr_frontdir[u8_dir][1];
@@ -635,7 +712,8 @@ void RightLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, IN
             // point[int16_steps++] = t_tempPoint;
 
             u8_turn = 0;
-        } else // 前方大于阈值并且左前方也大于阈值，往右前
+        }
+        else // 前方大于阈值并且左前方也大于阈值，往右前
         {
             int16_y += arr_frontrightdir[u8_dir][0];
             int16_x += arr_frontrightdir[u8_dir][1];
@@ -648,7 +726,7 @@ void RightLine_SeedGrow_Adaptive(uint8 (*InImg)[IMGW], INT_POINT_INFO t_Seed, IN
             point[int16_steps].m_i16y = int16_y;
             point[int16_steps].m_i16x = int16_x;
             int16_steps++;
-            u8_dir  = (u8_dir + 1) % 4;
+            u8_dir = (u8_dir + 1) % 4;
             u8_turn = 0;
         }
     }
@@ -662,11 +740,14 @@ void BorderLineReCoor(INT_POINT_INFO PointIN[], int16 PointNum, int16 PointOUT[]
     int16 int16_i = -1;
     memset(PointOUT, 0, sizeof(PointOUT[0]) * IMGH);
 
-    if (PointNum < 25) return;
+    if (PointNum < 25)
+        return;
 
-    while (++int16_i < PointNum - 1) {
+    while (++int16_i < PointNum - 1)
+    {
         // 一行取一个点
-        if (PointOUT[PointIN[int16_i].m_i16y] == 0) {
+        if (PointOUT[PointIN[int16_i].m_i16y] == 0)
+        {
             PointOUT[PointIN[int16_i].m_i16y] = PointIN[int16_i].m_i16x;
         }
     }
@@ -678,14 +759,22 @@ void BorderWidth_Calc(TRACK_BORDER_INFO *p_Border, int16 PointLeft[], int16 Poin
     /*初始化赛道宽度*/
     p_Border->WidthRow100 = p_Border->WidthRow90 = p_Border->WidthRow80 = p_Border->WidthRow70 = p_Border->WidthRow60 = p_Border->WidthRow50 = p_Border->WidthRow40 = p_Border->WidthRow30 = 0;
 
-    if (PointLeft[100] != 0 && PointRight[100] != 0) p_Border->WidthRow100 = PointRight[100] - PointLeft[100];
-    if (PointLeft[90] != 0 && PointRight[90] != 0) p_Border->WidthRow90 = PointRight[90] - PointLeft[90];
-    if (PointLeft[80] != 0 && PointRight[80] != 0) p_Border->WidthRow80 = PointRight[80] - PointLeft[80];
-    if (PointLeft[70] != 0 && PointRight[70] != 0) p_Border->WidthRow70 = PointRight[70] - PointLeft[70];
-    if (PointLeft[60] != 0 && PointRight[60] != 0) p_Border->WidthRow60 = PointRight[60] - PointLeft[60];
-    if (PointLeft[50] != 0 && PointRight[50] != 0) p_Border->WidthRow50 = PointRight[50] - PointLeft[50];
-    if (PointLeft[40] != 0 && PointRight[40] != 0) p_Border->WidthRow40 = PointRight[40] - PointLeft[40];
-    if (PointLeft[30] != 0 && PointRight[30] != 0) p_Border->WidthRow30 = PointRight[30] - PointLeft[30];
+    if (PointLeft[100] != 0 && PointRight[100] != 0)
+        p_Border->WidthRow100 = PointRight[100] - PointLeft[100];
+    if (PointLeft[90] != 0 && PointRight[90] != 0)
+        p_Border->WidthRow90 = PointRight[90] - PointLeft[90];
+    if (PointLeft[80] != 0 && PointRight[80] != 0)
+        p_Border->WidthRow80 = PointRight[80] - PointLeft[80];
+    if (PointLeft[70] != 0 && PointRight[70] != 0)
+        p_Border->WidthRow70 = PointRight[70] - PointLeft[70];
+    if (PointLeft[60] != 0 && PointRight[60] != 0)
+        p_Border->WidthRow60 = PointRight[60] - PointLeft[60];
+    if (PointLeft[50] != 0 && PointRight[50] != 0)
+        p_Border->WidthRow50 = PointRight[50] - PointLeft[50];
+    if (PointLeft[40] != 0 && PointRight[40] != 0)
+        p_Border->WidthRow40 = PointRight[40] - PointLeft[40];
+    if (PointLeft[30] != 0 && PointRight[30] != 0)
+        p_Border->WidthRow30 = PointRight[30] - PointLeft[30];
 }
 
 /*逆透视打表变化*/
@@ -697,7 +786,8 @@ void Inverse_Perspective(INT_POINT_INFO PointIN[], INT_POINT_INFO PointOUT[], in
     // int num=113;
     memset(PointOUT, 0, sizeof(PointOUT[0]) * PointNum);
 
-    while (++int16_i < PointNum) {
+    while (++int16_i < PointNum)
+    {
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> lx=%d.", PointIN[int16_i].m_i16x);
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> ly=%d.", PointIN[int16_i].m_i16y);
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> cnt=%d.", PointNum);
@@ -724,13 +814,15 @@ void Points_Blur(INT_POINT_INFO PointIN[], FLOAT_POINT_INFO PointOUT[], int16 Po
     memset(PointOUT, 0, sizeof(PointOUT[0]) * PointNum); // 初始化滤波后的数组
 
     int16_i = -1;
-    while (++int16_i < PointNum) {
+    while (++int16_i < PointNum)
+    {
         PointOUT[int16_i].m_i16x = 0;
         PointOUT[int16_i].m_i16y = 0;
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> lx=%d.", PointIN[int16_i].m_i16x);
         // SEGGER_RTT_printf(0, RTT_CTRL_TEXT_GREEN "\r\n LOG -> ly=%d.", PointIN[int16_i].m_i16y);
         int16_j = -int16_half - 1;
-        while (++int16_j <= int16_half) {
+        while (++int16_j <= int16_half)
+        {
             PointOUT[int16_i].m_i16x += PointIN[clip((int16_i + int16_j), 0, PointNum - 1)].m_i16x * (int16_half + 1 - Fabs(int16_j));
             PointOUT[int16_i].m_i16y += PointIN[clip((int16_i + int16_j), 0, PointNum - 1)].m_i16y * (int16_half + 1 - Fabs(int16_j));
         }
@@ -755,12 +847,14 @@ void Points_Resample(FLOAT_POINT_INFO PointIN[], FLOAT_POINT_INFO PointOUT[], in
     *PointOUTNum = 0;
 
     /*边线有点*/
-    if (PointINNum > 0) {
-        int16 int16_len        = 0;
+    if (PointINNum > 0)
+    {
+        int16 int16_len = 0;
         float32 f32_LineLength = 0;
 
         int16 int16_loopi = -1;
-        while (++int16_loopi < PointINNum - 1 && int16_len < IMGH) {
+        while (++int16_loopi < PointINNum - 1 && int16_len < IMGH)
+        {
 
             float32 f32_x0 = PointIN[int16_loopi].m_i16x;
             float32 f32_y0 = PointIN[int16_loopi].m_i16y;
@@ -779,7 +873,8 @@ void Points_Resample(FLOAT_POINT_INFO PointIN[], FLOAT_POINT_INFO PointOUT[], in
             f32_dx0 /= f32_dist0;
             f32_dy0 /= f32_dist0;
 
-            while (f32_LineLength < f32_dist0 && int16_len < IMGH) {
+            while (f32_LineLength < f32_dist0 && int16_len < IMGH)
+            {
                 f32_x0 += f32_dx0 * f32_LineLength;
                 PointOUT[int16_len].m_i16x = f32_x0;
                 f32_y0 += f32_dy0 * f32_LineLength;
@@ -808,9 +903,11 @@ void Border_Local_Angle(FLOAT_POINT_INFO PointIN[], float32 AngleOUT[], int16 Po
 
     memset((void *)AngleOUT, 0, sizeof(AngleOUT[0]) * PointNum);
 
-    while (++int16_loopi < PointNum) {
+    while (++int16_loopi < PointNum)
+    {
 
-        if (int16_loopi <= 0 || int16_loopi >= PointNum - 1) {
+        if (int16_loopi <= 0 || int16_loopi >= PointNum - 1)
+        {
             AngleOUT[int16_loopi] = 0;
             continue;
         }
@@ -824,14 +921,16 @@ void Border_Local_Angle(FLOAT_POINT_INFO PointIN[], float32 AngleOUT[], int16 Po
         float32 f32_dz2 = FSqrt(f32_dx2 * f32_dx2 + f32_dy2 * f32_dy2);
 
         // 除数不为0
-        if (f32_dz1 == 0 || f32_dz2 == 0) continue;
+        if (f32_dz1 == 0 || f32_dz2 == 0)
+            continue;
         float32 f32_cos1 = f32_dx1 / f32_dz1;
         float32 f32_sin1 = f32_dy1 / f32_dz1;
 
         float32 f32_cos2 = f32_dx2 / f32_dz2;
         float32 f32_sin2 = f32_dy2 / f32_dz2;
 
-        if (f32_cos1 * f32_sin2 - f32_cos2 * f32_sin1 == 0 || f32_cos1 * f32_cos2 + f32_sin1 * f32_sin2 == 0) continue;
+        if (f32_cos1 * f32_sin2 - f32_cos2 * f32_sin1 == 0 || f32_cos1 * f32_cos2 + f32_sin1 * f32_sin2 == 0)
+            continue;
         AngleOUT[int16_loopi] = atan2f(f32_cos1 * f32_sin2 - f32_cos2 * f32_sin1, f32_cos1 * f32_cos2 + f32_sin1 * f32_sin2);
     }
 }
@@ -846,11 +945,14 @@ void Angle_NMS(float32 AngleIN[], float32 AngleOUT[], int16 AngleNum, int16 kern
     memset((void *)AngleOUT, 0, sizeof(AngleOUT[0]) * AngleNum);
 
     int16_loopi = -1;
-    while (++int16_loopi < AngleNum) {
+    while (++int16_loopi < AngleNum)
+    {
         AngleOUT[int16_loopi] = AngleIN[int16_loopi];
-        int16_loopj           = -int16_half - 1;
-        while (++int16_loopj <= int16_half) {
-            if (Fabs(AngleIN[clip(int16_loopi + int16_loopj, 0, AngleNum - 1)]) > Fabs(AngleOUT[int16_loopi])) {
+        int16_loopj = -int16_half - 1;
+        while (++int16_loopj <= int16_half)
+        {
+            if (Fabs(AngleIN[clip(int16_loopi + int16_loopj, 0, AngleNum - 1)]) > Fabs(AngleOUT[int16_loopi]))
+            {
                 AngleOUT[int16_loopi] = 0;
                 break;
             }
@@ -867,7 +969,8 @@ void LeftBorderTrackingCenter(FLOAT_POINT_INFO LeftPoint[], FLOAT_POINT_INFO Cen
 
     int16_loopi = -1;
 
-    while (++int16_loopi < PointNum) {
+    while (++int16_loopi < PointNum)
+    {
 
         // 根据前后两点连接的斜率近似该点切线的斜率，沿斜率的法线方向平移赛道的半宽得到中线
         float32 f32_dx = LeftPoint[clip(int16_loopi + InterPoint, 0, PointNum - 1)].m_i16x - LeftPoint[clip(int16_loopi - InterPoint, 0, PointNum - 1)].m_i16x;
@@ -877,7 +980,8 @@ void LeftBorderTrackingCenter(FLOAT_POINT_INFO LeftPoint[], FLOAT_POINT_INFO Cen
 
         float32 f32_dz = FSqrt(f32_dx * f32_dx + f32_dy * f32_dy);
 
-        if (f32_dz == 0) continue;
+        if (f32_dz == 0)
+            continue;
 
         f32_dx = f32_dx / f32_dz;
         f32_dy = f32_dy / f32_dz;
@@ -897,14 +1001,16 @@ void RightBorderTrackingCenter(FLOAT_POINT_INFO RightPoint[], FLOAT_POINT_INFO C
     memset(CenterPoint, 0, sizeof(CenterPoint[0]) * IMGH);
 
     int16_loopi = -1;
-    while (++int16_loopi < PointNum) {
+    while (++int16_loopi < PointNum)
+    {
         // 根据前后两点连接的斜率近似该点切线的斜率，沿斜率的法线方向平移赛道的半宽得到中线
         float32 f32_dx = RightPoint[clip(int16_loopi + InterPoint, 0, PointNum - 1)].m_i16x - RightPoint[clip(int16_loopi - InterPoint, 0, PointNum - 1)].m_i16x;
         float32 f32_dy = RightPoint[clip(int16_loopi + InterPoint, 0, PointNum - 1)].m_i16y - RightPoint[clip(int16_loopi - InterPoint, 0, PointNum - 1)].m_i16y;
 
         float32 f32_dz = FSqrt(f32_dx * f32_dx + f32_dy * f32_dy);
 
-        if (f32_dz == 0) continue;
+        if (f32_dz == 0)
+            continue;
 
         f32_dx = f32_dx / f32_dz;
         f32_dy = f32_dy / f32_dz;
@@ -920,36 +1026,40 @@ unsigned char *out_float(double value, unsigned char decimal_digit, unsigned cha
     unsigned long integer;
     unsigned long decimal;
     unsigned char _output_length = 0;
-    unsigned char _length_buff   = 0;
+    unsigned char _length_buff = 0;
     static unsigned char *return_pointer;
     unsigned char signal_flag;
     if (value < 0)
         signal_flag = 1;
     else
         signal_flag = 0;
-    value   = fabs(value);
+    value = fabs(value);
     integer = (unsigned long)value;
     decimal = (unsigned long)((value - integer) * pow(10, decimal_digit));
 
     unsigned long integer_buff = integer;
     unsigned long decimal_buff = decimal;
 
-    while (1) {
+    while (1)
+    {
         if (integer / 10 != 0)
             _length_buff++;
-        else {
+        else
+        {
             _length_buff++;
             break;
         }
         integer = integer / 10;
     }
-    for (int i = 0; i < _length_buff; i++) {
+    for (int i = 0; i < _length_buff; i++)
+    {
         if (i == _length_buff - 1)
             _output[_output_length] = integer_buff % 10 + 0x30;
-        else {
+        else
+        {
             //_output[_output_length] = integer_buff / 10 % 10 + 0x30;
             _output[_output_length] = integer_buff / (unsigned long)pow(10, _length_buff - i - 1) % 10 + 0x30;
-            integer_buff            = integer_buff % (unsigned long)pow(10, _length_buff - i - 1);
+            integer_buff = integer_buff % (unsigned long)pow(10, _length_buff - i - 1);
             // integer_buff = integer_buff % 10;
         }
         _output_length++;
@@ -957,21 +1067,25 @@ unsigned char *out_float(double value, unsigned char decimal_digit, unsigned cha
     _output[_output_length] = '.';
     _output_length++;
     _length_buff = 0;
-    while (1) {
+    while (1)
+    {
         if (decimal / 10 != 0)
             _length_buff++;
-        else {
+        else
+        {
             _length_buff++;
             break;
         }
         decimal = decimal / 10;
     }
-    for (int i = 0; i < _length_buff; i++) {
+    for (int i = 0; i < _length_buff; i++)
+    {
         if (i == _length_buff - 1)
             _output[_output_length] = decimal_buff % 10 + 0x30;
-        else {
+        else
+        {
             _output[_output_length] = decimal_buff / (unsigned long)pow(10, _length_buff - i - 1) % 10 + 0x30;
-            decimal_buff            = decimal_buff % (unsigned long)pow(10, _length_buff - i - 1);
+            decimal_buff = decimal_buff % (unsigned long)pow(10, _length_buff - i - 1);
         }
 
         _output_length++;
@@ -983,11 +1097,14 @@ unsigned char *out_float(double value, unsigned char decimal_digit, unsigned cha
     *output_length = _output_length - 1;
     if (return_pointer == 0)
         return 0;
-    else {
-        if (signal_flag == 1) {
+    else
+    {
+        if (signal_flag == 1)
+        {
             return_pointer[0] = '-';
             memcpy(return_pointer + 1, _output, _output_length);
-        } else
+        }
+        else
             memcpy(return_pointer, _output, _output_length);
     }
     return return_pointer;
@@ -997,13 +1114,13 @@ unsigned char *out_float(double value, unsigned char decimal_digit, unsigned cha
 void FindCorner(TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type) // 角度计算均基于重新采样后逆透视后的边界数组
 {
     /*直道点数个数需要大于一定值*/
-    p_Type->m_u8LeftLineStraightFlag  = p_Border->m_i16LPointCntRS > STRAIGHTNUMBOUND; // 左长直道
+    p_Type->m_u8LeftLineStraightFlag = p_Border->m_i16LPointCntRS > STRAIGHTNUMBOUND;  // 左长直道
     p_Type->m_u8RightLineStraightFlag = p_Border->m_i16RPointCntRS > STRAIGHTNUMBOUND; // 右长直道
 
-    p_Type->m_u8ShortLeftLineStraightFlag  = p_Border->m_i16LPointCntRS > SHORTSTRAIGHTNUMBOUND; // 左短直道
+    p_Type->m_u8ShortLeftLineStraightFlag = p_Border->m_i16LPointCntRS > SHORTSTRAIGHTNUMBOUND;  // 左短直道
     p_Type->m_u8ShortRightLineStraightFlag = p_Border->m_i16RPointCntRS > SHORTSTRAIGHTNUMBOUND; // 右短直道
 
-    p_Type->m_u8MidLeftLineStraightFlag  = p_Border->m_i16LPointCntRS > MIDSTRAIGHTNUMBOUND; // 左中直弯标志
+    p_Type->m_u8MidLeftLineStraightFlag = p_Border->m_i16LPointCntRS > MIDSTRAIGHTNUMBOUND;  // 左中直弯标志
     p_Type->m_u8MidRightLineStraightFlag = p_Border->m_i16RPointCntRS > MIDSTRAIGHTNUMBOUND; // 右中直弯标志
 
     /*初始化拐点*/
@@ -1015,12 +1132,14 @@ void FindCorner(TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type) // 角度�
 
     int16_Loopi = -1;
     /*判断左边线角点情况*/
-    while (++int16_Loopi < p_Border->m_i16LPointCntRS - 1) {
+    while (++int16_Loopi < p_Border->m_i16LPointCntRS - 1)
+    {
         /*如果不是局部极大值则跳过判断*/
-        if (p_Border->LdAngleNMS[int16_Loopi] == 0) continue;
+        if (p_Border->LdAngleNMS[int16_Loopi] == 0)
+            continue;
 
-        int16 upper    = clip(int16_Loopi + InterPoint, 0, p_Border->m_i16LPointCntRS - 1); // 极大值下标+步长10
-        int16 lower    = clip(int16_Loopi - InterPoint, 0, p_Border->m_i16LPointCntRS - 1); // 极大值下标+步长10
+        int16 upper = clip(int16_Loopi + InterPoint, 0, p_Border->m_i16LPointCntRS - 1); // 极大值下标+步长10
+        int16 lower = clip(int16_Loopi - InterPoint, 0, p_Border->m_i16LPointCntRS - 1); // 极大值下标+步长10
         int16 int16_un = Fabs(p_Border->m_LPntRS[int16_Loopi].m_i16x - CenterX);
 
         float32 f32_Corn = Fabs(p_Border->LdAngle[int16_Loopi]) - (Fabs(p_Border->LdAngle[upper]) + Fabs(p_Border->LdAngle[lower])) / 2; // 角度变化极大值减其前一个步长的角度与后一个步长的角度的均值
@@ -1040,64 +1159,84 @@ void FindCorner(TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type) // 角度�
         // ips200_show_float(95, 170, int16_un / PixelperMeter, 4, 4);
         // ips200_show_int(95, 190, int16_Loopi, 4);
         /*和阈值进行比较*/
-        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1.8 / SampleDist) p_Type->m_u8ShortLeftLineStraightFlag = 0;                                 // 角度大于5度，Loopi小于40，左边线短直道标志位赋为0
-        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1. / SampleDist) p_Type->m_u8LeftLineStraightFlag = 0;                                       // 角度大于5度，Loopi小于50，左边线长直道标志位赋为0
-        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1.2 / SampleDist && int16_Loopi > 0.6 / SampleDist) p_Type->m_u8MidLeftLineStraightFlag = 0; // 角度大于5度，Loopi小于60，左边线中部直弯道标志位赋为0
-        if (p_Border->LL_CornerPos != -1 && p_Border->LY_CornerPos != -1 && p_Type->m_u8LeftLineStraightFlag == 0) break;                                 // 左边线L角点和左边线Y角点都有且左边线长直道为0则退出
+        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1.8 / SampleDist)
+            p_Type->m_u8ShortLeftLineStraightFlag = 0; // 角度大于5度，Loopi小于40，左边线短直道标志位赋为0
+        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1. / SampleDist)
+            p_Type->m_u8LeftLineStraightFlag = 0; // 角度大于5度，Loopi小于50，左边线长直道标志位赋为0
+        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1.2 / SampleDist && int16_Loopi > 0.6 / SampleDist)
+            p_Type->m_u8MidLeftLineStraightFlag = 0; // 角度大于5度，Loopi小于60，左边线中部直弯道标志位赋为0
+        if (p_Border->LL_CornerPos != -1 && p_Border->LY_CornerPos != -1 && p_Type->m_u8LeftLineStraightFlag == 0)
+            break; // 左边线L角点和左边线Y角点都有且左边线长直道为0则退出
     }
     /*与上方循环作用相同，判断右边线角点情况*/
     int16_Loopi = -1;
-    while (++int16_Loopi < p_Border->m_i16RPointCntRS - 1) {
-        if (p_Border->RdAngleNMS[int16_Loopi] == 0) continue;
+    while (++int16_Loopi < p_Border->m_i16RPointCntRS - 1)
+    {
+        if (p_Border->RdAngleNMS[int16_Loopi] == 0)
+            continue;
 
         int16 upper = clip(int16_Loopi + InterPoint, 0, p_Border->m_i16RPointCntRS - 1); // 极大值下标+步长10
         int16 lower = clip(int16_Loopi - InterPoint, 0, p_Border->m_i16RPointCntRS - 1); // 极大值下标-步长10
 
         float32 f32_Corn = Fabs(p_Border->RdAngle[int16_Loopi]) - (Fabs(p_Border->RdAngle[upper]) + Fabs(p_Border->RdAngle[lower])) / 2;
-        int16 int16_un   = Fabs(p_Border->m_RPntRS[int16_Loopi].m_i16x - CenterX);
-        if (f32_Corn > L_CORNER_LOWERBOUND && f32_Corn < L_CORNER_UPPERBOUND && int16_Loopi < 0.8 / SampleDist && p_Border->RL_CornerPos == -1) {
+        int16 int16_un = Fabs(p_Border->m_RPntRS[int16_Loopi].m_i16x - CenterX);
+        if (f32_Corn > L_CORNER_LOWERBOUND && f32_Corn < L_CORNER_UPPERBOUND && int16_Loopi < 0.8 / SampleDist && p_Border->RL_CornerPos == -1)
+        {
             p_Border->RL_CornerPos = int16_Loopi;
         }
-        if (f32_Corn > Y_CORNER_LOWERBOUND && f32_Corn < Y_CORNER_UPPERBOUND && int16_Loopi < 0.5 / SampleDist && p_Border->RY_CornerPos == -1) {
+        if (f32_Corn > Y_CORNER_LOWERBOUND && f32_Corn < Y_CORNER_UPPERBOUND && int16_Loopi < 0.5 / SampleDist && p_Border->RY_CornerPos == -1)
+        {
             p_Border->RY_CornerPos = int16_Loopi;
         }
-        if (f32_Corn > L_CORNER_LOWERBOUND) {
+        if (f32_Corn > L_CORNER_LOWERBOUND)
+        {
             p_Border->RL_CornerNUM++;
         }
 
-        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1.8 / SampleDist) p_Type->m_u8ShortRightLineStraightFlag = 0;
-        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1. / SampleDist) p_Type->m_u8RightLineStraightFlag = 0;
-        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1.2 / SampleDist && int16_Loopi > 0.6 / SampleDist) p_Type->m_u8MidRightLineStraightFlag = 0;
+        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1.8 / SampleDist)
+            p_Type->m_u8ShortRightLineStraightFlag = 0;
+        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1. / SampleDist)
+            p_Type->m_u8RightLineStraightFlag = 0;
+        if (int16_un / PixelperMeter > 0.56 && int16_Loopi < 1.2 / SampleDist && int16_Loopi > 0.6 / SampleDist)
+            p_Type->m_u8MidRightLineStraightFlag = 0;
 
-        if (p_Border->RL_CornerPos != -1 && p_Border->RY_CornerPos != -1 && p_Type->m_u8RightLineStraightFlag == 0) break;
+        if (p_Border->RL_CornerPos != -1 && p_Border->RY_CornerPos != -1 && p_Type->m_u8RightLineStraightFlag == 0)
+            break;
     }
 
     // Y拐点二次检查
     // 根据拐点之间的距离和拐点后赛道延展的特征和y坐标插值
-    if (p_Border->LY_CornerPos != -1 && p_Border->RY_CornerPos != -1) /*左右都有Y角点*/ {
+    if (p_Border->LY_CornerPos != -1 && p_Border->RY_CornerPos != -1) /*左右都有Y角点*/
+    {
         float32 f32_dx = p_Border->m_LPntRS[p_Border->LY_CornerPos].m_i16x - p_Border->m_RPntRS[p_Border->RY_CornerPos].m_i16x; // 左右Y角点的x坐标相减
         float32 f32_dy = p_Border->m_LPntRS[p_Border->LY_CornerPos].m_i16y - p_Border->m_RPntRS[p_Border->RY_CornerPos].m_i16y; // 左右Y角点的y坐标相减
         float32 f32_dz = FSqrt(f32_dx * f32_dx + f32_dy * f32_dy);                                                              // 左右两边Y角点的直线距离
 
-        if (Fabs(f32_dz - 0.4 * PixelperMeter) < 0.15 * PixelperMeter) /*左右两边Y角点直线距离减0.4米之后大于0.15米*/ {
+        if (Fabs(f32_dz - 0.4 * PixelperMeter) < 0.15 * PixelperMeter) /*左右两边Y角点直线距离减0.4米之后大于0.15米*/
+        {
             float32 f32_dxf = p_Border->m_LPntRS[clip(p_Border->LY_CornerPos + 50, 0, p_Border->m_i16LPointCntRS - 1)].m_i16x - p_Border->m_RPntRS[clip(p_Border->RY_CornerPos + 50, 0, p_Border->m_i16RPointCntRS - 1)].m_i16x; // 左右Y角点远处第50个点的x坐标相减
             float32 f32_dyf = p_Border->m_LPntRS[clip(p_Border->LY_CornerPos + 50, 0, p_Border->m_i16LPointCntRS - 1)].m_i16y - p_Border->m_RPntRS[clip(p_Border->RY_CornerPos + 50, 0, p_Border->m_i16RPointCntRS - 1)].m_i16y; // 左右Y角点第50个点的y坐标相减
             float32 f32_dzf = FSqrt(f32_dxf * f32_dxf + f32_dyf * f32_dyf);                                                                                                                                                      // 左右两边Y角点远处第50个点的直线距离
 
-            if (!/*不满足后面条件*/ (f32_dzf > 0.7 * PixelperMeter /*左右两边Y角点远处第50个点的直线距离大于0.7米*/ && p_Border->m_LPntRS[clip(p_Border->LY_CornerPos + 50, 0, p_Border->m_i16LPointCntRS - 1)].m_i16x < p_Border->m_LPntRS[p_Border->LY_CornerPos].m_i16x && p_Border->m_RPntRS[clip(p_Border->RY_CornerPos + 50, 0, p_Border->m_i16RPointCntRS - 1)].m_i16x > p_Border->m_RPntRS[p_Border->RY_CornerPos].m_i16x)) /*左右Y角点远处第50个点的x值都大于左右Y角点的x值*/ {
+            if (!/*不满足后面条件*/ (f32_dzf > 0.7 * PixelperMeter /*左右两边Y角点远处第50个点的直线距离大于0.7米*/ && p_Border->m_LPntRS[clip(p_Border->LY_CornerPos + 50, 0, p_Border->m_i16LPointCntRS - 1)].m_i16x < p_Border->m_LPntRS[p_Border->LY_CornerPos].m_i16x && p_Border->m_RPntRS[clip(p_Border->RY_CornerPos + 50, 0, p_Border->m_i16RPointCntRS - 1)].m_i16x > p_Border->m_RPntRS[p_Border->RY_CornerPos].m_i16x)) /*左右Y角点远处第50个点的x值都大于左右Y角点的x值*/
+            {
                 p_Border->LY_CornerPos = p_Border->RY_CornerPos = -1; // 右Y角点的位置赋为-1
             }
-        } else {
+        }
+        else
+        {
             p_Border->LY_CornerPos = p_Border->RY_CornerPos = -1; // 右Y角点的位置赋为-1
         }
     }
     // 根据拐点后赛道延展的特征和y坐标差值
-    else if (p_Border->LY_CornerPos != -1) {
+    else if (p_Border->LY_CornerPos != -1)
+    {
 
         p_Border->LY_CornerPos = -1;
     }
     // 根据拐点后赛道延展的特征
-    else if (p_Border->RY_CornerPos != -1) {
+    else if (p_Border->RY_CornerPos != -1)
+    {
 
         p_Border->RY_CornerPos = -1;
     }
@@ -1105,29 +1244,36 @@ void FindCorner(TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type) // 角度�
     // L拐点二次检查
     // 根据L拐点的间的距离和拐点后赛道延展的特征
     // if (p_Type->m_u8GarageFlag == GARAGE_NONE) {
-    if (p_Border->LL_CornerPos != -1 && p_Border->RL_CornerPos != -1) /*左右L角点都找到*/ {
+    if (p_Border->LL_CornerPos != -1 && p_Border->RL_CornerPos != -1) /*左右L角点都找到*/
+    {
         float32 f32_dx = p_Border->m_LPntRS[p_Border->LL_CornerPos].m_i16x - p_Border->m_RPntRS[p_Border->RL_CornerPos].m_i16x; // 左右L角点的x坐标相减
         float32 f32_dy = p_Border->m_LPntRS[p_Border->LL_CornerPos].m_i16y - p_Border->m_RPntRS[p_Border->RL_CornerPos].m_i16y; // 左右L角点的y坐标相减
         float32 f32_dz = FSqrt(f32_dx * f32_dx + f32_dy * f32_dy);                                                              // 左右两边L角点的直线距离
 
-        if (Fabs(f32_dz - 0.4 * PixelperMeter) < 0.15 * PixelperMeter) /*左右两边L角点直线距离减0.4米之后大于0.15米*/ {
+        if (Fabs(f32_dz - 0.4 * PixelperMeter) < 0.15 * PixelperMeter) /*左右两边L角点直线距离减0.4米之后大于0.15米*/
+        {
 
-            if (!(/*f32_dzf > 0.7 * PixelperMeter &&*/ p_Border->m_LPntRS[clip(p_Border->LL_CornerPos + 50, 0, p_Border->m_i16LPointCntRS - 1)].m_i16x < p_Border->m_LPntRS[p_Border->LL_CornerPos].m_i16x /*左L角点远处第50个的点的x值小于左角点的x值*/ && p_Border->m_RPntRS[clip(p_Border->RL_CornerPos + 50, 0, p_Border->m_i16RPointCntRS - 1)].m_i16x > p_Border->m_RPntRS[p_Border->RL_CornerPos].m_i16x) /*右L角点远处第50个的点的x值大于右L角点的x值*/) {
+            if (!(/*f32_dzf > 0.7 * PixelperMeter &&*/ p_Border->m_LPntRS[clip(p_Border->LL_CornerPos + 50, 0, p_Border->m_i16LPointCntRS - 1)].m_i16x < p_Border->m_LPntRS[p_Border->LL_CornerPos].m_i16x /*左L角点远处第50个的点的x值小于左角点的x值*/ && p_Border->m_RPntRS[clip(p_Border->RL_CornerPos + 50, 0, p_Border->m_i16RPointCntRS - 1)].m_i16x > p_Border->m_RPntRS[p_Border->RL_CornerPos].m_i16x) /*右L角点远处第50个的点的x值大于右L角点的x值*/)
+            {
                 p_Border->LL_CornerPos = p_Border->RL_CornerPos = -1;
             }
-        } else {
+        }
+        else
+        {
             p_Border->LL_CornerPos = p_Border->RL_CornerPos = -1;
         }
-
     }
     /*根据L拐点后赛道延展的特征*/
-    else if (p_Border->LL_CornerPos != -1) {
-        if (!(p_Border->m_LPntRS[clip(p_Border->LL_CornerPos + 50, 0, p_Border->m_i16LPointCntRS - 1)].m_i16x < p_Border->m_LPntRS[p_Border->LL_CornerPos].m_i16x)) p_Border->LL_CornerPos = -1;
-
+    else if (p_Border->LL_CornerPos != -1)
+    {
+        if (!(p_Border->m_LPntRS[clip(p_Border->LL_CornerPos + 50, 0, p_Border->m_i16LPointCntRS - 1)].m_i16x < p_Border->m_LPntRS[p_Border->LL_CornerPos].m_i16x))
+            p_Border->LL_CornerPos = -1;
     }
     /*根据L拐点后赛道延展的特征*/
-    else if (p_Border->RL_CornerPos != -1) {
-        if (!(p_Border->m_RPntRS[clip(p_Border->RL_CornerPos + 50, 0, p_Border->m_i16RPointCntRS - 1)].m_i16x > p_Border->m_RPntRS[p_Border->RL_CornerPos].m_i16x)) p_Border->RL_CornerPos = -1;
+    else if (p_Border->RL_CornerPos != -1)
+    {
+        if (!(p_Border->m_RPntRS[clip(p_Border->RL_CornerPos + 50, 0, p_Border->m_i16RPointCntRS - 1)].m_i16x > p_Border->m_RPntRS[p_Border->RL_CornerPos].m_i16x))
+            p_Border->RL_CornerPos = -1;
     }
     // }
 }
@@ -1135,7 +1281,7 @@ void FindCorner(TRACK_BORDER_INFO *p_Border, TRACK_TYPE_INFO *p_Type) // 角度�
 /*获取预瞄距离*/
 void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type)
 {
-    SpeedThres    = normal_speed * 0.85;
+    SpeedThres = normal_speed * 0.85;
     SpeedDistance = Avg_speed < SpeedThres ? Avg_speed : (now_speed > 130 ? (float32)normal_speed : now_speed); // 速度控制
 
     if (SpeedDistance >= 150)
@@ -1146,17 +1292,22 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
     /*-------------------------------------------------------------左边线----------------------------------------------------------------------------------*/
 
     // 十字
-    if (p_Type->m_u8CrossFlag != CROSS_NONE) {
-        if (p_Type->m_u8CrossFlag == CROSS_FAR) {
-            if (p_Border->LL_CornerPos != -1) {
+    if (p_Type->m_u8CrossFlag != CROSS_NONE)
+    {
+        if (p_Type->m_u8CrossFlag == CROSS_FAR)
+        {
+            if (p_Border->LL_CornerPos != -1)
+            {
                 p_Error->m_f32LeftBorderAimingMin = fclip(0.1, 0., (p_Border->LL_CornerPos - 9) * SampleDist);
                 p_Error->m_f32LeftBorderAimingMax = fclip(0.2, 0., (p_Border->LL_CornerPos - 7) * SampleDist);
             }
             p_Error->m_u8TackingType = TRACKINGBOTH;
         }
 
-        else if (p_Type->m_u8CrossFlag == CROSS_NEAR) {
-            if (p_Border->LL_CornerPosRemote != -1) {
+        else if (p_Type->m_u8CrossFlag == CROSS_NEAR)
+        {
+            if (p_Border->LL_CornerPosRemote != -1)
+            {
                 p_Error->m_f32LeftBorderAimingMin = fclip(0.6, (p_Border->LL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
                 p_Error->m_f32LeftBorderAimingMax = fclip(0.7, (p_Border->LL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
             }
@@ -1165,17 +1316,22 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
     }
 
     // 右斜入十字
-    else if (p_Type->m_u8RightSideCrossFlag != CROSS_NONE) {
-        if (p_Type->m_u8RightSideCrossFlag == CROSS_FAR) {
-            if (p_Border->LL_CornerPos != -1) {
+    else if (p_Type->m_u8RightSideCrossFlag != CROSS_NONE)
+    {
+        if (p_Type->m_u8RightSideCrossFlag == CROSS_FAR)
+        {
+            if (p_Border->LL_CornerPos != -1)
+            {
                 p_Error->m_f32LeftBorderAimingMin = fclip(0.1, 0., (p_Border->LL_CornerPos - 9) * SampleDist);
                 p_Error->m_f32LeftBorderAimingMax = fclip(0.2, 0., (p_Border->LL_CornerPos - 7) * SampleDist);
             }
             p_Error->m_u8TackingType = TRACKINGRIGHT;
         }
 
-        else if (p_Type->m_u8RightSideCrossFlag == CROSS_NEAR) {
-            if (p_Border->LL_CornerPosRemote != -1) {
+        else if (p_Type->m_u8RightSideCrossFlag == CROSS_NEAR)
+        {
+            if (p_Border->LL_CornerPosRemote != -1)
+            {
                 p_Error->m_f32LeftBorderAimingMin = fclip(0.6, (p_Border->LL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
                 p_Error->m_f32LeftBorderAimingMax = fclip(0.7, (p_Border->LL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
             }
@@ -1184,17 +1340,22 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
     }
 
     // 左斜入十字
-    else if (p_Type->m_u8LeftSideCrossFlag != CROSS_NONE) {
-        if (p_Type->m_u8LeftSideCrossFlag == CROSS_FAR) {
-            if (p_Border->LL_CornerPos != -1) {
+    else if (p_Type->m_u8LeftSideCrossFlag != CROSS_NONE)
+    {
+        if (p_Type->m_u8LeftSideCrossFlag == CROSS_FAR)
+        {
+            if (p_Border->LL_CornerPos != -1)
+            {
                 p_Error->m_f32LeftBorderAimingMin = fclip(0.1, 0., (p_Border->LL_CornerPos - 9) * SampleDist);
                 p_Error->m_f32LeftBorderAimingMax = fclip(0.2, 0., (p_Border->LL_CornerPos - 7) * SampleDist);
             }
             p_Error->m_u8TackingType = TRACKINGLEFT;
         }
 
-        else if (p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR) {
-            if (p_Border->LL_CornerPosRemote != -1) {
+        else if (p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR)
+        {
+            if (p_Border->LL_CornerPosRemote != -1)
+            {
                 p_Error->m_f32LeftBorderAimingMin = fclip(0.6, (p_Border->LL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
                 p_Error->m_f32LeftBorderAimingMax = fclip(0.7, (p_Border->LL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16LCnterCntRSRemote - 1) * SampleDist);
             }
@@ -1202,70 +1363,80 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
         }
     }
     // 右环岛
-    else if (p_Type->m_u8RightRoundaboutFlag != ROUNDABOUT_NONE) {
+    else if (p_Type->m_u8RightRoundaboutFlag != ROUNDABOUT_NONE)
+    {
         p_Error->m_f32LeftBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
 
         p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
 
         // 阶段1
-        if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_BEGIN) {
+        if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_BEGIN)
+        {
             p_Error->m_f32LeftBorderAimingMin = 0.3;
             p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
 
             p_Error->m_u8TackingType = TRACKINGLEFT;
         }
         // 阶段  2 入环
-        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_IN) {
+        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_IN)
+        {
             p_Error->m_u8TackingType = TRACKINGRIGHT;
         }
         // 阶段  3 环内
-        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_MID) {
+        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_MID)
+        {
             p_Error->m_u8TackingType = TRACKINGBOTH;
 
-            if (p_Border->LL_CornerPos != -1) {
+            if (p_Border->LL_CornerPos != -1)
+            {
                 p_Error->m_f32LeftBorderAimingMin = fclip(fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12, 0., (p_Border->LL_CornerPos - 6) * SampleDist);
 
                 p_Error->m_f32LeftBorderAimingMax = fclip(p_Error->m_f32RightBorderAimingMin + 0.1, 0., (p_Border->LL_CornerPos - 5) * SampleDist);
             }
         }
         // 阶段  4 出环
-        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_OUT) {
+        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_OUT)
+        {
             p_Error->m_u8TackingType = TRACKINGRIGHT;
         }
         // 阶段  5
-        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_END) {
-            p_Error->m_u8TackingType          = TRACKINGLEFT;
+        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_END)
+        {
+            p_Error->m_u8TackingType = TRACKINGLEFT;
             p_Error->m_f32LeftBorderAimingMin = 0.3;
             p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
         }
-
     }
 
     // 左环岛
-    else if (p_Type->m_u8LeftRoundaboutFlag != ROUNDABOUT_NONE) {
+    else if (p_Type->m_u8LeftRoundaboutFlag != ROUNDABOUT_NONE)
+    {
         p_Error->m_f32LeftBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
         p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
         // 阶段  1
-        if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_BEGIN) {
+        if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_BEGIN)
+        {
             p_Error->m_u8TackingType = TRACKINGRIGHT;
         }
         // 阶段  2  入环
-        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_IN) {
+        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_IN)
+        {
             p_Error->m_f32LeftBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
             p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
 
             p_Error->m_u8TackingType = TRACKINGLEFT;
-
         }
         // 阶段  3 环内
-        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_MID) {
+        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_MID)
+        {
             p_Error->m_f32LeftBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
             p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
 
             p_Error->m_u8TackingType = TRACKINGBOTH;
         }
         // 阶段  4 出环
-        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_OUT) {
+        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_OUT)
+        {
 
             p_Error->m_f32LeftBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
             p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
@@ -1273,12 +1444,14 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
             p_Error->m_u8TackingType = TRACKINGLEFT;
         }
         // 阶段  5
-        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_END) {
+        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_END)
+        {
             p_Error->m_u8TackingType = TRACKINGRIGHT;
         }
     }
     // 无特殊元素弯道
-    else if (p_Type->m_u8ShortLeftLineStraightFlag == 0) {
+    else if (p_Type->m_u8ShortLeftLineStraightFlag == 0)
+    {
         //        p_Error ->m_f32LeftBorderAimingMin = 0.2;
         p_Error->m_f32LeftBorderAimingMin = fclip(((int16)(now_speed / 5.0 + 0.5)) * 5, 90, 130) * 0.004 - 0.24;
         p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.1;
@@ -1287,25 +1460,31 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
     }
 
     // 无特殊元素直道
-    else {
+    else
+    {
         p_Error->m_f32LeftBorderAimingMin = fclip(((int16)(now_speed / 5.0 + 0.5)) * 5, 130, 145) * 0.004 - 0.22;
         p_Error->m_f32LeftBorderAimingMax = p_Error->m_f32LeftBorderAimingMin + 0.3;
-        p_Error->m_u8TackingType          = TRACKINGBOTH;
+        p_Error->m_u8TackingType = TRACKINGBOTH;
     }
 
     /*-------------------------------------------------------------右边线----------------------------------------------------------------------------------*/
 
     // 十字
-    if (p_Type->m_u8CrossFlag != CROSS_NONE) {
-        if (p_Type->m_u8CrossFlag == CROSS_FAR) {
-            if (p_Border->RL_CornerPos != -1) {
+    if (p_Type->m_u8CrossFlag != CROSS_NONE)
+    {
+        if (p_Type->m_u8CrossFlag == CROSS_FAR)
+        {
+            if (p_Border->RL_CornerPos != -1)
+            {
                 p_Error->m_f32RightBorderAimingMin = fclip(0.1, 0., (p_Border->RL_CornerPos - 9) * SampleDist);
                 p_Error->m_f32RightBorderAimingMax = fclip(0.2, 0., (p_Border->RL_CornerPos - 7) * SampleDist);
             }
         }
 
-        else if (p_Type->m_u8CrossFlag == CROSS_NEAR) {
-            if (p_Border->RL_CornerPosRemote != -1) {
+        else if (p_Type->m_u8CrossFlag == CROSS_NEAR)
+        {
+            if (p_Border->RL_CornerPosRemote != -1)
+            {
                 p_Error->m_f32RightBorderAimingMin = fclip(0.6, (p_Border->RL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
                 p_Error->m_f32RightBorderAimingMax = fclip(0.7, (p_Border->RL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
             }
@@ -1313,16 +1492,21 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
     }
 
     // 右斜入十字
-    else if (p_Type->m_u8RightSideCrossFlag != CROSS_NONE) {
-        if (p_Type->m_u8RightSideCrossFlag == CROSS_FAR) {
-            if (p_Border->RL_CornerPos != -1) {
+    else if (p_Type->m_u8RightSideCrossFlag != CROSS_NONE)
+    {
+        if (p_Type->m_u8RightSideCrossFlag == CROSS_FAR)
+        {
+            if (p_Border->RL_CornerPos != -1)
+            {
                 p_Error->m_f32RightBorderAimingMin = fclip(0.1, 0., (p_Border->RL_CornerPos - 9) * SampleDist);
                 p_Error->m_f32RightBorderAimingMax = fclip(0.2, 0., (p_Border->RL_CornerPos - 7) * SampleDist);
             }
         }
 
-        else if (p_Type->m_u8RightSideCrossFlag == CROSS_NEAR) {
-            if (p_Border->RL_CornerPosRemote != -1) {
+        else if (p_Type->m_u8RightSideCrossFlag == CROSS_NEAR)
+        {
+            if (p_Border->RL_CornerPosRemote != -1)
+            {
                 p_Error->m_f32RightBorderAimingMin = fclip(0.6, (p_Border->RL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
                 p_Error->m_f32RightBorderAimingMax = fclip(0.7, (p_Border->RL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
             }
@@ -1330,74 +1514,100 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
     }
 
     // 左斜入十字
-    else if (p_Type->m_u8LeftSideCrossFlag != CROSS_NONE) {
-        if (p_Type->m_u8LeftSideCrossFlag == CROSS_FAR) {
-            if (p_Border->RL_CornerPos != -1) {
+    else if (p_Type->m_u8LeftSideCrossFlag != CROSS_NONE)
+    {
+        if (p_Type->m_u8LeftSideCrossFlag == CROSS_FAR)
+        {
+            if (p_Border->RL_CornerPos != -1)
+            {
                 p_Error->m_f32RightBorderAimingMin = fclip(0.1, 0., (p_Border->RL_CornerPos - 9) * SampleDist);
                 p_Error->m_f32RightBorderAimingMax = fclip(0.2, 0., (p_Border->RL_CornerPos - 7) * SampleDist);
             }
         }
 
-        else if (p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR) {
-            if (p_Border->RL_CornerPosRemote != -1) {
+        else if (p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR)
+        {
+            if (p_Border->RL_CornerPosRemote != -1)
+            {
                 p_Error->m_f32RightBorderAimingMin = fclip(0.6, (p_Border->RL_CornerPosRemote + 7) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
                 p_Error->m_f32RightBorderAimingMax = fclip(0.7, (p_Border->RL_CornerPosRemote + 10) * SampleDist, (p_Border->m_i16RCnterCntRSRemote - 1) * SampleDist);
             }
         }
     }
     // 右环岛
-    else if (p_Type->m_u8RightRoundaboutFlag != ROUNDABOUT_NONE) {
+    else if (p_Type->m_u8RightRoundaboutFlag != ROUNDABOUT_NONE)
+    {
 
         p_Error->m_f32RightBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
 
         p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
 
-        if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_BEGIN) {
-        } else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_IN) {
+        if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_BEGIN)
+        {
+        }
+        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_IN)
+        {
             p_Error->m_f32RightBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
             p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
-        } else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_MID) {
+        }
+        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_MID)
+        {
             p_Error->m_f32RightBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
             p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
-        } else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_OUT) {
+        }
+        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_OUT)
+        {
             p_Error->m_f32RightBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
             p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
-        } else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_END) {
+        }
+        else if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_END)
+        {
         }
     }
 
     // 左环岛
-    else if (p_Type->m_u8LeftRoundaboutFlag != ROUNDABOUT_NONE) {
+    else if (p_Type->m_u8LeftRoundaboutFlag != ROUNDABOUT_NONE)
+    {
         p_Error->m_f32RightBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
         p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
 
-        if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_BEGIN) {
+        if (p_Type->m_u8RightRoundaboutFlag == ROUNDABOUT_BEGIN)
+        {
             p_Error->m_f32RightBorderAimingMin = 0.3; // fclip(Avg_speed, 110, 160)* 0.004 - 0.3;
             p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
-        } else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_MID) {
-            if (p_Border->RL_CornerPos != -1) {
+        }
+        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_MID)
+        {
+            if (p_Border->RL_CornerPos != -1)
+            {
                 p_Error->m_f32RightBorderAimingMin = fclip(fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12, 0., (p_Border->RL_CornerPos - 6) * SampleDist);
                 p_Error->m_f32RightBorderAimingMax = fclip(p_Error->m_f32RightBorderAimingMin + 0.1, 0., (p_Border->RL_CornerPos - 5) * SampleDist);
             }
-        } else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_OUT) {
+        }
+        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_OUT)
+        {
 
             p_Error->m_f32RightBorderAimingMin = fclip(((int16)((SpeedDistance - 40) / 25.)) * 0.02, 0, 0.16) + 0.12;
             p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
 
             p_Error->m_u8TackingType = TRACKINGLEFT;
-        } else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_END) {
+        }
+        else if (p_Type->m_u8LeftRoundaboutFlag == ROUNDABOUT_END)
+        {
             p_Error->m_f32RightBorderAimingMin = 0.3;
             p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
         }
     }
     // 非特殊元素弯道
-    else if (p_Type->m_u8ShortRightLineStraightFlag == 0) {
+    else if (p_Type->m_u8ShortRightLineStraightFlag == 0)
+    {
         //        p_Error ->m_f32RightBorderAimingMin = 0.2;
         p_Error->m_f32RightBorderAimingMin = fclip(((int16)(now_speed / 5.0 + 0.5)) * 5, 90, 130) * 0.004 - 0.24;
         p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.1;
     }
     // 非特殊元素直道
-    else {
+    else
+    {
         p_Error->m_f32RightBorderAimingMin = fclip(((int16)(now_speed / 5.0 + 0.5)) * 5, 130, 145) * 0.004 - 0.22;
         p_Error->m_f32RightBorderAimingMax = p_Error->m_f32RightBorderAimingMin + 0.3;
     }
@@ -1407,26 +1617,33 @@ void GetAimingDist(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_
 
 void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TYPE_INFO *p_Type)
 {
-    int16 int16_i    = clip((int16)(p_Error->m_f32LeftBorderAimingMin / SampleDist), 0, p_Border->m_i16LCnterCntRS - 1);
+    int16 int16_i = clip((int16)(p_Error->m_f32LeftBorderAimingMin / SampleDist), 0, p_Border->m_i16LCnterCntRS - 1);
     int16 int16_iEnd = clip((int16)(p_Error->m_f32LeftBorderAimingMax / SampleDist), 0, p_Border->m_i16LCnterCntRS - 1);
     float32 dx, dy, VerticalDist, HoriError, Kappa, Kappatotal;
     float32 gain;
     int16 norm = 0;
-    if ((p_Error->m_u8TackingType == TRACKINGBOTH || p_Error->m_u8TackingType == TRACKINGLEFT) && p_Type->m_u8CrossFlag != CROSS_NEAR && p_Type->m_u8RightSideCrossFlag != CROSS_NEAR && p_Type->m_u8LeftSideCrossFlag != CROSS_NEAR /* && p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != GARAGE_RIGHT_TURN && p_Type->m_u8GarageFlag != GARAGE_LEFT_TURN && !(p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/) {
-        while (int16_i++ < int16_iEnd) {
-            if (p_Border->m_LCPntRS[int16_i].m_i16y != 0) {
+    if ((p_Error->m_u8TackingType == TRACKINGBOTH || p_Error->m_u8TackingType == TRACKINGLEFT) && p_Type->m_u8CrossFlag != CROSS_NEAR && p_Type->m_u8RightSideCrossFlag != CROSS_NEAR && p_Type->m_u8LeftSideCrossFlag != CROSS_NEAR /* && p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != GARAGE_RIGHT_TURN && p_Type->m_u8GarageFlag != GARAGE_LEFT_TURN && !(p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/)
+    {
+        while (int16_i++ < int16_iEnd)
+        {
+            if (p_Border->m_LCPntRS[int16_i].m_i16y != 0)
+            {
                 dx = p_Border->m_LCPntRS[int16_i].m_i16x - CenterX;
                 dy = Fabs(p_Border->m_LCPntRS[int16_i].m_i16y - CenterY);
 
                 VerticalDist = dy / PixelperMeter + 0.243;
-                HoriError    = dx / PixelperMeter;
+                HoriError = dx / PixelperMeter;
 
                 Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
 
-                if (Fabs(Kappa) > 1) {
-                    if (dx == 0 || Avg_speed == 0) gain = 0;
+                if (Fabs(Kappa) > 1)
+                {
+                    if (dx == 0 || Avg_speed == 0)
+                        gain = 0;
                     //                    else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
-                } else {
+                }
+                else
+                {
                     gain = 0;
                 }
 
@@ -1437,37 +1654,47 @@ void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TY
             }
         }
 
-        if (norm != 0) {
+        if (norm != 0)
+        {
             p_Error->m_f32LeftBorderKappa = Kappatotal / norm;
-            p_Error->m_u8LeftCenterValid  = 1;
+            p_Error->m_u8LeftCenterValid = 1;
 
-            if (p_Type->m_u8CrossFlag == CROSS_FAR && p_Border->LL_CornerPos == -1) p_Error->m_u8LeftCenterValid = 0;
+            if (p_Type->m_u8CrossFlag == CROSS_FAR && p_Border->LL_CornerPos == -1)
+                p_Error->m_u8LeftCenterValid = 0;
 
             // if( (p_Type ->m_u8GarageFlag == GARAGE_RIGHT_PASS || p_Type ->m_u8GarageFlag == GARAGE_RIGHT_IN) && p_Border -> m_i16LPointCntRS < 60) p_Error -> m_u8LeftCenterValid = 0;
-
-        } else {
+        }
+        else
+        {
             p_Error->m_u8LeftCenterValid = 0;
         }
     }
 
-    else if (p_Type->m_u8CrossFlag == CROSS_NEAR || p_Type->m_u8RightSideCrossFlag == CROSS_NEAR || p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR /*|| p_Type->m_u8LeftPRoadFlag == PROAD_END || p_Type->m_u8GarageFlag == GARAGE_LEFT_TURN || (p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageDirection == Garage_Out_RIGHT && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/) {
-        int16_i    = clip((int16)(p_Error->m_f32LeftBorderAimingMin / SampleDist), 0, p_Border->m_i16LCnterCntRSRemote - 1);
+    else if (p_Type->m_u8CrossFlag == CROSS_NEAR || p_Type->m_u8RightSideCrossFlag == CROSS_NEAR || p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR /*|| p_Type->m_u8LeftPRoadFlag == PROAD_END || p_Type->m_u8GarageFlag == GARAGE_LEFT_TURN || (p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageDirection == Garage_Out_RIGHT && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/)
+    {
+        int16_i = clip((int16)(p_Error->m_f32LeftBorderAimingMin / SampleDist), 0, p_Border->m_i16LCnterCntRSRemote - 1);
         int16_iEnd = clip((int16)(p_Error->m_f32LeftBorderAimingMax / SampleDist), 0, p_Border->m_i16LCnterCntRSRemote - 1);
 
-        while (int16_i++ < int16_iEnd) {
-            if (p_Border->m_LCPntRSRemote[int16_i].m_i16y != 0) {
+        while (int16_i++ < int16_iEnd)
+        {
+            if (p_Border->m_LCPntRSRemote[int16_i].m_i16y != 0)
+            {
                 dx = p_Border->m_LCPntRSRemote[int16_i].m_i16x - CenterX;
                 dy = Fabs(p_Border->m_LCPntRSRemote[int16_i].m_i16y - CenterY);
 
                 VerticalDist = dy / PixelperMeter + 0.243;
-                HoriError    = dx / PixelperMeter;
+                HoriError = dx / PixelperMeter;
 
                 Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
 
-                if (Fabs(Kappa) > 1) {
-                    if (dx == 0 || Avg_speed == 0) gain = 0;
+                if (Fabs(Kappa) > 1)
+                {
+                    if (dx == 0 || Avg_speed == 0)
+                        gain = 0;
                     //                    else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
-                } else {
+                }
+                else
+                {
                     gain = 0;
                 }
 
@@ -1478,39 +1705,50 @@ void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TY
             }
         }
 
-        if (norm != 0) {
+        if (norm != 0)
+        {
             p_Error->m_f32LeftBorderKappa = Kappatotal / norm;
-            p_Error->m_u8LeftCenterValid  = 1;
+            p_Error->m_u8LeftCenterValid = 1;
             // if (p_Border->LL_CornerPosRemote == -1 && p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != OUT_GARAGE) p_Error->m_u8LeftCenterValid = 0;
-        } else {
+        }
+        else
+        {
             p_Error->m_u8LeftCenterValid = 0;
         }
     }
 
-    else {
+    else
+    {
         p_Error->m_f32LeftBorderKappa = 0;
-        p_Error->m_u8LeftCenterValid  = 0;
+        p_Error->m_u8LeftCenterValid = 0;
     }
 
-    int16_i    = clip((int16)(p_Error->m_f32RightBorderAimingMin / SampleDist), 0, p_Border->m_i16RCnterCntRS - 1);
+    int16_i = clip((int16)(p_Error->m_f32RightBorderAimingMin / SampleDist), 0, p_Border->m_i16RCnterCntRS - 1);
     int16_iEnd = clip((int16)(p_Error->m_f32RightBorderAimingMax / SampleDist), 0, p_Border->m_i16RCnterCntRS - 1);
     norm = Kappatotal = 0;
 
-    if ((p_Error->m_u8TackingType == TRACKINGBOTH || p_Error->m_u8TackingType == TRACKINGRIGHT) && p_Type->m_u8CrossFlag != CROSS_NEAR && p_Type->m_u8RightSideCrossFlag != CROSS_NEAR && p_Type->m_u8LeftSideCrossFlag != CROSS_NEAR /*&& p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != GARAGE_RIGHT_TURN && p_Type->m_u8GarageFlag != GARAGE_LEFT_TURN && !(p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/) {
-        while (int16_i++ < int16_iEnd) {
-            if (p_Border->m_RCPntRS[int16_i].m_i16y != 0) {
+    if ((p_Error->m_u8TackingType == TRACKINGBOTH || p_Error->m_u8TackingType == TRACKINGRIGHT) && p_Type->m_u8CrossFlag != CROSS_NEAR && p_Type->m_u8RightSideCrossFlag != CROSS_NEAR && p_Type->m_u8LeftSideCrossFlag != CROSS_NEAR /*&& p_Type->m_u8LeftPRoadFlag != PROAD_END && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != GARAGE_RIGHT_TURN && p_Type->m_u8GarageFlag != GARAGE_LEFT_TURN && !(p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/)
+    {
+        while (int16_i++ < int16_iEnd)
+        {
+            if (p_Border->m_RCPntRS[int16_i].m_i16y != 0)
+            {
                 dx = p_Border->m_RCPntRS[int16_i].m_i16x - CenterX;
                 dy = Fabs(p_Border->m_RCPntRS[int16_i].m_i16y - CenterY);
 
                 VerticalDist = dy / PixelperMeter + 0.243;
-                HoriError    = dx / PixelperMeter;
+                HoriError = dx / PixelperMeter;
 
                 Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
 
-                if (Fabs(Kappa) > 1) {
-                    if (dx == 0 || Avg_speed == 0) gain = 0;
+                if (Fabs(Kappa) > 1)
+                {
+                    if (dx == 0 || Avg_speed == 0)
+                        gain = 0;
                     //                    else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
-                } else {
+                }
+                else
+                {
                     gain = 0;
                 }
 
@@ -1521,37 +1759,47 @@ void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TY
             }
         }
 
-        if (norm != 0) {
+        if (norm != 0)
+        {
             p_Error->m_f32RightBorderKappa = Kappatotal / norm;
-            p_Error->m_u8RightCenterValid  = 1;
+            p_Error->m_u8RightCenterValid = 1;
 
-            if (p_Type->m_u8CrossFlag == CROSS_FAR && p_Border->RL_CornerPos == -1) p_Error->m_u8RightCenterValid = 0;
+            if (p_Type->m_u8CrossFlag == CROSS_FAR && p_Border->RL_CornerPos == -1)
+                p_Error->m_u8RightCenterValid = 0;
 
             // if( (p_Type ->m_u8GarageFlag == GARAGE_LEFT_PASS || p_Type ->m_u8GarageFlag == GARAGE_LEFT_IN )&& p_Border ->m_i16RPointCntRS < 60) p_Error -> m_u8RightCenterValid = 0;
-
-        } else {
+        }
+        else
+        {
             p_Error->m_u8RightCenterValid = 0;
         }
     }
 
-    else if (p_Type->m_u8CrossFlag == CROSS_NEAR || p_Type->m_u8RightSideCrossFlag == CROSS_NEAR || p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR /* || p_Type->m_u8RightPRoadFlag == PROAD_END || p_Type->m_u8GarageFlag == GARAGE_RIGHT_TURN || (p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageDirection == Garage_Out_LEFT && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/) {
-        int16_i    = clip((int16)(p_Error->m_f32RightBorderAimingMin / SampleDist), 0, p_Border->m_i16RCnterCntRSRemote - 1);
+    else if (p_Type->m_u8CrossFlag == CROSS_NEAR || p_Type->m_u8RightSideCrossFlag == CROSS_NEAR || p_Type->m_u8LeftSideCrossFlag == CROSS_NEAR /* || p_Type->m_u8RightPRoadFlag == PROAD_END || p_Type->m_u8GarageFlag == GARAGE_RIGHT_TURN || (p_Type->m_u8GarageFlag == OUT_GARAGE && p_Type->m_u8GarageDirection == Garage_Out_LEFT && p_Type->m_u8GarageTracking == Garage_Tracking_Remote)*/)
+    {
+        int16_i = clip((int16)(p_Error->m_f32RightBorderAimingMin / SampleDist), 0, p_Border->m_i16RCnterCntRSRemote - 1);
         int16_iEnd = clip((int16)(p_Error->m_f32RightBorderAimingMax / SampleDist), 0, p_Border->m_i16RCnterCntRSRemote - 1);
 
-        while (int16_i++ < int16_iEnd) {
-            if (p_Border->m_RCPntRSRemote[int16_i].m_i16y != 0) {
+        while (int16_i++ < int16_iEnd)
+        {
+            if (p_Border->m_RCPntRSRemote[int16_i].m_i16y != 0)
+            {
                 dx = p_Border->m_RCPntRSRemote[int16_i].m_i16x - CenterX;
                 dy = Fabs(p_Border->m_RCPntRSRemote[int16_i].m_i16y - CenterY);
 
                 VerticalDist = dy / PixelperMeter + 0.243;
-                HoriError    = dx / PixelperMeter;
+                HoriError = dx / PixelperMeter;
 
                 Kappa = 2 * HoriError / (VerticalDist * VerticalDist + HoriError * HoriError);
 
-                if (Fabs(Kappa) > 1) {
-                    if (dx == 0 || Avg_speed == 0) gain = 0;
+                if (Fabs(Kappa) > 1)
+                {
+                    if (dx == 0 || Avg_speed == 0)
+                        gain = 0;
                     //                     else gain = (float32)atan((double)dx * 1000 / Avg_speed *200 / EncoderPerMeter);
-                } else {
+                }
+                else
+                {
                     gain = 0;
                 }
 
@@ -1562,18 +1810,22 @@ void PurePursuit(TRACK_BORDER_INFO *p_Border, LINE_ERROR_INFO *p_Error, TRACK_TY
             }
         }
 
-        if (norm != 0) {
+        if (norm != 0)
+        {
             p_Error->m_f32RightBorderKappa = Kappatotal / norm;
-            p_Error->m_u8RightCenterValid  = 1;
+            p_Error->m_u8RightCenterValid = 1;
             // if (p_Border->RL_CornerPosRemote == -1 && p_Type->m_u8RightPRoadFlag != PROAD_END && p_Type->m_u8GarageFlag != OUT_GARAGE) p_Error->m_u8RightCenterValid = 0;
-        } else {
+        }
+        else
+        {
             p_Error->m_u8RightCenterValid = 0;
         }
     }
 
-    else {
+    else
+    {
         p_Error->m_f32RightBorderKappa = 0;
-        p_Error->m_u8RightCenterValid  = 0;
+        p_Error->m_u8RightCenterValid = 0;
     }
 }
 
@@ -1586,9 +1838,11 @@ void Full_Inverse_Perspective(void)
     // int num=113;
     // memset(InImg, 0, sizeof(OutImg[0]) * PointNum);
 
-    for (i = 0; i < IMGH; i++) {
+    for (i = 0; i < IMGH; i++)
+    {
 
-        for (j = 0; j < IMGW; j++) {
+        for (j = 0; j < IMGW; j++)
+        {
             // inv_image[i][j] = mt9v03x_image[Inv_y1[i * IMGW + j]][Inv_x1[i * IMGW + j]];
             inv_image[i][j] = mt9v03x_image[Inv_y_imge[i * IMGW + j]][Inv_x_imge[i * IMGW + j]];
         }
@@ -1620,8 +1874,11 @@ void Out_Protect(uint8 (*image)[IMGW])
 {
     uint8 i;
     int16 Sum = 0;
-    for (i = 0; i < 188; i++) {
-        if (image[90][i] > 200) Sum++; // 判断赛道白点
+    for (i = 0; i < 188; i++)
+    {
+        if (image[90][i] > 200)
+            Sum++; // 判断赛道白点
     }
-    if (Sum < 50) g_TrackType.Outframe = 1; // 赛道白点小于50个就出界
+    if (Sum < 50)
+        g_TrackType.Outframe = 1; // 赛道白点小于50个就出界
 }
